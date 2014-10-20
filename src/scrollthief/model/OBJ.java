@@ -1,31 +1,30 @@
-package scrollthief;
+package scrollthief.model;
 
 import com.jogamp.common.nio.Buffers;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
 
-public class OBJModel {
+public class OBJ {
 	private String OBJModelPath; // The path to the Model File
-    private ArrayList vData = new ArrayList(); // List of Vertex Coordinates
-    private ArrayList vtData = new ArrayList(); // List of Texture Coordinates
-    private ArrayList vnData = new ArrayList(); // List of Normal Coordinates
-    private ArrayList fv = new ArrayList(); // Face Vertex Indices
-    private ArrayList ft = new ArrayList(); // Face Texture Indices
-    private ArrayList fn = new ArrayList(); // Face Normal Indices
+    private ArrayList<float[]> vData = new ArrayList<float[]>(); // List of Vertex Coordinates
+    private ArrayList<float[]> vtData = new ArrayList<float[]>(); // List of Texture Coordinates
+    private ArrayList<float[]> vnData = new ArrayList<float[]>(); // List of Normal Coordinates
+    private ArrayList<int[]> fv = new ArrayList<int[]>(); // Face Vertex Indices
+    private ArrayList<int[]> ft = new ArrayList<int[]>(); // Face Texture Indices
+    private ArrayList<int[]> fn = new ArrayList<int[]>(); // Face Normal Indices
     private FloatBuffer modeldata; // Buffer which will contain vertex data
     private int FaceFormat; // Format of the Faces Triangles or Quads
     private int FaceMultiplier; // Number of possible coordinates per face
     private int PolyCount = 0; // The Models Polygon Count
     private boolean init  = true;
     
-    public OBJModel(String Modelpath) {
+    public OBJ(String Modelpath) {
         OBJModelPath = Modelpath;
         LoadOBJModel(OBJModelPath);
         SetFaceRenderType();

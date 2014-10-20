@@ -1,4 +1,4 @@
-package scrollthief;
+package scrollthief.model;
 
 /**
  *

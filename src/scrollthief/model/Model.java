@@ -1,4 +1,4 @@
-package scrollthief;
+package scrollthief.model;
 
 /**
 *
@@ -6,13 +6,13 @@ package scrollthief;
 */
 public class Model {
 
-	private OBJModel obj;
+	private OBJ obj;
 	private int textureIndex;
 	private Point3D location;
 	double[] rotation;
 	double scale;
 	
-	public Model(OBJModel obj, int textureIndex, Point3D location, double[] rotation, double scale){
+	public Model(OBJ obj, int textureIndex, Point3D location, double[] rotation, double scale){
 		this.obj= obj;
 		this.textureIndex= textureIndex;
 		this.location= location;
@@ -21,7 +21,7 @@ public class Model {
 	}
 	
 	// getters
-	public OBJModel getObj(){
+	public OBJ getObj(){
 		return obj;
 	}
 	
