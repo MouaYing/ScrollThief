@@ -18,8 +18,8 @@ public class XboxAdapter extends XboxControllerAdapter{
 	
 	public void isConnected(boolean connected){
 		if (connected)
-			System.out.println("Controller Connected!");
-		else System.out.println("Controller not Connected!");
+			System.out.println("Xbox controller connected!");
+		else System.out.println("Xbox controller has been disconnected!");
 	}
 
 }

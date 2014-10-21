@@ -7,7 +7,7 @@ public class View {
 
 	public View(GameModel model){
 		this.model= model;
-		say("View loaded");
+		say("--View loaded--");
 	}
 	
 	private void say(String message){
