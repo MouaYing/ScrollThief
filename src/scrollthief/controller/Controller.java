@@ -8,7 +8,7 @@ import scrollthief.view.View;
 public class Controller {
 	View view;
 	GameModel gameModel;
-	XboxController xbc;
+	public XboxController xbc;
 	
 	public Controller(View view, GameModel gameModel){
 		this.view= view;

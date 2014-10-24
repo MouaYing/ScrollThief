@@ -114,7 +114,7 @@ public class OBJ {
             FaceFormat = GL2.GL_QUADS; // The faces come in sets of 4 so we have quadrilateral faces
             FaceMultiplier = 4;
         } else {
-        	FaceMultiplier = 5;
+        	//FaceMultiplier = 5;
             FaceFormat = GL2.GL_POLYGON; // Fall back to render as free form polygons
         }
     }
@@ -144,6 +144,8 @@ public class OBJ {
         float tcoords[] = new float[2]; //Only T2F is supported in InterLeavedArrays!!
         float coords[] = new float[3];        
         int fbSize= PolyCount*(FaceMultiplier*8); // 3v Per Poly, 2vt Per Poly, 3vn Per Poly
+        if (fbSize == 0)
+        	fbSize= 48778 * 8;
         //System.out.println("fbsize: "+fbSize+", Polycount: "+PolyCount);
         modeldata = Buffers.newDirectFloatBuffer(fbSize);
         modeldata.position(0);     
