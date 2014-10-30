@@ -25,10 +25,10 @@ public class View extends GLCanvas implements GLEventListener{
 	public boolean resetting= false;
 	float[] lookFrom= {2,4,5};
 	float[] lookAt= {0,2,0};
-	double cameraDistance= 5;
+	double cameraDistance= 10;
 	double cameraAngle= 0;
 	double cameraRotRate= 0;
-	double cameraRotDelta= 0;
+	double[] cameraDelta= {0,0};
 
 	public View(GameModel model){
 		this.gameModel= model;
@@ -78,6 +78,7 @@ public class View extends GLCanvas implements GLEventListener{
 		Model[] models= gameModel.getModels();
 		Texture[] textures= gameModel.getTextures();
 		
+		moveCamera();
 		moveNinja();
 		
 		// apply world-to-camera transform
@@ -223,6 +224,15 @@ public class View extends GLCanvas implements GLEventListener{
 		gameModel.setNinjaLoc(newLoc);
 	}
 	
+	public void moveCamera(){
+		double scale= .25;
+		double dX= cameraDelta[0];
+		double dY= cameraDelta[1];
+		
+		cameraAngle+= dX;
+		lookFrom[1]+= dY;
+		cameraDistance+= dY * scale;
+	}
 	
 //	private double[][] convTo2D(double[] array){
 //		int N= 4;
@@ -300,12 +310,20 @@ public class View extends GLCanvas implements GLEventListener{
 //		return diff;
 //	}
 	
-	public double getCameraAngle(){
+	public double getCamAngle(){
 		return cameraAngle;
 	}
 	
-	public void setCameraHeight(float height){
+	public void setCamHeight(float height){
 		lookFrom[1]= height;
+	}
+	
+	public void setCamRotRate(double rate){
+		cameraRotRate= rate;
+	}
+	
+	public void setCamDelta(double[] delta){
+		cameraDelta= delta;
 	}
 	
 	private void say(String message){

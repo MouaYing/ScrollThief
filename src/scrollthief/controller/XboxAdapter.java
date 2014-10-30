@@ -6,13 +6,21 @@
  */
 package scrollthief.controller;
 
+import scrollthief.model.GameModel;
+import scrollthief.view.View;
 import ch.aplu.xboxcontroller.XboxControllerAdapter;
 
 public class XboxAdapter extends XboxControllerAdapter{
 	Controller controller;
+	View view;
+	GameModel gameModel;
+	
+	Double rightStickDir= 0.0;
 	
 	public XboxAdapter(Controller controller){
 		this.controller= controller;
+		this.view= controller.view;
+		this.gameModel= controller.gameModel;
 	}
 	
 	public void isConnected(boolean connected){
@@ -22,16 +30,27 @@ public class XboxAdapter extends XboxControllerAdapter{
 	}
 	
 	public void leftThumbDirection(double direction){
-		controller.gameModel.setNinjaAngle(Math.toRadians(direction) +  controller.view.getCameraAngle());
+		gameModel.setNinjaAngle(Math.toRadians(direction) +  view.getCamAngle());
 	}
 	
 	public void leftThumbMagnitude(double magnitude){
 		double scale= .5;
-		controller.gameModel.setNinjaSpeed(scale * magnitude);
+		gameModel.setNinjaSpeed(scale * magnitude);
 	}
 	
 	public void rightThumbDirection(double direction){
+		rightStickDir= Math.toRadians(direction);
+	}
+	
+	public void rightThumbMagnitude(double magnitude){
+		double scale= .25;
 		
+		double dHoriz= -Math.sin(rightStickDir) * magnitude * scale;
+		double dVert= Math.cos(rightStickDir) * magnitude * scale;
+		
+		double[] delta= {dHoriz, dVert};
+		
+		view.setCamDelta(delta);
 	}
 	
 	public void leftShoulder(boolean pressed){
