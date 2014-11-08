@@ -3,7 +3,11 @@
  */
 package scrollthief;
 
+import java.util.Timer;
+
 import javax.swing.JFrame;
+
+
 
 import com.jogamp.opengl.util.FPSAnimator;
 
@@ -15,15 +19,16 @@ public class ScrollThief {
 	static FPSAnimator anim;
 	
 	public static void main(String[] args) {
-		int FPS= 60;
+		//int FPS= 60;
+		Timer timer = new Timer();
 		
 		JFrame window= new JFrame("Scroll Thief");
 		
 		GameModel gameModel= new GameModel();
 		View view= new View(gameModel);
-		new Controller(view, gameModel);
+		Controller controller = new Controller(view, gameModel);
 		
-		anim= new FPSAnimator(view, FPS);
+		//anim= new FPSAnimator(view, FPS);
 		
 		window.getContentPane().add(view);
 		window.pack();
@@ -31,7 +36,8 @@ public class ScrollThief {
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setVisible(true);
 		
-		anim.start();
+		//anim.start();
+		timer.scheduleAtFixedRate(controller, 3000, 1000/60); 
 		
 		//controller.xbc.release();
 	}

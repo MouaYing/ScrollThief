@@ -13,22 +13,18 @@ import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
 
 public class GameModel {
+	public boolean initializing= true;
+	Guard[] guards;
 	Model[] models;
 	OBJ[] objs;
 	Texture[] textures;
-	int ninjaIndex= 1;
-	double ninjaSpeed= 0;
+	Character ninja;
 	
 	public GameModel(){
-		models= new Model[2];
-		objs= new OBJ[2];
+		models= new Model[3];
+		objs= new OBJ[3];
 		textures= new Texture[2];
-		
-		loadOBJs();
-//		loadTextures(gl);
-//		createModels();
-		
-		say("--Game Model loaded--");
+		guards= new Guard[1];
 	}
 	
 	private void loadOBJs(){
@@ -36,9 +32,10 @@ public class GameModel {
 		objs[0]= new OBJ("obj/ParkingLot.obj");
 		//objs[1]= new OBJ("obj/ninja.obj");
 		objs[1]= new OBJ("obj/ninja_tri.obj");
+		objs[2]= new OBJ("obj/guard.obj");
 	}
 	
-	public void loadTextures(GL2 gl){
+	private void loadTextures(GL2 gl){
 		say("Loading texture files...");
 		GLProfile profile= gl.getGLProfile();
 		String[] imgPaths= new String[2];
@@ -60,13 +57,41 @@ public class GameModel {
 		}
 	}
 	
-	public void createModels(){
+	private void createModels(){
 		say("Creating 3D models...");
-		double[] lotRot= new double[] {0,0,0};
-		double[] ninjaRot= new double[] {0,Math.PI,0};
+		double[] zero= new double[] {0,0,0};
 		
-		models[0]= new Model(objs[0], 0, new Point3D(0, 0, 0), lotRot, 1); // lot model
-		models[1]= new Model(objs[1], 1, new Point3D(0, 0, -4), ninjaRot, .1); // ninja model
+// ---------------Environment model/s ------------------------------------------------------------------
+		models[0]= new Model(objs[0], 0, new Point3D(0, 0, 0), zero, 1); // lot model
+// ---------------Character models ---------------------------------------------------------------------
+		models[1]= new Model(objs[1], 1, new Point3D(0, 0, -4), new double[]{0,Math.PI,0}, .075); // ninja model
+		models[2]= new Model(objs[2], 1, new Point3D(0, 0, 2), new double[]{0,-Math.PI/2,0}, .25); // a guard model
+// ---------------Obstacle models ----------------------------------------------------------------------
+		// TODO add obstacle models
+	}
+	
+	private void createCharacters(){
+		say("Creating characters...");
+		ninja= new Character(this, models[1]);
+		guards[0]= new Guard(this, models[2]);
+	}
+	
+	public void init(GL2 gl){
+		loadOBJs();
+		loadTextures(gl);
+		createModels();
+		createCharacters();
+		//TODO create obstacles
+		say("--Game model loaded--\n");
+		initializing= false;
+	}
+	
+	public Guard[] getGuards(){
+		return guards;
+	}
+	
+	public Character getNinja(){
+		return ninja;
 	}
 	
 	public Model[] getModels(){
@@ -78,15 +103,15 @@ public class GameModel {
 	}
 	
 	public double getNinjaAngle(){
-		return models[ninjaIndex].getRot()[1];
+		return ninja.getAngle();
 	}
 	
 	public double getNinjaSpeed(){
-		return ninjaSpeed;
+		return ninja.getSpeed();
 	}
 	
 	public Point3D getNinjaLoc(){
-		return models[ninjaIndex].getLoc();
+		return ninja.getLoc();
 	}
 	
 	public void setNinjaAngle(double newAngle){
@@ -96,11 +121,15 @@ public class GameModel {
 	}
 	
 	public void setNinjaSpeed(double newSpeed){
-		ninjaSpeed= newSpeed;
+		ninja.setSpeed(newSpeed);
 	}
 	
 	public void setNinjaLoc(Point3D newPoint){
-		models[ninjaIndex].setLoc(newPoint);
+		ninja.setLoc(newPoint);
+	}
+	
+	public double floorMod(double a, double n){
+		return a - Math.floor(a/n) * n;
 	}
 	
 	private void say(String message){

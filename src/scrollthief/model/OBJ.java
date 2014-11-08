@@ -23,6 +23,7 @@ public class OBJ {
     private int FaceMultiplier; // Number of possible coordinates per face
     private int PolyCount = 0; // The Models Polygon Count
     private boolean init  = true;
+    private int type;
     
     public OBJ(String Modelpath) {
         OBJModelPath = Modelpath;
@@ -126,16 +127,20 @@ public class OBJ {
         // If a value of zero is found that it tells us we don't have that type of data
         if ((tv[0] != 0) && (tt[0] != 0) && (tn[0] != 0)) {
             ConstructTNV(); //We have Vertex, 2D Texture, and Normal Data
-            gl.glInterleavedArrays(GL2.GL_T2F_N3F_V3F, 0, modeldata);
+            type = GL2.GL_T2F_N3F_V3F;
+            // gl.glInterleavedArrays(GL2.GL_T2F_N3F_V3F, 0, modeldata);
         } else if ((tv[0] != 0) && (tt[0] != 0) && (tn[0] == 0)) {
             ConstructTV(); //We have just vertex and 2D texture Data
-            gl.glInterleavedArrays(GL2.GL_T2F_V3F, 0, modeldata);
+            type = GL2.GL_T2F_V3F;
+            // gl.glInterleavedArrays(GL2.GL_T2F_V3F, 0, modeldata);
         } else if ((tv[0] != 0) && (tt[0] == 0) && (tn[0] != 0)) {
             ConstructNV(); //We have just vertex and normal Data
-            gl.glInterleavedArrays(GL2.GL_N3F_V3F, 0, modeldata);
+            type = GL2.GL_N3F_V3F;
+            // gl.glInterleavedArrays(GL2.GL_N3F_V3F, 0, modeldata);
         } else if ((tv[0] != 0) && (tt[0] == 0) && (tn[0] == 0)) {
             ConstructV();
-            gl.glInterleavedArrays(GL2.GL_V3F, 0, modeldata);
+            type = GL2.GL_V3F;
+            // gl.glInterleavedArrays(GL2.GL_V3F, 0, modeldata);
         }
     }
     
@@ -240,11 +245,12 @@ public class OBJ {
         if (init) {
             ConstructInterleavedArray(gl);
             cleanup();
-            //init = false;
+            init = false;
         }
+        gl.glInterleavedArrays(type, 0, modeldata);
         gl.glEnable(GL2.GL_CULL_FACE);
         gl.glCullFace(GL2.GL_BACK);
-        gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
+        gl.glPolygonMode(GL2.GL_FRONT, GL2.GL_FILL);
         gl.glDrawArrays(FaceFormat, 0, PolyCount*FaceMultiplier);
         gl.glDisable(GL2.GL_CULL_FACE);
     }
@@ -255,13 +261,13 @@ public class OBJ {
     }
     
     private void cleanup() {
-        //vData.clear();
-        //vtData.clear();
-        //vnData.clear();
-        //fv.clear();
-        //ft.clear();
-        //fn.clear();
-        modeldata.clear();
-        //System.gc();
+        vData.clear();
+        vtData.clear();
+        vnData.clear();
+        fv.clear();
+        ft.clear();
+        fn.clear();
+        //modeldata.clear();
+        System.gc();
     }
 }

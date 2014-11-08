@@ -1,9 +1,5 @@
 package scrollthief.model;
 
-/**
- *
- * @author Brennan Smith
- */
 public class Point3D 
 {
     public double x;
@@ -15,6 +11,18 @@ public class Point3D
         x = newX;
         y = newY;
         z = newZ;
+    }
+    
+    public final double dot(Point3D B) {
+        return (x*B.x + y*B.y + z*B.z);
+    }
+    
+    public final Point3D minus(Point3D B){
+    	double newX = x - B.x;
+    	double newY = y - B.y;
+    	double newZ = z - B.z;
+    	
+    	return new Point3D(newX, newY, newZ);
     }
 
     double length() 

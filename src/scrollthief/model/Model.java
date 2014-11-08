@@ -37,6 +37,10 @@ public class Model {
 		return rotation;
 	}
 	
+	public double getAngle(){
+		return rotation[1];
+	}
+	
 	public double getScale(){
 		return scale;
 	}

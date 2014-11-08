@@ -31,17 +31,17 @@ public class View extends GLCanvas implements GLEventListener{
 	double[] cameraDelta= {0,0};
 
 	public View(GameModel model){
+		say("Loading view...");
 		this.gameModel= model;
 		setPreferredSize(new java.awt.Dimension(windowSize, windowSize));
         addGLEventListener(this);
-		say("--View loaded--");
+		say("--View loaded--\n");
 	}
 	
 	@Override
 	public void init(GLAutoDrawable drawable) {
 		GL2 gl= drawable.getGL().getGL2();
-		gameModel.loadTextures(gl);
-		gameModel.createModels();
+		gameModel.init(gl);
 		
 		setupLighting(gl);
 		
@@ -78,8 +78,7 @@ public class View extends GLCanvas implements GLEventListener{
 		Model[] models= gameModel.getModels();
 		Texture[] textures= gameModel.getTextures();
 		
-		moveCamera();
-		moveNinja();
+		//moveCamera();
 		
 		// apply world-to-camera transform
 		world2camera(gl);
@@ -150,29 +149,10 @@ public class View extends GLCanvas implements GLEventListener{
 		double angle= Math.toDegrees(rot[1]);
 		double scale= model.getScale();
 		Point3D loc= model.getLoc();
-		
-//		double[] scaleMatrix= {scale,0,0,0,
-//				0,scale,0,0,
-//				0,0,scale,0,
-//				0,0,0,1};
-//		
-//		double[] rotAndTrans= {Math.cos(angle),0,-Math.sin(angle),0,
-//				0,1,0,0,
-//				Math.sin(angle),0, Math.cos(angle),0,
-//				loc.x,loc.y,loc.z,1};
-//		
-//		double[][] scale2d= convTo2D(scaleMatrix);
-//		double[][] rotAndTrans2d= convTo2D(rotAndTrans);
-//		
-//		double[][] objToWindow2d= matrixMult(rotAndTrans2d, scale2d);
-//		double[] objToWindow1d= convTo1D(objToWindow2d);
-//		
-//		gl.glMultMatrixd(objToWindow1d, 0);
 	
 		gl.glTranslated(loc.x, loc.y, loc.z);
 		gl.glRotated(angle, 0, -1, 0);
 		gl.glScaled(scale, scale, scale);
-		
 	}
 	
 	private void world2camera(GL2 gl){
@@ -186,6 +166,7 @@ public class View extends GLCanvas implements GLEventListener{
 //			dZ= Math.cos(ninjaAngle + Math.PI + cameraAngle); 
 //			dX= Math.sin(ninjaAngle + Math.PI + cameraAngle);
 			cameraAngle= ninjaAngle;
+			cameraDistance= 7;
 			lookFrom[1]= 4;
 		}
 		
@@ -208,114 +189,44 @@ public class View extends GLCanvas implements GLEventListener{
 		//gl.glLoadIdentity();
 	}
 	
-	// having this method in the View instead of Controller breaks MVC, but this computes faster. Might
-	// move this later
-	public void moveNinja(){
-		float scale= .25f;
-		double direction= gameModel.getNinjaAngle() + Math.PI;
-		double speed= gameModel.getNinjaSpeed();
-		Point3D ninjaLoc= gameModel.getNinjaLoc();
-		
-		double deltaX= Math.sin(direction) * speed * scale;
-		double deltaZ= -Math.cos(direction) * speed * scale;
-		
-		Point3D newLoc= new Point3D(ninjaLoc.x + deltaX, ninjaLoc.y, ninjaLoc.z + deltaZ);
-		
-		gameModel.setNinjaLoc(newLoc);
+//	public void moveCamera(){
+//		double scale= .25;
+//		double dX= cameraDelta[0];
+//		double dY= cameraDelta[1];
+//		
+//		cameraAngle+= dX;
+//		lookFrom[1]+= dY;
+//		cameraDistance+= dY * scale;
+//	}
+	
+// -----------------Camera getters -----------------------------
+	public double getCamDistance(){
+		return cameraDistance;
 	}
 	
-	public void moveCamera(){
-		double scale= .25;
-		double dX= cameraDelta[0];
-		double dY= cameraDelta[1];
-		
-		cameraAngle+= dX;
-		lookFrom[1]+= dY;
-		cameraDistance+= dY * scale;
+	public float getCamHeight(){
+		return lookFrom[1];
 	}
-	
-//	private double[][] convTo2D(double[] array){
-//		int N= 4;
-//		double[][] matrix= new double [N][N];
-//		
-//		for (int i = 0; i < (N * N); i++){
-//			matrix[i%N][i/N]= array[i];
-//		}
-//		return matrix;
-//	}
-//	
-//	private double[] convTo1D(double[][] matrix){
-//		int N= 4;
-//		double[] array= new double [N*N];
-//		
-//		for (int i = 0; i < (N * N); i++){
-//			array[i]= matrix[i%N][i/N];
-//		}
-//		return array;
-//	}
-//	
-//	// multiply 2 4x4 matrices together. result is AB
-//	public double[][] matrixMult(double[][] A, double[][] B){
-//		int N=4;
-//		double[][] C= new double[N][N];
-//		for (int i = 0; i < N; i++)
-//			for (int j = 0; j < N; j++)
-//				for (int k = 0; k < N; k++)
-//				     C[i][j] += A[i][k] * B[k][j];
-//			
-//		return C;
-//	}
-//	
-//	// multiply two vectors together (as Point3Ds)
-//	public Point3D multVectors(Point3D a, Point3D b){
-//		Point3D product= new Point3D(0, 0, 0);
-//		
-//		product.x = a.x * b.x;
-//		product.y = a.y * b.y;
-//		product.z = a.z * b.z;
-//		
-//		return product;
-//	}
-//	
-//	// scale a vector (as a Point3D) by a double
-//	public Point3D multVectors(double a, Point3D b){
-//		Point3D product= new Point3D(0, 0, 0);
-//			
-//		product.x = a * b.x;
-//		product.y = a * b.y;
-//		product.z = a * b.z;
-//			
-//		return product;
-//	}
-//	
-//	//add two vectors together (as Point3Ds)
-//	public Point3D addVectors(Point3D a, Point3D b){
-//		Point3D sum= new Point3D(0, 0, 0);
-//		
-//		sum.x= a.x + b.x;
-//		sum.y= a.y + b.y;
-//		sum.z= a.z + b.z;
-//		
-//		return sum;
-//	}
-//	
-//	//add two vectors together (as Point3Ds)
-//	public Point3D subtractVectors(Point3D a, Point3D b){
-//		Point3D diff= new Point3D(0, 0, 0);
-//			
-//		diff.x= a.x - b.x;
-//		diff.y= a.y - b.y;
-//		diff.z= a.z - b.z;
-//			
-//		return diff;
-//	}
 	
 	public double getCamAngle(){
 		return cameraAngle;
 	}
 	
+	public double[] getCamDelta(){
+		return cameraDelta;
+	}
+	
+// -----------------Camera setters ------------------------------------
+	public void setCamDistance(double distance){
+		cameraDistance= distance;
+	}
+	
 	public void setCamHeight(float height){
 		lookFrom[1]= height;
+	}
+	
+	public void setCamAngle(double angle){
+		cameraAngle= angle;
 	}
 	
 	public void setCamRotRate(double rate){
@@ -325,6 +236,7 @@ public class View extends GLCanvas implements GLEventListener{
 	public void setCamDelta(double[] delta){
 		cameraDelta= delta;
 	}
+// --------------------------------------------------------------------
 	
 	private void say(String message){
 		System.out.println(message);

@@ -15,7 +15,8 @@ public class XboxAdapter extends XboxControllerAdapter{
 	View view;
 	GameModel gameModel;
 	
-	Double rightStickDir= 0.0;
+	double rightStickDir= 0;
+	double rightStickMag= 0;
 	
 	public XboxAdapter(Controller controller){
 		this.controller= controller;
@@ -40,17 +41,12 @@ public class XboxAdapter extends XboxControllerAdapter{
 	
 	public void rightThumbDirection(double direction){
 		rightStickDir= Math.toRadians(direction);
+		updateCamera();
 	}
 	
 	public void rightThumbMagnitude(double magnitude){
-		double scale= .25;
-		
-		double dHoriz= -Math.sin(rightStickDir) * magnitude * scale;
-		double dVert= Math.cos(rightStickDir) * magnitude * scale;
-		
-		double[] delta= {dHoriz, dVert};
-		
-		view.setCamDelta(delta);
+		rightStickMag= magnitude;
+		updateCamera();
 	}
 	
 	public void leftShoulder(boolean pressed){
@@ -61,4 +57,14 @@ public class XboxAdapter extends XboxControllerAdapter{
 		else controller.view.resetting= false;
 	}
 
+	private void updateCamera(){
+		double scale= .2;
+		
+		double dHoriz= -Math.sin(rightStickDir) * rightStickMag * scale;
+		double dVert= Math.cos(rightStickDir) * rightStickMag * scale;
+		
+		double[] delta= {dHoriz, dVert};
+		
+		view.setCamDelta(delta);
+	}
 }
