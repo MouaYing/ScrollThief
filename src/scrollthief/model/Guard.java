@@ -1,25 +1,26 @@
 /**
- * This class is meant to represent a guard, and hold information like its field of vision and blind spots
- * This class may be unnecessary if we calculate all of the guard information every frame and don't really 
- * need to store it.
+ * This class is meant to represent a guard, and calculate information like its field of vision and
+ * blind spots
+ * 
  */
 
 package scrollthief.model;
 
 public class Guard extends Character{
+	double sightRange= 10; // needs tuning
 
 	public Guard(GameModel gameModel, Model model){
 		super(gameModel, model);
 	}
 	
 	public boolean isNear(){
-		float threshold= 10; // This needs to be tuned
+		
 		Point3D loc= model.getLoc();
 		Point3D ninjaLoc= gameModel.getNinjaLoc();
 		
 		double distance= ninjaLoc.minus(loc).length();
 		
-		if (distance < threshold)
+		if (distance < sightRange)
 			return true;
 		
 		return false;
@@ -36,7 +37,7 @@ public class Guard extends Character{
 		
 		// find the smallest difference between the angles
 		double angDif = (angToNinja - guardAngle);
-		angDif =   gameModel.floorMod((angDif + Math.PI),(2 * Math.PI)) - Math.PI; 
+		angDif = gameModel.floorMod((angDif + Math.PI),(2 * Math.PI)) - Math.PI; 
 		//say("Angle difference is: "+angDif);
 		
 		// check if this angle difference is small enough that the ninja would be in guard's FOV
@@ -47,10 +48,19 @@ public class Guard extends Character{
 	}
 	
 	public boolean canSeeNinja(){
-		// TODO implement this. Until then, guards have x-ray vision
 		Point3D guardLoc= getLoc();
 		Point3D ninjaLoc= gameModel.getNinjaLoc();
-		Point3D dirToNinja= ninjaLoc.minus(guardLoc); // probably need to normalize
+		Obstacle[] obstacles= gameModel.getObstacles();
+		// Point3D dirToNinja= ninjaLoc.minus(guardLoc); // probably need to normalize
+		
+		for (int i= 0; i < obstacles.length; i++){
+			Obstacle obs= obstacles[i];
+			if ((obs.getLoc().minus(guardLoc)).length() > sightRange)
+				continue;
+			
+			if (obs.boxHit(guardLoc, ninjaLoc)) // see if the line between guard and ninja crosses hitbox
+				return false;
+		}
 		
 		return true;
 	}

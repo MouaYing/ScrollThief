@@ -1,5 +1,7 @@
 package scrollthief.model;
 
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -15,16 +17,18 @@ import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
 public class GameModel {
 	public boolean initializing= true;
 	Guard[] guards;
+	Obstacle[] obstacles;
 	Model[] models;
 	OBJ[] objs;
 	Texture[] textures;
 	Character ninja;
 	
 	public GameModel(){
-		models= new Model[3];
-		objs= new OBJ[3];
+		models= new Model[4];
+		objs= new OBJ[4];
 		textures= new Texture[2];
 		guards= new Guard[1];
+		obstacles= new Obstacle[1];
 	}
 	
 	private void loadOBJs(){
@@ -33,6 +37,7 @@ public class GameModel {
 		//objs[1]= new OBJ("obj/ninja.obj");
 		objs[1]= new OBJ("obj/ninja_tri.obj");
 		objs[2]= new OBJ("obj/guard.obj");
+		objs[3]= new OBJ("obj/car.obj"); // standing in for an obstacle for now
 	}
 	
 	private void loadTextures(GL2 gl){
@@ -65,9 +70,9 @@ public class GameModel {
 		models[0]= new Model(objs[0], 0, new Point3D(0, 0, 0), zero, 1); // lot model
 // ---------------Character models ---------------------------------------------------------------------
 		models[1]= new Model(objs[1], 1, new Point3D(0, 0, -4), new double[]{0,Math.PI,0}, .075); // ninja model
-		models[2]= new Model(objs[2], 1, new Point3D(0, 0, 2), new double[]{0,-Math.PI/2,0}, .25); // a guard model
+		models[2]= new Model(objs[1], 1, new Point3D(0, 0, 2), new double[]{0,-Math.PI,0}, .075); // a guard model
 // ---------------Obstacle models ----------------------------------------------------------------------
-		// TODO add obstacle models
+		models[3]= new Model(objs[3], 1, new Point3D(0, 0, -1), new double[]{0,Math.PI,0}, 1); 
 	}
 	
 	private void createCharacters(){
@@ -76,18 +81,27 @@ public class GameModel {
 		guards[0]= new Guard(this, models[2]);
 	}
 	
+	private void createObstacles(){
+		say("Creating obstacles...");
+		obstacles[0]= new Obstacle(models[3], true, .6, .4);
+	}
+	
 	public void init(GL2 gl){
 		loadOBJs();
 		loadTextures(gl);
 		createModels();
 		createCharacters();
-		//TODO create obstacles
-		say("--Game model loaded--\n");
+		createObstacles();
+		say("--Game model loaded--\n\nStarting game. Good luck!\n");
 		initializing= false;
 	}
 	
 	public Guard[] getGuards(){
 		return guards;
+	}
+	
+	public Obstacle[] getObstacles(){
+		return obstacles;
 	}
 	
 	public Character getNinja(){
@@ -130,6 +144,59 @@ public class GameModel {
 	
 	public double floorMod(double a, double n){
 		return a - Math.floor(a/n) * n;
+	}
+	
+	public static Point2D[][] boxToWorld(Model model, Point2D[][] oldBox){
+		Point2D[] points= new Point2D[4];
+		points[0]= oldBox[0][0];
+		points[1]= oldBox[1][0];
+		points[2]= oldBox[2][0];
+		points[3]= oldBox[3][0];
+		
+		return boxToWorld(model, points);
+	}
+	
+	public static Point2D[][] boxToWorld(Model model, Point2D[] points){
+		double angle= model.getAngle();
+		Point2D center= model.getLoc().to2D();
+		//Point2D.Double[] points= new Point2D.Double[4];
+		
+		Point2D.Double newP1= new Point2D.Double();
+		Point2D.Double newP2= new Point2D.Double();
+		Point2D.Double newP3= new Point2D.Double();
+		Point2D.Double newP4= new Point2D.Double();
+		
+		// construct obj to world transformation matrix
+		AffineTransform objToWorld= 
+				new AffineTransform(Math.cos(angle), Math.sin(angle), 
+						-Math.sin(angle), Math.cos(angle), center.getX(), center.getY());
+		
+		// transform each point
+		objToWorld.transform(points[0], newP1);
+		objToWorld.transform(points[1], newP2);
+		objToWorld.transform(points[2], newP3);
+		objToWorld.transform(points[3], newP4);
+		
+		return createHitBox(newP1, newP2, newP3, newP4);
+	}
+	
+	// creates the list of hitbox edges that correspond to the given 4 points
+	public static Point2D[][] createHitBox(Point2D p1, Point2D p2, Point2D p3, Point2D p4){
+		Point2D[][] hitBox= new Point2D[4][2];
+		
+		hitBox[0][0]= p1;
+		hitBox[0][1]= p2;
+		
+		hitBox[1][0]= p2;
+		hitBox[1][1]= p3;
+		
+		hitBox[2][0]= p3;
+		hitBox[2][1]= p4;
+		
+		hitBox[3][0]= p4;
+		hitBox[3][1]= p1;
+		
+		return hitBox;
 	}
 	
 	private void say(String message){

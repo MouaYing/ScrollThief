@@ -16,10 +16,10 @@ import scrollthief.model.GameModel;
 import scrollthief.view.View;
 
 public class ScrollThief {
-	static FPSAnimator anim;
+	//static FPSAnimator anim;
 	
 	public static void main(String[] args) {
-		//int FPS= 60;
+		int FPS= 60;
 		Timer timer = new Timer();
 		
 		JFrame window= new JFrame("Scroll Thief");
@@ -37,7 +37,7 @@ public class ScrollThief {
 		window.setVisible(true);
 		
 		//anim.start();
-		timer.scheduleAtFixedRate(controller, 3000, 1000/60); 
+		timer.scheduleAtFixedRate(controller, 3000, 1000/FPS); 
 		
 		//controller.xbc.release();
 	}

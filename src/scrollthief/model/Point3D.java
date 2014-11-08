@@ -1,5 +1,7 @@
 package scrollthief.model;
 
+import java.awt.geom.Point2D;
+
 public class Point3D 
 {
     public double x;
@@ -34,6 +36,10 @@ public class Point3D
     public String toString()
     {
         return "X: "+x+", Y: "+y+", Z:"+z;
+    }
+    
+    public Point2D to2D(){
+    	return new Point2D.Double(z, x);
     }
 
     void Normalize() 
