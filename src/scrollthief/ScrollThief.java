@@ -7,10 +7,6 @@ import java.util.Timer;
 
 import javax.swing.JFrame;
 
-
-
-import com.jogamp.opengl.util.FPSAnimator;
-
 import scrollthief.controller.Controller;
 import scrollthief.model.GameModel;
 import scrollthief.view.View;

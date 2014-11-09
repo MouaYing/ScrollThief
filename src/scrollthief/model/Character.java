@@ -1,5 +1,7 @@
 package scrollthief.model;
 
+import java.awt.geom.Point2D;
+
 /**
  * @author Jon "Neo" Pimentel
  * 
@@ -11,13 +13,17 @@ package scrollthief.model;
 public class Character {
 	Model model;
 	GameModel gameModel;
+	Point2D[][] hitBox;
 	double speed= 0;
 
-	public Character(GameModel gameModel, Model model){
+	public Character(GameModel gameModel, Model model, double boxWidth, double boxLength){
 		this.gameModel= gameModel;
 		this.model= model;
+		Point2D[] boxPoints= GameModel.findPoints(boxWidth, boxLength);
+		hitBox= GameModel.createHitBox(boxPoints);
 	}
 	
+	//--------------- getters -----------------------------------------------------
 	public Model getModel(){
 		return model;
 	}
@@ -34,6 +40,11 @@ public class Character {
 		return model.getLoc();
 	}
 	
+	public Point2D[][] getHitBox(){
+		return hitBox;
+	}
+	
+	//--------------- setters -----------------------------------------------------
 	public void setAngle(double newAngle){
 		double[] newRot= model.getRot();
 		newRot[1]= newAngle;

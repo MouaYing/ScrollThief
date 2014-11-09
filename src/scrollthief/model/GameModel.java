@@ -72,18 +72,19 @@ public class GameModel {
 		models[1]= new Model(objs[1], 1, new Point3D(0, 0, -4), new double[]{0,Math.PI,0}, .075); // ninja model
 		models[2]= new Model(objs[1], 1, new Point3D(0, 0, 2), new double[]{0,-Math.PI,0}, .075); // a guard model
 // ---------------Obstacle models ----------------------------------------------------------------------
-		models[3]= new Model(objs[3], 1, new Point3D(0, 0, -1), new double[]{0,Math.PI,0}, 1); 
+		models[3]= new Model(objs[3], 1, new Point3D(0, 0, -1), new double[]{0,Math.PI/2,0}, 1); 
 	}
 	
 	private void createCharacters(){
 		say("Creating characters...");
-		ninja= new Character(this, models[1]);
-		guards[0]= new Guard(this, models[2]);
+		ninja= new Character(this, models[1], .2, .4);
+		guards[0]= new Guard(this, models[2], .2, .4);
 	}
 	
 	private void createObstacles(){
 		say("Creating obstacles...");
-		obstacles[0]= new Obstacle(models[3], true, .6, .4);
+//		obstacles[0]= new Obstacle(models[3], true, .6, .4);
+		obstacles[0]= new Obstacle(models[3], true, 2, 2);
 	}
 	
 	public void init(GL2 gl){
@@ -181,6 +182,10 @@ public class GameModel {
 	}
 	
 	// creates the list of hitbox edges that correspond to the given 4 points
+	public static Point2D[][] createHitBox(Point2D[] points){
+		return createHitBox(points[0], points[1], points[2], points[3]);
+	}
+	
 	public static Point2D[][] createHitBox(Point2D p1, Point2D p2, Point2D p3, Point2D p4){
 		Point2D[][] hitBox= new Point2D[4][2];
 		
@@ -197,6 +202,18 @@ public class GameModel {
 		hitBox[3][1]= p1;
 		
 		return hitBox;
+	}
+	
+	public static Point2D[] findPoints(double width, double length){
+		// these are really half the width and height of the box---dividing everything by 2 would be silly
+		Point2D[] points= new Point2D[4];
+		
+		points[0]= new Point2D.Double(-width, length);
+		points[1]= new Point2D.Double(width, length);
+		points[2]= new Point2D.Double(width, -length);
+		points[3]= new Point2D.Double(-width, -length);
+		
+		return points;
 	}
 	
 	private void say(String message){

@@ -9,8 +9,8 @@ package scrollthief.model;
 public class Guard extends Character{
 	double sightRange= 10; // needs tuning
 
-	public Guard(GameModel gameModel, Model model){
-		super(gameModel, model);
+	public Guard(GameModel gameModel, Model model, double boxLength, double boxWidth){
+		super(gameModel, model, boxLength, boxWidth);
 	}
 	
 	public boolean isNear(){
@@ -58,7 +58,7 @@ public class Guard extends Character{
 			if ((obs.getLoc().minus(guardLoc)).length() > sightRange)
 				continue;
 			
-			if (obs.boxHit(guardLoc, ninjaLoc)) // see if the line between guard and ninja crosses hitbox
+			if (obs.boxHit(guardLoc, ninjaLoc) != null) // see if the line between guard and ninja crosses hitbox
 				return false;
 		}
 		

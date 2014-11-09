@@ -1,11 +1,13 @@
 package scrollthief.controller;
 
+import java.awt.geom.Point2D;
 import java.util.TimerTask;
 
 import ch.aplu.xboxcontroller.XboxController;
 import scrollthief.ScrollThief;
 import scrollthief.model.GameModel;
 import scrollthief.model.Guard;
+import scrollthief.model.Obstacle;
 import scrollthief.model.Point3D;
 import scrollthief.model.Character;
 import scrollthief.view.View;
@@ -73,13 +75,49 @@ public class Controller extends TimerTask{
 		double direction= character.getAngle() + Math.PI;
 		double speed= character.getSpeed();
 		Point3D loc= character.getLoc();
+		Obstacle[] obstacles= gameModel.getObstacles();
+		double threshold= 10; // needs tuning, or to be done away with
 		
 		double deltaX= Math.sin(direction) * speed * scale;
 		double deltaZ= -Math.cos(direction) * speed * scale;
 		
 		Point3D newLoc= new Point3D(loc.x + deltaX, loc.y, loc.z + deltaZ);
-		
 		character.setLoc(newLoc);
+		
+		Point2D[][] hitBox= GameModel.boxToWorld(character.getModel(), character.getHitBox());
+		Point2D[] edgePrime= null;
+		
+		for (int i= 0; i < obstacles.length; i++){
+			double dist= loc.minus(obstacles[i].getLoc()).length();
+			
+//			if (dist1 > threshold || dist1 <= dist2) // character not moving toward obstacle
+//				continue;
+			if (dist > threshold) // character too far away to matter
+				continue;
+			
+			Point2D[] edge= obstacles[i].collision(hitBox);
+			
+			if (edge != null){
+				if (edgePrime == null) // this approach to corner cases doesn't work. Try adding deltas?
+					edgePrime= edge;
+				else if (loc.distanceToLine(edge[0], edge[1]) < loc.distanceToLine(edgePrime[0], edgePrime[1])){
+					edgePrime= edge;
+				}else continue;
+				
+				Point3D input= new Point3D(deltaX, 0, deltaZ);
+				Point3D normal= new Point3D(-(edgePrime[1].getX() - edgePrime[0].getX()),0,
+						(edgePrime[1].getY() - edgePrime[0].getY()));
+				normal.Normalize();
+				say("Normal: "+normal.toString());
+				
+				Point3D undesired= normal.mult(input.dot(normal));
+				Point3D delta= input.minus(undesired); 
+				
+				character.setLoc(new Point3D(loc.x + delta.x, loc.y, loc.z + delta.z));
+			}
+		}
+		
+		
 	}
 	
 	public void moveCamera(){
