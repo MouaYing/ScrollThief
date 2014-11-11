@@ -73,16 +73,22 @@ public class Controller extends TimerTask{
 	
 	public void moveCharacter(Character character){
 		float scale= .25f;
+		float gravity= .01f; // tune this
 		double direction= character.getAngle() + Math.PI;
 		double speed= character.getSpeed();
 		Point3D loc= character.getLoc();
 		Obstacle[] obstacles= gameModel.getObstacles();
 		double threshold= 10; // needs tuning, or to be done away with
+		double obsHeight= .4; // tune this
 		
 		double deltaX= Math.sin(direction) * speed * scale;
 		double deltaZ= -Math.cos(direction) * speed * scale;
 		
-		Point3D newLoc= new Point3D(loc.x + deltaX, loc.y, loc.z + deltaZ);
+		character.setDeltaY((loc.y > 0 || character.getDeltaY() > 0) ? (character.getDeltaY() - gravity) : 0);
+		double newY= (loc.y + character.getDeltaY());
+		if (newY <= 0) newY = 0;
+		
+		Point3D newLoc= new Point3D(loc.x + deltaX, newY, loc.z + deltaZ);
 		//character.setLoc(newLoc);
 		
 		Point2D[][] hitBox= GameModel.boxToWorld(character.getModel(), character.getHitBox());
@@ -133,7 +139,16 @@ public class Controller extends TimerTask{
 			
 		}
 		if (edgePrime == null) character.setLoc(newLoc);
-		
+		else{
+			Point3D charLoc= character.getLoc();
+			
+			if (charLoc.y <= 0 || charLoc.y >= obsHeight)
+				character.setDeltaY(0);
+			else
+				character.setDeltaY( character.getDeltaY() - gravity );
+			
+			charLoc.y += character.getDeltaY();
+		}
 	}
 	
 	public void moveCamera(){

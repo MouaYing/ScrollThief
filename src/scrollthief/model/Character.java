@@ -15,6 +15,7 @@ public class Character {
 	GameModel gameModel;
 	Point2D[][] hitBox;
 	double speed= 0;
+	double deltaY= 0;
 
 	public Character(GameModel gameModel, Model model, double boxWidth, double boxLength){
 		this.gameModel= gameModel;
@@ -44,6 +45,10 @@ public class Character {
 		return hitBox;
 	}
 	
+	public double getDeltaY(){
+		return deltaY;
+	}
+	
 	//--------------- setters -----------------------------------------------------
 	public void setAngle(double newAngle){
 		double[] newRot= model.getRot();
@@ -57,6 +62,10 @@ public class Character {
 	
 	public void setLoc(Point3D newPoint){
 		model.setLoc(newPoint);
+	}
+	
+	public void setDeltaY(double newDelta){
+		deltaY= newDelta;
 	}
 	
 }

@@ -56,6 +56,13 @@ public class XboxAdapter extends XboxControllerAdapter{
 		}
 		else controller.view.resetting= false;
 	}
+	
+	public void buttonA(boolean pressed){
+		if (pressed){
+			gameModel.getNinja().setDeltaY(.2);
+			say("Jump!");
+		}
+	}
 
 	private void updateCamera(){
 		double scale= .2;
@@ -66,5 +73,9 @@ public class XboxAdapter extends XboxControllerAdapter{
 		double[] delta= {dHoriz, dVert};
 		
 		view.setCamDelta(delta);
+	}
+	
+	private void say(String message){
+		System.out.println(message);
 	}
 }
