@@ -1,6 +1,7 @@
 package scrollthief.model;
 
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 
 public class Obstacle {
 	Model model;
@@ -15,38 +16,35 @@ public class Obstacle {
 	}
 	
 //	public boolean collision(Point2D[][] box){
-	public Point2D[] collision(Point2D[][] box){
-		Point2D[] edge = null;
+	public ArrayList<Point2D[]> collision(Point2D[][] box){
+		ArrayList<Point2D[]> edges = new ArrayList<Point2D[]>();
 		for (int i= 0; i < 4; i++){
-			edge= boxHit(box[i][0], box[i][1]);
-			if (edge != null)
-				return edge;
-//			if (boxHit(box[i][0], box[i][1]))
-//				return true;		
+			boxHit(box[i][0], box[i][1], edges) ;
+			
 		}
-//		return false;
-		return edge;
+
+		return edges;
 	}
 	
 	// calculate if the given line hits this obstacle
-	public Point2D[] boxHit(Point3D p1, Point3D p2){
-		return boxHit(p1.to2D(), p2.to2D());
+	public ArrayList<Point2D[]> boxHit(Point3D p1, Point3D p2){
+		ArrayList<Point2D[]> edges= new ArrayList<Point2D[]>();
+		return boxHit(p1.to2D(), p2.to2D(), edges);
 	}
 //	public boolean boxHit(Point3D p1, Point3D p2){
 //		return boxHit(p1.to2D(), p2.to2D());
 //	}
 	
-	public Point2D[] boxHit(Point2D p1, Point2D p2){
+	public ArrayList<Point2D[]> boxHit(Point2D p1, Point2D p2, ArrayList<Point2D[]> edges){
 		// I found a way to test for intersection using only -, *, &&, and comparisons. Much faster.
-		Point2D[] edge = null;
 		for (int i= 0; i < 4; i++){ // test each edge for an intersection with the line
 			Point2D p3= hitBox[i][0];
 			Point2D p4= hitBox[i][1];
 			
 			if ( (CCW(p1, p3, p4) != CCW(p2, p3, p4)) && (CCW(p1, p2, p3) != CCW(p1, p2, p4)) )
-				edge= new Point2D[] {p3, p4};
+				edges.add( new Point2D[] {p3, p4});
 		}
-		return edge;
+		return edges;
 	}
 	
 //	public boolean boxHit(Point2D p1, Point2D p2){

@@ -59,9 +59,9 @@ public class Point3D
     	double length_sqd = (Math.pow(end.getX() - start.getX(), 2) + Math.pow(start.getY() - end.getY(), 2));
     		        
     	double t = ((z - start.getX()) * (end.getX() - start.getX()) + (x - start.getY()) * (end.getY() - start.getY())) / length_sqd;
-    	if (t < 0) return distanceToPoint(start);
-    	if (t > 1) return distanceToPoint(end);
-    	// if (t < 0 || t > 1) return 9001;
+//    	if (t < 0) return distanceToPoint(start);
+//    	if (t > 1) return distanceToPoint(end);
+    	if (t < 0 || t > 1) return 9001;
     		        
     	return distanceToPoint(new Point2D.Double(start.getX() + t * (end.getX() - start.getX()),
     			start.getY() + t * (end.getY() - start.getY())) );

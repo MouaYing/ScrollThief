@@ -1,6 +1,7 @@
 package scrollthief.controller;
 
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.TimerTask;
 
 import ch.aplu.xboxcontroller.XboxController;
@@ -82,41 +83,56 @@ public class Controller extends TimerTask{
 		double deltaZ= -Math.cos(direction) * speed * scale;
 		
 		Point3D newLoc= new Point3D(loc.x + deltaX, loc.y, loc.z + deltaZ);
-		character.setLoc(newLoc);
+		//character.setLoc(newLoc);
 		
 		Point2D[][] hitBox= GameModel.boxToWorld(character.getModel(), character.getHitBox());
 		Point2D[] edgePrime= null;
+		Point3D delta= new Point3D(0,0,0);
 		
 		for (int i= 0; i < obstacles.length; i++){
 			double dist= loc.minus(obstacles[i].getLoc()).length();
+			double dist2= newLoc.minus(obstacles[i].getLoc()).length();
 			
-//			if (dist1 > threshold || dist1 <= dist2) // character not moving toward obstacle
-//				continue;
-			if (dist > threshold) // character too far away to matter
+			if (dist > threshold || dist <= dist2) // character too far or not moving toward obstacle
 				continue;
+//			if (dist > threshold) // character too far away to matter
+//				continue;
 			
-			Point2D[] edge= obstacles[i].collision(hitBox);
+			ArrayList<Point2D[]> edges= obstacles[i].collision(hitBox);
 			
-			if (edge != null){
-				if (edgePrime == null) // this approach to corner cases doesn't work. Try adding deltas?
-					edgePrime= edge;
-				else if (loc.distanceToLine(edge[0], edge[1]) < loc.distanceToLine(edgePrime[0], edgePrime[1])){
-					edgePrime= edge;
-				}else continue;
+			if (!edges.isEmpty()){
+				say("Number of collisions: "+edges.size());
+				for (int j=0; j < edges.size(); j++){
+					Point2D[] edge= edges.get(j);
+					
+					if (edgePrime == null) 
+						edgePrime= edge;
+					else if (loc.distanceToLine(edge[0], edge[1]) < loc.distanceToLine(edgePrime[0], edgePrime[1])){
+						edgePrime= edge;
+					}else continue;
 				
-				Point3D input= new Point3D(deltaX, 0, deltaZ);
-				Point3D normal= new Point3D(-(edgePrime[1].getX() - edgePrime[0].getX()),0,
-						(edgePrime[1].getY() - edgePrime[0].getY()));
-				normal.Normalize();
-				say("Normal: "+normal.toString());
+					say("Distance to edgePrime: "+loc.distanceToLine(edgePrime[0], edgePrime[1]));
+					
+					Point3D input= new Point3D(deltaX, 0, deltaZ);
+					Point3D normal= new Point3D(-(edgePrime[0].getX() - edgePrime[1].getX()),0,
+							(edgePrime[0].getY() - edgePrime[1].getY()));
+					normal.Normalize();
+					say("Normal: "+normal.toString());
+					
+					Point3D undesired= normal.mult(input.dot(normal));
+					Point3D desired= input.minus(undesired); 
+					
+//					delta.x += desired.x;
+//					delta.z += desired.z;
+					delta = desired;
+					
+					character.setLoc(new Point3D(loc.x + delta.x, loc.y, loc.z + delta.z));
+				}
 				
-				Point3D undesired= normal.mult(input.dot(normal));
-				Point3D delta= input.minus(undesired); 
-				
-				character.setLoc(new Point3D(loc.x + delta.x, loc.y, loc.z + delta.z));
 			}
+			
 		}
-		
+		if (edgePrime == null) character.setLoc(newLoc);
 		
 	}
 	
