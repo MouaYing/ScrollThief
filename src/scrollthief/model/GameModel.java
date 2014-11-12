@@ -69,10 +69,10 @@ public class GameModel {
 // ---------------Environment model/s ------------------------------------------------------------------
 		models[0]= new Model(objs[0], 0, new Point3D(0, 0, 0), zero, 1); // lot model
 // ---------------Character models ---------------------------------------------------------------------
-		models[1]= new Model(objs[1], 1, new Point3D(0, 0, -4), new double[]{0,Math.PI,0}, .075); // ninja model
+		models[1]= new Model(objs[1], 1, new Point3D(0, 0, -5), new double[]{0,Math.PI,0}, .075); // ninja model
 		models[2]= new Model(objs[1], 1, new Point3D(0, 0, 2), new double[]{0,-Math.PI,0}, .075); // a guard model
 // ---------------Obstacle models ----------------------------------------------------------------------
-		models[3]= new Model(objs[3], 1, new Point3D(0, 0, -1), new double[]{0,Math.PI/2,0}, 1); 
+		models[3]= new Model(objs[3], 1, new Point3D(0, 0, -3), new double[]{0,Math.PI/2,0}, 3); // a car for now
 	}
 	
 	private void createCharacters(){
@@ -84,7 +84,7 @@ public class GameModel {
 	private void createObstacles(){
 		say("Creating obstacles...");
 //		obstacles[0]= new Obstacle(models[3], true, .6, .4);
-		obstacles[0]= new Obstacle(models[3], true, 2, 2);
+		obstacles[0]= new Obstacle(models[3], true, 2.2, 1.2);
 	}
 	
 	public void init(GL2 gl){
@@ -130,17 +130,18 @@ public class GameModel {
 	}
 	
 	public void setNinjaAngle(double newAngle){
-		double[] ninjaRot= models[1].getRot();
-		ninjaRot[1]= newAngle;
-		models[1].setRot(ninjaRot);
+		if (ninja != null)
+			ninja.setAngle(newAngle);
 	}
 	
 	public void setNinjaSpeed(double newSpeed){
-		ninja.setSpeed(newSpeed);
+		if (ninja != null)
+			ninja.setSpeed(newSpeed);
 	}
 	
 	public void setNinjaLoc(Point3D newPoint){
-		ninja.setLoc(newPoint);
+		if (ninja != null)
+			ninja.setLoc(newPoint);
 	}
 	
 	public double floorMod(double a, double n){

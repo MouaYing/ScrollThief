@@ -55,10 +55,10 @@ public class Guard extends Character{
 		
 		for (int i= 0; i < obstacles.length; i++){
 			Obstacle obs= obstacles[i];
-			if ((obs.getLoc().minus(guardLoc)).length() > sightRange)
+			if ((obs.getLoc().minus(guardLoc)).length() > sightRange || obs.isLow)
 				continue;
 			
-			if (obs.boxHit(guardLoc, ninjaLoc) != null) // see if the line between guard and ninja crosses hitbox
+			if (!obs.boxHit(guardLoc, ninjaLoc).isEmpty()) // see if the line between guard and ninja crosses hitbox
 				return false;
 		}
 		

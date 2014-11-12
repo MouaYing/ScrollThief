@@ -79,7 +79,8 @@ public class Controller extends TimerTask{
 		Point3D loc= character.getLoc();
 		Obstacle[] obstacles= gameModel.getObstacles();
 		double threshold= 10; // needs tuning, or to be done away with
-		double obsHeight= .4; // tune this
+		
+		Obstacle inBox= null; // the obstacle the ninja is standing on
 		
 		double deltaX= Math.sin(direction) * speed * scale;
 		double deltaZ= -Math.cos(direction) * speed * scale;
@@ -96,18 +97,26 @@ public class Controller extends TimerTask{
 		Point3D delta= new Point3D(0,0,0);
 		
 		for (int i= 0; i < obstacles.length; i++){
+			double obsHeight= (obstacles[i].isLow) ? 1 : 10; // tune this
 			double dist= loc.minus(obstacles[i].getLoc()).length();
-			double dist2= newLoc.minus(obstacles[i].getLoc()).length();
+//			double dist2= newLoc.minus(obstacles[i].getLoc()).length();
 			
-			if (dist > threshold || dist <= dist2) // character too far or not moving toward obstacle
+			if (dist > threshold)
 				continue;
-//			if (dist > threshold) // character too far away to matter
+			
+			if (obstacles[i].isInBox(loc))
+				inBox= obstacles[i];
+			
+//			if (dist <= dist2 || loc.y >= obsHeight) // character too far or not moving toward obstacle
 //				continue;
+			
+			if (loc.y >= obsHeight) // character too far or not moving toward obstacle
+				continue;
 			
 			ArrayList<Point2D[]> edges= obstacles[i].collision(hitBox);
 			
 			if (!edges.isEmpty()){
-				say("Number of collisions: "+edges.size());
+				//say("Number of collisions: "+edges.size());
 				for (int j=0; j < edges.size(); j++){
 					Point2D[] edge= edges.get(j);
 					
@@ -117,13 +126,19 @@ public class Controller extends TimerTask{
 						edgePrime= edge;
 					}else continue;
 				
-					say("Distance to edgePrime: "+loc.distanceToLine(edgePrime[0], edgePrime[1]));
+					if (loc.distanceToLine(edgePrime[0], edgePrime[1]) < 
+							newLoc.distanceToLine(edgePrime[0], edgePrime[1])){
+						character.setLoc(newLoc);
+						continue;
+					}
+					
+					//say("Distance to edgePrime: "+loc.distanceToLine(edgePrime[0], edgePrime[1]));
 					
 					Point3D input= new Point3D(deltaX, 0, deltaZ);
 					Point3D normal= new Point3D(-(edgePrime[0].getX() - edgePrime[1].getX()),0,
 							(edgePrime[0].getY() - edgePrime[1].getY()));
 					normal.Normalize();
-					say("Normal: "+normal.toString());
+					//say("Normal: "+normal.toString());
 					
 					Point3D undesired= normal.mult(input.dot(normal));
 					Point3D desired= input.minus(undesired); 
@@ -138,17 +153,30 @@ public class Controller extends TimerTask{
 			}
 			
 		}
-		if (edgePrime == null) character.setLoc(newLoc);
+		if (edgePrime == null){ // No collision detected
+			if (inBox != null){ // ninja is inside hitbox (probably on top of obstacle)
+				//say("On the roof!");
+				double obsHeight= (inBox.isLow) ? 1 : 10;
+
+				if (newLoc.y < obsHeight){
+					if (character.getDeltaY() < 0) character.setDeltaY(0);
+					newLoc.y= obsHeight;
+				}
+			}
+			character.setLoc(newLoc);
+		}
 		else{
 			Point3D charLoc= character.getLoc();
 			
-			if (charLoc.y <= 0 || charLoc.y >= obsHeight)
+			if (charLoc.y <= 0 && character.getDeltaY() < 0)
 				character.setDeltaY(0);
-			else
-				character.setDeltaY( character.getDeltaY() - gravity );
 			
 			charLoc.y += character.getDeltaY();
+			
+			if (charLoc.y < 0)
+				charLoc.y= 0;
 		}
+		//say("deltaY: "+character.getDeltaY());
 	}
 	
 	public void moveCamera(){
