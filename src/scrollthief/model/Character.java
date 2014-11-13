@@ -1,10 +1,12 @@
 package scrollthief.model;
 
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 
 /**
  * @author Jon "Neo" Pimentel
- * 
+ */
+/**
  * This class is meant to hold any additional game information not pertaining to the 3d model.
  * e.g. health, what frame of their animation they are in. It is also meant to calculate things like
  * the character's hitbox. 
@@ -14,14 +16,146 @@ public class Character {
 	Model model;
 	GameModel gameModel;
 	Point2D[][] hitBox;
-	double speed= 0;
-	double deltaY= 0;
+	double speed, deltaY, angleDelta, goalAngle= 0;
+	double turnRate= .3;
+	public boolean isJumping= false;
+//	double deltaY= 0;
+//	double angleDelta= 0;
+//	double goalAngle, turnRate= 0;
 
 	public Character(GameModel gameModel, Model model, double boxWidth, double boxLength){
 		this.gameModel= gameModel;
 		this.model= model;
 		Point2D[] boxPoints= GameModel.findPoints(boxWidth, boxLength);
 		hitBox= GameModel.createHitBox(boxPoints);
+	}
+	
+	public void move(){
+		adjustAngle();
+		//say("new angle: "+getAngle());
+		
+		float scale= .25f;
+		float gravity= .01f; // tune this
+		double direction= getAngle() + Math.PI;
+		double speed= getSpeed();
+		Point3D loc= getLoc();
+		Obstacle[] obstacles= gameModel.getObstacles();
+		double threshold= 10; // needs tuning, or to be done away with
+		
+		Obstacle inBox= null; // the obstacle the ninja is standing on
+		
+		double deltaX= Math.sin(direction) * speed * scale;
+		double deltaZ= -Math.cos(direction) * speed * scale;
+		
+		setDeltaY((loc.y > 0 || getDeltaY() > 0) ? (getDeltaY() - gravity) : 0);
+		double newY= (loc.y + getDeltaY());
+		if (newY <= 0){
+			newY = 0;
+			isJumping= false;
+		}
+		
+		Point3D newLoc= new Point3D(loc.x + deltaX, newY, loc.z + deltaZ);
+		//character.setLoc(newLoc);
+		
+		Point2D[][] hitBox= GameModel.boxToWorld(getModel(), getHitBox());
+		Point2D[] edgePrime= null;
+		Point3D delta= new Point3D(0,0,0);
+		
+		for (int i= 0; i < obstacles.length; i++){
+			double obsHeight= obstacles[i].getHeight(); // tune this
+			double dist= loc.minus(obstacles[i].getLoc()).length();
+//			double dist2= newLoc.minus(obstacles[i].getLoc()).length();
+			
+			if (dist > threshold)
+				continue;
+			
+			if (obstacles[i].isInBox(loc))
+				inBox= obstacles[i];
+			
+//			if (dist <= dist2 || loc.y >= obsHeight) // character too far or not moving toward obstacle
+//				continue;
+			
+			if (loc.y >= obsHeight) // character too far or not moving toward obstacle
+				continue;
+			
+			ArrayList<Point2D[]> edges= obstacles[i].collision(hitBox);
+			
+			if (!edges.isEmpty()){
+				//say("Number of collisions: "+edges.size());
+				for (int j=0; j < edges.size(); j++){
+					Point2D[] edge= edges.get(j);
+					
+					if (edgePrime == null) 
+						edgePrime= edge;
+					else if (loc.distanceToLine(edge[0], edge[1]) < loc.distanceToLine(edgePrime[0], edgePrime[1])){
+						edgePrime= edge;
+					}else continue;
+				
+					if (loc.distanceToLine(edgePrime[0], edgePrime[1]) < 
+							newLoc.distanceToLine(edgePrime[0], edgePrime[1])){
+						setLoc(newLoc);
+						continue;
+					}
+					
+					//say("Distance to edgePrime: "+loc.distanceToLine(edgePrime[0], edgePrime[1]));
+					
+					Point3D input= new Point3D(deltaX, 0, deltaZ);
+					Point3D normal= new Point3D(-(edgePrime[0].getX() - edgePrime[1].getX()),0,
+							(edgePrime[0].getY() - edgePrime[1].getY()));
+					normal.Normalize();
+					//say("Normal: "+normal.toString());
+					
+					Point3D undesired= normal.mult(input.dot(normal));
+					Point3D desired= input.minus(undesired); 
+					
+//					delta.x += desired.x;
+//					delta.z += desired.z;
+					delta = desired;
+					
+					setLoc(new Point3D(loc.x + delta.x, loc.y, loc.z + delta.z));
+				}
+				
+			}
+			
+		}
+		if (edgePrime == null){ // No collision detected
+			if (inBox != null){ // ninja is inside hitbox (probably on top of obstacle)
+				//say("On the roof!");
+				double obsHeight= inBox.getHeight();
+
+				if (newLoc.y < obsHeight){
+					if (getDeltaY() < 0) setDeltaY(0);
+					newLoc.y= obsHeight;
+					isJumping= false;
+				}
+			}
+			setLoc(newLoc);
+		}
+		else{
+			Point3D charLoc= getLoc();
+			
+			if (charLoc.y <= 0 && getDeltaY() < 0){ // just landed
+				setDeltaY(0);
+				isJumping= false;
+			}
+			
+			charLoc.y += getDeltaY();
+			
+			if (charLoc.y < 0)
+				charLoc.y= 0;
+		}
+		//say("deltaY: "+character.getDeltaY());
+	}
+	
+	private void adjustAngle(){
+		double angleDif= GameModel.normalizeAngle(goalAngle - getAngle());
+		if (angleDif > -turnRate && angleDif < turnRate){
+			angleDelta= 0;
+			setAngle(goalAngle);
+		}
+		else angleDelta= (angleDif > 0) ? turnRate : -turnRate;
+		
+		setAngle(getAngle() + angleDelta);
 	}
 	
 	//--------------- getters -----------------------------------------------------
@@ -49,11 +183,18 @@ public class Character {
 		return deltaY;
 	}
 	
+	public double getTurnRate(){
+		return turnRate; 
+	}
 	//--------------- setters -----------------------------------------------------
 	public void setAngle(double newAngle){
 		double[] newRot= model.getRot();
 		newRot[1]= newAngle;
 		model.setRot(newRot);
+	}
+	
+	public void setGoalAngle(double angle){
+		goalAngle= angle;
 	}
 	
 	public void setSpeed(double newSpeed){
@@ -66,6 +207,11 @@ public class Character {
 	
 	public void setDeltaY(double newDelta){
 		deltaY= newDelta;
+	}
+	
+	@SuppressWarnings("unused")
+	private void say(String message){
+		System.out.println(message);
 	}
 	
 }

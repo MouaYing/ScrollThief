@@ -7,10 +7,11 @@
 package scrollthief.model;
 
 public class Guard extends Character{
-	double sightRange= 10; // needs tuning
+	double sightRange= 15; // needs tuning
 
 	public Guard(GameModel gameModel, Model model, double boxLength, double boxWidth){
 		super(gameModel, model, boxLength, boxWidth);
+		turnRate= .05;
 	}
 	
 	public boolean isNear(){
@@ -65,6 +66,7 @@ public class Guard extends Character{
 		return true;
 	}
 	
+	@SuppressWarnings("unused")
 	private void say(String message){
 		System.out.println(message);
 	}

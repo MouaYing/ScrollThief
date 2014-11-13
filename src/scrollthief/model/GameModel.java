@@ -84,7 +84,7 @@ public class GameModel {
 	private void createObstacles(){
 		say("Creating obstacles...");
 //		obstacles[0]= new Obstacle(models[3], true, .6, .4);
-		obstacles[0]= new Obstacle(models[3], true, 2.2, 1.2);
+		obstacles[0]= new Obstacle(models[3], true, 2.2, 1.2, 1);
 	}
 	
 	public void init(GL2 gl){
@@ -131,7 +131,8 @@ public class GameModel {
 	
 	public void setNinjaAngle(double newAngle){
 		if (ninja != null)
-			ninja.setAngle(newAngle);
+//			ninja.setAngle(newAngle);
+			ninja.setGoalAngle(newAngle);
 	}
 	
 	public void setNinjaSpeed(double newSpeed){
@@ -215,6 +216,17 @@ public class GameModel {
 		points[3]= new Point2D.Double(-width, -length);
 		
 		return points;
+	}
+	
+	// makes any angle be between +/= pi
+	public static double normalizeAngle(double angle){
+		angle -= 2 * Math.PI * (int) (angle / (2 * Math.PI));
+		if (angle <= -Math.PI)
+			angle += 2 * Math.PI;
+		else if (angle > Math.PI)
+			angle -= 2 * Math.PI;
+		
+		return angle;
 	}
 	
 	private void say(String message){

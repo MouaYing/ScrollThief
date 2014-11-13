@@ -8,15 +8,16 @@ public class Obstacle {
 	Model model;
 	public boolean isLow;
 	Point2D[][] hitBox;
-	double boxWidth, boxLength;
+	double boxWidth, boxLength, height;
 	
-	public Obstacle(Model model, boolean isLow, double boxLength, double boxWidth){
+	public Obstacle(Model model, boolean isLow, double boxLength, double boxWidth, double height){
 		this.model= model;
 		this.isLow= isLow;
 		Point2D[] boxPoints= GameModel.findPoints(boxLength, boxWidth);
 		hitBox= GameModel.boxToWorld(model, boxPoints);
 		this.boxWidth= boxWidth;
 		this.boxLength= boxLength;
+		this.height= height;
 	}
 	
 //	public boolean collision(Point2D[][] box){
@@ -88,6 +89,10 @@ public class Obstacle {
 		return objPoint;
 	}
 	
+	public double getHeight(){
+		return height;
+	}
+	
 	public Point3D getLoc(){
 		return model.getLoc();
 	}
@@ -97,6 +102,7 @@ public class Obstacle {
 		return  dim;
 	}
 	
+	@SuppressWarnings("unused")
 	private void say(String message){
 		System.out.println(message);
 	}

@@ -57,10 +57,28 @@ public class XboxAdapter extends XboxControllerAdapter{
 		else controller.view.resetting= false;
 	}
 	
+	int leftVibrate= 0;
+	int rightVibrate= 0;
+	
+	public void leftTrigger(double value) // this is  for testing.
+    {
+      leftVibrate = (int)(65535 * value * value);
+      controller.vibrate(leftVibrate, rightVibrate);
+    }
+    public void rightTrigger(double value)
+    {
+      rightVibrate = (int)(65535 * value * value);
+      controller.vibrate(leftVibrate, rightVibrate);
+    }
+	
 	public void buttonA(boolean pressed){
 		if (pressed){
-			gameModel.getNinja().setDeltaY(.2);
-			say("Jump!");
+			scrollthief.model.Character ninja= gameModel.getNinja();
+			if (ninja != null && !ninja.isJumping){
+				ninja.isJumping= true;
+				gameModel.getNinja().setDeltaY(.2);
+				say("Jump!");
+			}
 		}
 	}
 

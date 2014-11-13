@@ -24,8 +24,8 @@ public class View extends GLCanvas implements GLEventListener{
 	float FAR= 3000f;
 	public boolean resetting= false;
 	float[] lookFrom= {2,4,5};
-	float[] lookAt= {0,2,0};
-	double cameraDistance= 10;
+	float[] lookAt= {0,2.5f,0};
+	double cameraDistance= 6;
 	double cameraAngle= 0;
 	double cameraRotRate= 0;
 	double[] cameraDelta= {0,0};
@@ -156,17 +156,18 @@ public class View extends GLCanvas implements GLEventListener{
 	}
 	
 	private void world2camera(GL2 gl){
+		float scale= .6f; 
 		double dZ= 0;
 		double dX= 0;
 		double ninjaAngle = gameModel.getNinjaAngle();
 		Point3D ninjaLoc= gameModel.getNinjaLoc();
-		lookAt= new float[]{(float) ninjaLoc.x, (float) ninjaLoc.y + 2, (float) ninjaLoc.z};
+		lookAt= new float[]{(float) ninjaLoc.x, (float) ninjaLoc.y * scale + 2, (float) ninjaLoc.z};
 		
 		if (resetting){ // center the camera behind the ninja
 //			dZ= Math.cos(ninjaAngle + Math.PI + cameraAngle); 
 //			dX= Math.sin(ninjaAngle + Math.PI + cameraAngle);
 			cameraAngle= ninjaAngle;
-			cameraDistance= 7;
+			cameraDistance= 6;
 			lookFrom[1]= 4;
 		}
 		

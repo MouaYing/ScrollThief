@@ -47,14 +47,16 @@ public class Controller extends TimerTask{
 		moveCamera();
 		
 // ------------ Update Ninja -------------------------------------------------------------------------
-		moveCharacter(ninja);
+		//moveCharacter(ninja);
+		ninja.move();
 		
 // ------------ Update Guards ------------------------------------------------------------------------		
 		
 		for (int i= 0; i < guards.length; i++){
 			Guard guard= guards[i];
 			
-			moveCharacter(guard);
+			//moveCharacter(guard);
+			guard.move();
 			
 			// check to see if the guard can see the ninja
 			if (guard.isNear()){ // first check if he is even in range
@@ -97,7 +99,7 @@ public class Controller extends TimerTask{
 		Point3D delta= new Point3D(0,0,0);
 		
 		for (int i= 0; i < obstacles.length; i++){
-			double obsHeight= (obstacles[i].isLow) ? 1 : 10; // tune this
+			double obsHeight= obstacles[i].getHeight(); // tune this
 			double dist= loc.minus(obstacles[i].getLoc()).length();
 //			double dist2= newLoc.minus(obstacles[i].getLoc()).length();
 			
@@ -156,7 +158,7 @@ public class Controller extends TimerTask{
 		if (edgePrime == null){ // No collision detected
 			if (inBox != null){ // ninja is inside hitbox (probably on top of obstacle)
 				//say("On the roof!");
-				double obsHeight= (inBox.isLow) ? 1 : 10;
+				double obsHeight= inBox.getHeight();
 
 				if (newLoc.y < obsHeight){
 					if (character.getDeltaY() < 0) character.setDeltaY(0);
@@ -186,9 +188,13 @@ public class Controller extends TimerTask{
 		double dY= dCam[1];
 		
 		view.setCamAngle(view.getCamAngle() + dX * scale);
-		if (view.getCamHeight() + dY > 0 && view.getCamDistance() >= 7)
+		if (view.getCamHeight() + dY > 0 && view.getCamDistance() >= 5)
 			view.setCamHeight((float) (view.getCamHeight() + dY));
 		view.setCamDistance(view.getCamDistance() + dY * scale);
+	}
+	
+	public void vibrate(int leftVibrate, int rightVibrate){
+		xbc.vibrate(leftVibrate, rightVibrate);
 	}
 	
 	private void say(String message){
