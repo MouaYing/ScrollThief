@@ -23,10 +23,10 @@ public class Character {
 //	double angleDelta= 0;
 //	double goalAngle, turnRate= 0;
 
-	public Character(GameModel gameModel, Model model, double boxWidth, double boxLength){
+	public Character(GameModel gameModel, Model model, double boxLength, double boxWidth){
 		this.gameModel= gameModel;
 		this.model= model;
-		Point2D[] boxPoints= GameModel.findPoints(boxWidth, boxLength);
+		Point2D[] boxPoints= GameModel.findPoints(boxLength, boxWidth);
 		hitBox= GameModel.createHitBox(boxPoints);
 	}
 	
@@ -40,7 +40,10 @@ public class Character {
 		double speed= getSpeed();
 		Point3D loc= getLoc();
 		Obstacle[] obstacles= gameModel.getObstacles();
+		Character[] guards= gameModel.getGuards();
 		double threshold= 10; // needs tuning, or to be done away with
+		double threshold2= 1;
+		ArrayList<Point2D[]> edges= new ArrayList<Point2D[]>();
 		
 		Obstacle inBox= null; // the obstacle the ninja is standing on
 		
@@ -61,6 +64,16 @@ public class Character {
 		Point2D[] edgePrime= null;
 		Point3D delta= new Point3D(0,0,0);
 		
+		for (int i= 0; i < guards.length; i++){
+			double dist= loc.minus(guards[i].getLoc()).length();
+			
+			if (dist > threshold2)
+				continue;
+			
+			Point2D[][] guardBox= GameModel.boxToWorld(guards[i].getModel(), guards[i].getHitBox());
+			edges= gameModel.collision(hitBox, guardBox, edges);
+		}
+		
 		for (int i= 0; i < obstacles.length; i++){
 			double obsHeight= obstacles[i].getHeight(); // tune this
 			double dist= loc.minus(obstacles[i].getLoc()).length();
@@ -78,7 +91,7 @@ public class Character {
 			if (loc.y >= obsHeight) // character too far or not moving toward obstacle
 				continue;
 			
-			ArrayList<Point2D[]> edges= obstacles[i].collision(hitBox);
+			edges= gameModel.collision(hitBox, obstacles[i].hitBox, edges);
 			
 			if (!edges.isEmpty()){
 				//say("Number of collisions: "+edges.size());

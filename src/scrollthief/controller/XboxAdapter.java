@@ -77,7 +77,7 @@ public class XboxAdapter extends XboxControllerAdapter{
 			if (ninja != null && !ninja.isJumping){
 				ninja.isJumping= true;
 				gameModel.getNinja().setDeltaY(.2);
-				say("Jump!");
+				// say("Jump!");
 			}
 		}
 	}
@@ -93,6 +93,7 @@ public class XboxAdapter extends XboxControllerAdapter{
 		view.setCamDelta(delta);
 	}
 	
+	@SuppressWarnings("unused")
 	private void say(String message){
 		System.out.println(message);
 	}

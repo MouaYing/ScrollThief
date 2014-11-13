@@ -5,6 +5,7 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.media.opengl.GL2;
@@ -216,6 +217,42 @@ public class GameModel {
 		points[3]= new Point2D.Double(-width, -length);
 		
 		return points;
+	}
+	
+	public ArrayList<Point2D[]> collision(Point2D[][] box1, Point2D[][] box2, ArrayList<Point2D[]> edges){
+		for (int i= 0; i < 4; i++){
+			boxHit(box1[i][0], box1[i][1], box2, edges) ;
+		}
+
+		return edges;
+	}
+	
+	// calculate if the given line hits this obstacle
+	public ArrayList<Point2D[]> boxHit(Point3D p1, Point3D p2, Point2D[][] box){
+		ArrayList<Point2D[]> edges= new ArrayList<Point2D[]>();
+		return boxHit(p1.to2D(), p2.to2D(), box, edges);
+	}
+//	public boolean boxHit(Point3D p1, Point3D p2){
+//		return boxHit(p1.to2D(), p2.to2D());
+//	}
+	
+	public ArrayList<Point2D[]> boxHit(Point2D p1, Point2D p2, Point2D[][] hitBox, ArrayList<Point2D[]> edges){
+		// I found a way to test for intersection using only -, *, &&, and comparisons. Much faster.
+		for (int i= 0; i < 4; i++){ // test each edge for an intersection with the line
+			Point2D p3= hitBox[i][0];
+			Point2D p4= hitBox[i][1];
+			
+			if ( (CCW(p1, p3, p4) != CCW(p2, p3, p4)) && (CCW(p1, p2, p3) != CCW(p1, p2, p4)) )
+				edges.add( new Point2D[] {p3, p4});
+		}
+		return edges;
+	}
+	
+	private boolean CCW(Point2D p1, Point2D p2, Point2D p3) {
+		double a = p1.getX(); double b = p1.getY(); 
+		double c = p2.getX(); double d = p2.getY();
+		double e = p3.getX(); double f = p3.getY();
+		return (f - b) * (c - a) > (d - b) * (e - a);
 	}
 	
 	// makes any angle be between +/= pi

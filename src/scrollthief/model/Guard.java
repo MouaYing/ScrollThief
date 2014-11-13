@@ -59,7 +59,8 @@ public class Guard extends Character{
 			if ((obs.getLoc().minus(guardLoc)).length() > sightRange || obs.isLow)
 				continue;
 			
-			if (!obs.boxHit(guardLoc, ninjaLoc).isEmpty()) // see if the line between guard and ninja crosses hitbox
+//			if (!obs.boxHit(guardLoc, ninjaLoc).isEmpty()) // see if the line between guard and ninja crosses hitbox
+			if (!gameModel.boxHit(guardLoc, ninjaLoc, obs.hitBox).isEmpty()) // see if the line between guard and ninja crosses hitbox	
 				return false;
 		}
 		
