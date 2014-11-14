@@ -19,9 +19,7 @@ public class Character {
 	double speed, deltaY, angleDelta, goalAngle= 0;
 	double turnRate= .3;
 	public boolean isJumping= false;
-//	double deltaY= 0;
-//	double angleDelta= 0;
-//	double goalAngle, turnRate= 0;
+	public boolean isMoving= false;
 
 	public Character(GameModel gameModel, Model model, double boxLength, double boxWidth){
 		this.gameModel= gameModel;

@@ -43,7 +43,6 @@ public class Controller extends TimerTask{
 		moveCamera();
 		
 // ------------ Update Ninja -------------------------------------------------------------------------
-		//moveCharacter(ninja);
 		ninja.move();
 		
 // ------------ Update Guards ------------------------------------------------------------------------		
@@ -51,7 +50,7 @@ public class Controller extends TimerTask{
 		for (int i= 0; i < guards.length; i++){
 			Guard guard= guards[i];
 			
-			//moveCharacter(guard);
+			guard.navigate();
 			guard.move();
 			
 			// check to see if the guard can see the ninja

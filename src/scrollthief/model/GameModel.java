@@ -76,10 +76,21 @@ public class GameModel {
 		models[3]= new Model(objs[3], 1, new Point3D(0, 0, -3), new double[]{0,Math.PI/2,0}, 3); // a car for now
 	}
 	
+	// create the waypoints the guards will use for their patrol orders
+	private Point3D[][] createOrders(){
+		Point3D[][] orders= new Point3D[][]{
+/*guard 0*/	new Point3D[]{new Point3D(4,0,3),new Point3D(-4,0,3),new Point3D(-4,0,-5),new Point3D(4,0,-5)}, 
+		};
+		
+		return orders;
+	}
+	
 	private void createCharacters(){
 		say("Creating characters...");
 		ninja= new Character(this, models[1], .2, .4);
-		guards[0]= new Guard(this, models[2], .2, .4);
+		
+		Point3D[][] orders= createOrders();
+		guards[0]= new Guard(this, models[2], .2, .4, orders[0]);
 	}
 	
 	private void createObstacles(){
