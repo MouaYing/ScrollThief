@@ -42,7 +42,7 @@ public class Guard extends Character{
 	}
 	
 	public boolean isFacingNinja(){
-		float fov= 1.4f; // (radians) needs tuning
+		float fov= 1.3f; // (radians) needs tuning
 		Point3D loc= getLoc();
 		Point3D ninjaLoc= gameModel.getNinjaLoc();
 		double guardAngle= -getAngle();
@@ -143,7 +143,7 @@ public class Guard extends Character{
 		if (!waiting){
 			//waiting= true;
 			speed= 0;
-			pause(1,2.5);
+			pause(1, 2);
 			return;
 		}
 		

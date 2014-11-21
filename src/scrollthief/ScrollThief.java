@@ -22,7 +22,7 @@ public class ScrollThief {
 		
 		GameModel gameModel= new GameModel();
 		View view= new View(gameModel);
-		Controller controller = new Controller(view, gameModel);
+		Controller controller = new Controller(window, view, gameModel);
 		
 		//anim= new FPSAnimator(view, FPS);
 		

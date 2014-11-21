@@ -16,7 +16,7 @@ public class View extends GLCanvas implements GLEventListener{
 	private static final long serialVersionUID = 1L;
 	GameModel gameModel;
 	GL2 gl;
-	boolean init= true;
+	public boolean init= true;
 	int windowSize= 710;
 	float FOV= 45f;
 	float ASPECT = 1f;
@@ -35,6 +35,7 @@ public class View extends GLCanvas implements GLEventListener{
 		this.gameModel= model;
 		setPreferredSize(new java.awt.Dimension(windowSize, windowSize));
         addGLEventListener(this);
+        init= false;
 		say("--View loaded--\n");
 	}
 	
@@ -71,7 +72,7 @@ public class View extends GLCanvas implements GLEventListener{
 	@Override
 	public void display(GLAutoDrawable drawable) {
 		if (init){
-			init= false;
+			// init= false;
 			return;
 		}
 		GL2 gl = drawable.getGL().getGL2();
@@ -147,11 +148,13 @@ public class View extends GLCanvas implements GLEventListener{
 	private void obj2world(GL2 gl, Model model){
 		double[] rot= model.getRot();
 		double angle= Math.toDegrees(rot[1]);
+		double angleX= Math.toDegrees(rot[0]);
 		double scale= model.getScale();
 		Point3D loc= model.getLoc();
 	
 		gl.glTranslated(loc.x, loc.y, loc.z);
 		gl.glRotated(angle, 0, -1, 0);
+		gl.glRotated(angleX, 1, 0, 0);
 		gl.glScaled(scale, scale, scale);
 	}
 	

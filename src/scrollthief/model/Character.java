@@ -60,6 +60,7 @@ public class Character {
 		
 		Point2D[][] hitBox= GameModel.boxToWorld(getModel(), getHitBox());
 		Point2D[] edgePrime= null;
+		Point2D[] edge2= null;
 		Point3D delta= new Point3D(0,0,0);
 		
 		for (int i= 0; i < guards.length; i++){
@@ -86,21 +87,24 @@ public class Character {
 //			if (dist <= dist2 || loc.y >= obsHeight) // character too far or not moving toward obstacle
 //				continue;
 			
-			if (loc.y >= obsHeight) // character too far or not moving toward obstacle
+			if (loc.y >= obsHeight)
 				continue;
 			
 			edges= gameModel.collision(hitBox, obstacles[i].hitBox, edges);
 			
 			if (!edges.isEmpty()){
-				//say("Number of collisions: "+edges.size());
-				for (int j=0; j < edges.size(); j++){
+				say("Number of collisions: "+edges.size());
+				for (int j= 0; j < edges.size(); j++){
 					Point2D[] edge= edges.get(j);
 					
 					if (edgePrime == null) 
 						edgePrime= edge;
+					else if (edgePrime[0].equals(edge[0]) && edgePrime[1].equals(edge[1]))
+						continue;
 					else if (loc.distanceToLine(edge[0], edge[1]) < loc.distanceToLine(edgePrime[0], edgePrime[1])){
+						edge2= edgePrime;
 						edgePrime= edge;
-					}else continue;
+					}else edge2= edge;
 				
 					if (loc.distanceToLine(edgePrime[0], edgePrime[1]) < 
 							newLoc.distanceToLine(edgePrime[0], edgePrime[1])){
@@ -118,6 +122,14 @@ public class Character {
 					
 					Point3D undesired= normal.mult(input.dot(normal));
 					Point3D desired= input.minus(undesired); 
+					
+					if (edge2 != null && edges.size() > 2){
+						normal= new Point3D(-(edge2[0].getX() - edge2[1].getX()),0,
+								(edge2[0].getY() - edge2[1].getY()));
+						normal.Normalize();
+						undesired= normal.mult(input.dot(normal));
+						desired= desired.minus(undesired);
+					}
 					
 //					delta.x += desired.x;
 //					delta.z += desired.z;

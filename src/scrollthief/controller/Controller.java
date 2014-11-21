@@ -2,6 +2,8 @@ package scrollthief.controller;
 
 import java.util.TimerTask;
 
+import javax.swing.JFrame;
+
 import ch.aplu.xboxcontroller.XboxController;
 import scrollthief.ScrollThief;
 import scrollthief.model.GameModel;
@@ -10,17 +12,21 @@ import scrollthief.model.Character;
 import scrollthief.view.View;
 
 public class Controller extends TimerTask{
+	JFrame window;
 	View view;
 	GameModel gameModel;
 	public XboxController xbc;
+	String dllPath;
+	boolean devmode= true;
 	
-	public Controller(View view, GameModel gameModel){
+	public Controller(JFrame window, View view, GameModel gameModel){
 		say("Loading main controller...");
 		
+		this.window= window;
 		this.view= view;
 		this.gameModel= gameModel;
 		
-		String dllPath= System.getProperty("user.dir") + 
+		dllPath= System.getProperty("user.dir") + 
 				(ScrollThief.is64bit() ? "\\xboxcontroller64.dll" : "\\xboxcontroller.dll");
 		xbc= new XboxController(dllPath, 1, 50, 50);
         xbc.setLeftThumbDeadZone(.2);
@@ -58,7 +64,8 @@ public class Controller extends TimerTask{
 				if (guard.isFacingNinja()){ // next check if the ninja is within guard's field of view
 					if (guard.canSeeNinja()){ // now check for line of sight
 						say("You have been spotted! Game Over!");
-						// TODO trigger Game Over
+						if (!devmode)
+							gameOver();
 					}
 				}
 			}
@@ -82,6 +89,29 @@ public class Controller extends TimerTask{
 	
 	public void vibrate(int leftVibrate, int rightVibrate){
 		xbc.vibrate(leftVibrate, rightVibrate);
+	}
+	
+	public void reset(){
+		say("Resetting game...");
+		
+		window.getContentPane().remove(view);
+		gameModel= new GameModel(); 
+		view= new View(gameModel);
+		
+		window.getContentPane().add(view);
+		window.pack();
+		//window.setLocation(100, 10);
+		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		window.setVisible(true);
+		
+		xbc= new XboxController(dllPath, 1, 50, 50);
+        xbc.setLeftThumbDeadZone(.2);
+        xbc.setRightThumbDeadZone(.2);
+        xbc.addXboxControllerListener(new XboxAdapter(this));
+	}
+	
+	private void gameOver(){
+		// TODO implement this
 	}
 	
 	private void say(String message){

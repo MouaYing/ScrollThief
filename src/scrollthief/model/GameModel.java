@@ -17,6 +17,9 @@ import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
 
 public class GameModel {
 	public boolean initializing= true;
+	final int numObs= 5;
+	final int numGuards= 1;
+	int numModels;
 	Guard[] guards;
 	Obstacle[] obstacles;
 	Model[] models;
@@ -25,20 +28,21 @@ public class GameModel {
 	Character ninja;
 	
 	public GameModel(){
-		models= new Model[4];
-		objs= new OBJ[4];
+		numModels= numGuards + numObs + 2;
+		models= new Model[numModels];
+		objs= new OBJ[5];
 		textures= new Texture[2];
-		guards= new Guard[1];
-		obstacles= new Obstacle[1];
+		guards= new Guard[numGuards];
+		obstacles= new Obstacle[numObs];
 	}
 	
 	private void loadOBJs(){
 		say("Loading OBJ files...");
 		objs[0]= new OBJ("obj/ParkingLot.obj");
-		//objs[1]= new OBJ("obj/ninja.obj");
 		objs[1]= new OBJ("obj/ninja_tri.obj");
-		objs[2]= new OBJ("obj/guard.obj");
-		objs[3]= new OBJ("obj/car.obj"); // standing in for an obstacle for now
+		objs[2]= new OBJ("obj/Guards");
+		objs[3]= new OBJ("obj/Scroll");
+		objs[4]= new OBJ("obj/Wall");
 	}
 	
 	private void loadTextures(GL2 gl){
@@ -71,9 +75,13 @@ public class GameModel {
 		models[0]= new Model(objs[0], 0, new Point3D(0, 0, 0), zero, 1); // lot model
 // ---------------Character models ---------------------------------------------------------------------
 		models[1]= new Model(objs[1], 1, new Point3D(0, 0, -5), new double[]{0,Math.PI,0}, .075); // ninja model
-		models[2]= new Model(objs[1], 1, new Point3D(0, 0, 2), new double[]{0,-Math.PI,0}, .075); // a guard model
+		models[2]= new Model(objs[2], 1, new Point3D(-5, 0, -3), new double[]{0,-Math.PI,0}, .6); // a guard model
 // ---------------Obstacle models ----------------------------------------------------------------------
-		models[3]= new Model(objs[3], 1, new Point3D(0, 0, -3), new double[]{0,Math.PI/2,0}, 3); // a car for now
+		models[3]= new Model(objs[3], 1, new Point3D(0, .25, -8), new double[]{Math.PI/2,0,0}, .25); //scroll
+		models[4]= new Model(objs[4], 1, new Point3D(-4.2, 0, 3), new double[]{0,0,0}, 1); // wall
+		models[5]= new Model(objs[4], 1, new Point3D(4.2, 0, 3), new double[]{0,0,0}, 1); // wall
+		models[6]= new Model(objs[4], 1, new Point3D(-8.4, 0, -1.2), new double[]{0,Math.PI/2,0}, 1); // wall
+		models[7]= new Model(objs[4], 1, new Point3D(8.4, 0, -1.2), new double[]{0,Math.PI/2,0}, 1); // wall
 	}
 	
 	// create the waypoints the guards will use for their patrol orders
@@ -87,16 +95,20 @@ public class GameModel {
 	
 	private void createCharacters(){
 		say("Creating characters...");
-		ninja= new Character(this, models[1], .2, .4);
+		ninja= new Character(this, models[1], .35, .5);
 		
 		Point3D[][] orders= createOrders();
-		guards[0]= new Guard(this, models[2], .2, .4, orders[0]);
+		guards[0]= new Guard(this, models[2], .35, .5, orders[0]);
 	}
 	
 	private void createObstacles(){
 		say("Creating obstacles...");
 //		obstacles[0]= new Obstacle(models[3], true, .6, .4);
-		obstacles[0]= new Obstacle(models[3], true, 2.2, 1.2, 1);
+		obstacles[0]= new Obstacle(models[3], true, .75, .2, .2);
+		obstacles[1]= new Obstacle(models[4], false, .35, 4.2, 10);
+		obstacles[2]= new Obstacle(models[5], false, .35, 4.2, 10);
+		obstacles[3]= new Obstacle(models[6], false, .35, 4.2, 10);
+		obstacles[4]= new Obstacle(models[7], false, .35, 4.2, 10);
 	}
 	
 	public void init(GL2 gl){

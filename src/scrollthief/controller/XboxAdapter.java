@@ -81,6 +81,11 @@ public class XboxAdapter extends XboxControllerAdapter{
 			}
 		}
 	}
+	
+	public void back(boolean pressed){
+		if (pressed)
+			controller.reset();
+	}
 
 	private void updateCamera(){
 		double scale= .2;
