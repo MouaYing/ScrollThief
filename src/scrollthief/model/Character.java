@@ -40,8 +40,9 @@ public class Character {
 		Obstacle[] obstacles= gameModel.getObstacles();
 		Character[] guards= gameModel.getGuards();
 		double threshold= 10; // needs tuning, or to be done away with
-		double threshold2= 1;
+		double threshold2= 2;
 		ArrayList<Point2D[]> edges= new ArrayList<Point2D[]>();
+		// say("Location: "+ loc.toString());
 		
 		Obstacle inBox= null; // the obstacle the ninja is standing on
 		
@@ -63,15 +64,15 @@ public class Character {
 		Point2D[] edge2= null;
 		Point3D delta= new Point3D(0,0,0);
 		
-		for (int i= 0; i < guards.length; i++){
-			double dist= loc.minus(guards[i].getLoc()).length();
-			
-			if (dist > threshold2)
-				continue;
-			
-			Point2D[][] guardBox= GameModel.boxToWorld(guards[i].getModel(), guards[i].getHitBox());
-			edges= gameModel.collision(hitBox, guardBox, edges);
-		}
+//		for (int i= 0; i < guards.length; i++){
+//			double dist= loc.minus(guards[i].getLoc()).length();
+//			
+//			if (dist > threshold2 || guards[i].equals(this))
+//				continue;
+//			
+//			Point2D[][] guardBox= GameModel.boxToWorld(guards[i].getModel(), guards[i].getHitBox());
+//			edges= gameModel.collision(hitBox, guardBox, edges);
+//		}
 		
 		for (int i= 0; i < obstacles.length; i++){
 			double obsHeight= obstacles[i].getHeight(); // tune this
@@ -93,7 +94,7 @@ public class Character {
 			edges= gameModel.collision(hitBox, obstacles[i].hitBox, edges);
 			
 			if (!edges.isEmpty()){
-				say("Number of collisions: "+edges.size());
+				// say("Number of collisions: "+edges.size());
 				for (int j= 0; j < edges.size(); j++){
 					Point2D[] edge= edges.get(j);
 					
@@ -232,7 +233,6 @@ public class Character {
 		deltaY= newDelta;
 	}
 	
-	@SuppressWarnings("unused")
 	private void say(String message){
 		System.out.println(message);
 	}

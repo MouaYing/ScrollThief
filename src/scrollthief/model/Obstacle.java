@@ -12,6 +12,7 @@ public class Obstacle {
 	public Obstacle(Model model, boolean isLow, double boxLength, double boxWidth, double height){
 		this.model= model;
 		this.isLow= isLow;
+		if (model.isLong) boxWidth *= 2;
 		Point2D[] boxPoints= GameModel.findPoints(boxLength, boxWidth);
 		hitBox= GameModel.boxToWorld(model, boxPoints);
 		this.boxWidth= boxWidth;

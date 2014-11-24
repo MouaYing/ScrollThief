@@ -150,12 +150,13 @@ public class View extends GLCanvas implements GLEventListener{
 		double angle= Math.toDegrees(rot[1]);
 		double angleX= Math.toDegrees(rot[0]);
 		double scale= model.getScale();
+		double scaleX= model.isLong ? scale * 2 : scale;
 		Point3D loc= model.getLoc();
 	
 		gl.glTranslated(loc.x, loc.y, loc.z);
 		gl.glRotated(angle, 0, -1, 0);
 		gl.glRotated(angleX, 1, 0, 0);
-		gl.glScaled(scale, scale, scale);
+		gl.glScaled(scaleX, scale, scale);
 	}
 	
 	private void world2camera(GL2 gl){

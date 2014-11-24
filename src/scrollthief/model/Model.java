@@ -11,13 +11,15 @@ public class Model {
 	private Point3D location;
 	double[] rotation;
 	double scale;
+	public boolean isLong;
 	
-	public Model(OBJ obj, int textureIndex, Point3D location, double[] rotation, double scale){
+	public Model(OBJ obj, int textureIndex, Point3D location, double[] rotation, double scale, boolean isLong){
 		this.obj= obj;
 		this.textureIndex= textureIndex;
 		this.location= location;
 		this.rotation= rotation;
 		this.scale= scale;
+		this.isLong= isLong;
 	}
 	
 	// getters

@@ -50,6 +50,7 @@ public class Controller extends TimerTask{
 		
 // ------------ Update Ninja -------------------------------------------------------------------------
 		ninja.move();
+		say ("Location: " + ninja.getLoc().toString());
 		
 // ------------ Update Guards ------------------------------------------------------------------------		
 		
