@@ -20,6 +20,7 @@ public class Character {
 	double turnRate= .3;
 	public boolean isJumping= false;
 	public boolean isMoving= false;
+	int hp = 3; // each hit will do one damage
 
 	public Character(GameModel gameModel, Model model, double boxLength, double boxWidth){
 		this.gameModel= gameModel;
@@ -36,28 +37,37 @@ public class Character {
 		float gravity= .01f; // tune this
 		double direction= getAngle() + Math.PI;
 		double speed= getSpeed();
+		double deltaX;
+		double deltaZ;
 		Point3D loc= getLoc();
 		Obstacle[] obstacles= gameModel.getObstacles();
 		Character[] guards= gameModel.getGuards();
 		double threshold= 10; // needs tuning, or to be done away with
 		double threshold2= 2;
 		ArrayList<Point2D[]> edges= new ArrayList<Point2D[]>();
+		Obstacle inBox= null; // the obstacle the ninja is standing on
 		// say("Location: "+ loc.toString());
 		
-		Obstacle inBox= null; // the obstacle the ninja is standing on
+		// this is the movement vector for this tick
+		deltaX= Math.sin(direction) * speed * scale;
+		deltaZ= -Math.cos(direction) * speed * scale;
 		
-		double deltaX= Math.sin(direction) * speed * scale;
-		double deltaZ= -Math.cos(direction) * speed * scale;
+		if (this instanceof Boss){
+			Point3D bossDelta= calcDelta(deltaX, deltaZ);
+			deltaX= bossDelta.x;
+			deltaZ= bossDelta.z;
+		}
 		
+		// apply gravity
 		setDeltaY((loc.y > 0 || getDeltaY() > 0) ? (getDeltaY() - gravity) : 0);
 		double newY= (loc.y + getDeltaY());
-		if (newY <= 0){
+		if (newY <= 0){ // on the ground
 			newY = 0;
 			isJumping= false;
 		}
 		
+		// location to move to if there are no collisions
 		Point3D newLoc= new Point3D(loc.x + deltaX, newY, loc.z + deltaZ);
-		//character.setLoc(newLoc);
 		
 		Point2D[][] hitBox= GameModel.boxToWorld(getModel(), getHitBox());
 		Point2D[] edgePrime= null;
@@ -85,7 +95,7 @@ public class Character {
 			if (obstacles[i].isInBox(loc))
 				inBox= obstacles[i];
 			
-//			if (dist <= dist2 || loc.y >= obsHeight) // character too far or not moving toward obstacle
+//			if (dist <= dist2 || loc.y >= obsHeight) // character above or not moving toward obstacle
 //				continue;
 			
 			if (loc.y >= obsHeight)
@@ -143,7 +153,7 @@ public class Character {
 			
 		}
 		if (edgePrime == null){ // No collision detected
-			if (inBox != null){ // ninja is inside hitbox (probably on top of obstacle)
+			if (inBox != null){ // character is inside hitbox (probably on top of obstacle)
 				//say("On the roof!");
 				double obsHeight= inBox.getHeight();
 
@@ -153,12 +163,12 @@ public class Character {
 					isJumping= false;
 				}
 			}
-			setLoc(newLoc);
+			setLoc(newLoc); // actually move the character
 		}
-		else{
+		else{ // Collision detected!
 			Point3D charLoc= getLoc();
 			
-			if (charLoc.y <= 0 && getDeltaY() < 0){ // just landed
+			if (charLoc.y <= 0 && getDeltaY() < 0){ // just landed---don't keep going through the floor
 				setDeltaY(0);
 				isJumping= false;
 			}
@@ -171,6 +181,11 @@ public class Character {
 		//say("deltaY: "+character.getDeltaY());
 	}
 	
+	public Point3D calcDelta(double deltaX, double deltaZ) {
+		// override this
+		return null;
+	}
+
 	private void adjustAngle(){
 		double angleDif= GameModel.normalizeAngle(goalAngle - getAngle());
 		if (angleDif > -turnRate && angleDif < turnRate){
@@ -180,6 +195,10 @@ public class Character {
 		else angleDelta= (angleDif > 0) ? turnRate : -turnRate;
 		
 		setAngle(getAngle() + angleDelta);
+	}
+	
+	public void faceToward(Point3D lookTarget){
+		goalAngle= -Math.atan2(lookTarget.x - getLoc().x, lookTarget.z - getLoc().z);
 	}
 	
 	//--------------- getters -----------------------------------------------------

@@ -29,9 +29,11 @@ public class GameModel {
 	OBJ[] objs;
 	Texture[] textures;
 	Character ninja;
+	Character boss;
+	Obstacle scroll;
 	
 	public GameModel(){
-		numModels= numGuards + numObs + 2;
+		numModels= numGuards + numObs + 3;
 		models= new Model[numModels];
 		objs= new OBJ[7];
 		textures= new Texture[2];
@@ -43,7 +45,7 @@ public class GameModel {
 		say("Loading OBJ files...");
 		objs[0]= new OBJ("obj/ParkingLot.obj");
 		objs[1]= new OBJ("obj/ninja_tri.obj");
-		objs[2]= new OBJ("obj/Guards");
+		objs[2]= new OBJ("obj/NewGuard");
 		objs[3]= new OBJ("obj/Scroll");
 		objs[4]= new OBJ("obj/Table");
 		objs[5]= new OBJ("obj/Wall2");
@@ -79,13 +81,13 @@ public class GameModel {
 		models[0]= new Model(objs[0], 0, new Point3D(0, 0, 0), zero(), 1, false); // lot model
 // ---------------Character models ---------------------------------------------------------------------
 		models[1]= new Model(objs[1], 1, new Point3D(0, 0, -5), zero(), .075, false); // ninja model
-		models[2]= new Model(objs[2], 1, new Point3D(15, 0, 23), zero(), .6, false); // a guard model
-		models[3]= new Model(objs[2], 1, new Point3D(24, 0, 33), zero(), .6, false); // a guard model
-		models[4]= new Model(objs[2], 1, new Point3D(32, 0, 39), zero(), .6, false); // a guard model
-		models[5]= new Model(objs[2], 1, new Point3D(20, 0, 55), zero(), .6, false); // a guard model
-		models[6]= new Model(objs[2], 1, new Point3D(11, 0, 50), zero(), .6, false); // a guard model
+		models[2]= new Model(objs[2], 1, new Point3D(15, 0, 23), zero(), .3, false); // a guard model
+		models[3]= new Model(objs[2], 1, new Point3D(24, 0, 33), zero(), .3, false); // a guard model
+		models[4]= new Model(objs[2], 1, new Point3D(32, 0, 39), zero(), .3, false); // a guard model
+		models[5]= new Model(objs[2], 1, new Point3D(20, 0, 54), zero(), .3, false); // a guard model
+		models[6]= new Model(objs[2], 1, new Point3D(11, 0, 50), zero(), .3, false); // a guard model
 // ---------------Obstacle models ----------------------------------------------------------------------
-		models[7]= new Model(objs[3], 1, new Point3D(0, .25, 83), new double[]{Math.PI/2,Math.PI/2,0}, .25, false); //scroll
+		models[7]= new Model(objs[3], 1, new Point3D(0, .25, 83), new double[]{Math.PI/2,0,0}, .25, false); //scroll
 		// foyer
 		models[8]= new Model(objs[5], 1, new Point3D(-4.2, 0, 4.2), zero(), 1, true); // wall
 		models[9]= new Model(objs[5], 1, new Point3D(7.8, 0, -10.7), zero(), 1, false); // wall
@@ -120,23 +122,25 @@ public class GameModel {
 		models[34]= new Model(objs[5], 1, new Point3D(15.6, 0, 87.2), zero(), 1, false); // wall
 		models[35]= new Model(objs[5], 1, new Point3D(20.2, 0, 82.6), rtAngle(), 1, false); // wall
 		// --- Pillars --- room 1
-		models[36]= new Model(objs[6], 1, new Point3D(10, 0, 11), zero(), 1, false); // pillar
+		models[36]= new Model(objs[6], 1, new Point3D(10, 0, 11), zero(), .9, false); // pillar
 		// room 2 (hard)
-		models[37]= new Model(objs[6], 1, new Point3D(14, 0, 34), zero(), 1, false); // pillar
+		models[37]= new Model(objs[6], 1, new Point3D(14, 0, 34), zero(), .9, false); // pillar
 		// room 3 (hard)
-		models[38]= new Model(objs[6], 1, new Point3D(38, 0, 51), zero(), 1, false); // pillar
-		models[39]= new Model(objs[6], 1, new Point3D(20, 0, 51), zero(), 1, false); // pillar
+		models[38]= new Model(objs[6], 1, new Point3D(38, 0, 51), zero(), .9, false); // pillar
+		models[39]= new Model(objs[6], 1, new Point3D(20, 0, 51), zero(), .9, false); // pillar
 		// Boss Chamber
-		models[40]= new Model(objs[6], 1, new Point3D(5, 0, 67), zero(), 1, false); // pillar
-		models[41]= new Model(objs[6], 1, new Point3D(11, 0, 76), zero(), 1, false); // pillar
-		models[42]= new Model(objs[6], 1, new Point3D(-7, 0, 69), zero(), 1, false); // pillar
-		models[43]= new Model(objs[6], 1, new Point3D(-13, 0, 77), zero(), 1, false); // pillar
+		models[40]= new Model(objs[6], 1, new Point3D(5, 0, 67), zero(), .9, false); // pillar
+		models[41]= new Model(objs[6], 1, new Point3D(11, 0, 76), zero(), .9, false); // pillar
+		models[42]= new Model(objs[6], 1, new Point3D(-7, 0, 69), zero(), .9, false); // pillar
+		models[43]= new Model(objs[6], 1, new Point3D(-13, 0, 77), zero(), .9, false); // pillar
 		// --- Tables --- room 2 (hard)
 		models[44]= new Model(objs[4], 1, new Point3D(20, 0, 40), rtAngle(), .4, false); // table
 		models[45]= new Model(objs[4], 1, new Point3D(28.5, 0, 40), rtAngle(), .4, false); // table
 		models[46]= new Model(objs[4], 1, new Point3D(37, 0, 40), rtAngle(), .4, false); // table
 		// room 3 (hard)
-		models[47]= new Model(objs[4], 1, new Point3D(15.5, 0, 58), rtAngle(), .4, false); // table
+		models[47]= new Model(objs[4], 1, new Point3D(15.5, 0, 58.4), rtAngle(), .4, false); // table
+		// --- Boss model ---
+		models[48]= new Model(objs[2], 1, new Point3D(0, 0, 76), zero(), .66, false); // table
 	}
 	
 	// create the waypoints the guards will use for their patrol orders
@@ -145,7 +149,7 @@ public class GameModel {
 /*guard 0*/	new Point3D[]{new Point3D(6,0,26),new Point3D(16,0,26)}, 
 /*guard 1*/	new Point3D[]{new Point3D(24,0,31),new Point3D(24,0,41)},
 /*guard 2*/	new Point3D[]{new Point3D(32,0,31),new Point3D(32,0,41)},
-/*guard 3*/	new Point3D[]{new Point3D(37,0,55),new Point3D(14,0,55)},
+/*guard 3*/	new Point3D[]{new Point3D(37,0,54),new Point3D(14,0,54)},
 /*guard 4*/	new Point3D[]{new Point3D(11,0,60),new Point3D(11,0,47)},
 		};
 		
@@ -157,16 +161,17 @@ public class GameModel {
 		ninja= new Character(this, models[1], .35, .5);
 		
 		Point3D[][] orders= createOrders();
-//		guards[0]= new Guard(this, models[2], .35, .5, orders[0]);
 		for (int i= 0; i < numGuards; i++){
 			guards[i]= new Guard(this, models[i + 2], .35, .5, orders[i]); 
 		}
+		boss= new Boss(this, models[48], 1.5, 1.5);
 	}
 	
 	private void createObstacles(){
 		say("Creating obstacles...");
 		// scroll
 		obstacles[0]= new Obstacle(models[7], true, .75, .2, .2); 
+		scroll= obstacles[0];
 		// walls
 		for (int i= 1; i < numObs; i++){
 			obstacles[i]= new Obstacle(models[i + 7], false, .35, 4.2, 10); 
@@ -177,7 +182,7 @@ public class GameModel {
 		}
 		// tables
 		for (int i= numWalls+numPillars+1; i < numObs; i++){
-			obstacles[i]= new Obstacle(models[i + 7], true, 2, 2, 1); 
+			obstacles[i]= new Obstacle(models[i + 7], true, 2, 3, .95); 
 		}
 	}
 	
@@ -201,6 +206,14 @@ public class GameModel {
 	
 	public Character getNinja(){
 		return ninja;
+	}
+	
+	public Character getBoss(){
+		return boss;
+	}
+	
+	public Obstacle getScroll(){
+		return scroll;
 	}
 	
 	public Model[] getModels(){

@@ -18,7 +18,7 @@ public class Guard extends Character{
 	Random rand= new Random();
 	boolean isLooking= true;
 	boolean waiting= false;
-	final double topSpeed= .1;
+	final double topSpeed= .15;
 	int waitTime;
 
 	public Guard(GameModel gameModel, Model model, double boxLength, double boxWidth, Point3D[] wayPoints){
@@ -84,7 +84,7 @@ public class Guard extends Character{
 	public void navigate(){ // calculate what the current goal should be
 		double threshold= .1; // tune this
 		double minWait= 120; // minimum ticks before a chance to stop and look
-		double pause= 120; // number of ticks to pause
+		double pause= 60; // number of ticks to pause
 		int stopChance= 25;
 		
 		if (goal == null){
@@ -143,7 +143,7 @@ public class Guard extends Character{
 		if (!waiting){
 			//waiting= true;
 			speed= 0;
-			pause(1, 2);
+			pause(.75, 1.25);
 			return;
 		}
 		
@@ -192,10 +192,6 @@ public class Guard extends Character{
 		if (goalIndex == 0) // end of the array---wrap around
 			return waypoints.length - 1;
 		return goalIndex - 1;
-	}
-	
-	public void faceToward(Point3D lookTarget){
-		goalAngle= -Math.atan2(lookTarget.x - getLoc().x, lookTarget.z - getLoc().z);
 	}
 	
 	@SuppressWarnings("unused")

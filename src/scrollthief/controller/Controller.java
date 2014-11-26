@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 
 import ch.aplu.xboxcontroller.XboxController;
 import scrollthief.ScrollThief;
+import scrollthief.model.Boss;
 import scrollthief.model.GameModel;
 import scrollthief.model.Guard;
 import scrollthief.model.Character;
@@ -45,12 +46,13 @@ public class Controller extends TimerTask{
 		
 		Guard[] guards= gameModel.getGuards();
 		Character ninja= gameModel.getNinja();
+		Boss boss= (Boss) gameModel.getBoss();
 		
 		moveCamera();
 		
 // ------------ Update Ninja -------------------------------------------------------------------------
 		ninja.move();
-		say ("Location: " + ninja.getLoc().toString());
+		// say ("Location: " + ninja.getLoc().toString());
 		
 // ------------ Update Guards ------------------------------------------------------------------------		
 		
@@ -72,6 +74,11 @@ public class Controller extends TimerTask{
 			}
 		}
 		
+// ------------ Update Boss --------------------------------------------------------------------------
+		boss.navigate();
+		boss.move();
+
+// ---------------------------------------------------------------------------------------------------		
 		view.display();
 		
 	}
