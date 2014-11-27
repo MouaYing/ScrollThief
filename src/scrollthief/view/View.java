@@ -1,5 +1,7 @@
 package scrollthief.view;
 
+import java.util.ArrayList;
+
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
@@ -76,7 +78,7 @@ public class View extends GLCanvas implements GLEventListener{
 			return;
 		}
 		GL2 gl = drawable.getGL().getGL2();
-		Model[] models= gameModel.getModels();
+		ArrayList<Model> models= gameModel.getModels();
 		Texture[] textures= gameModel.getTextures();
 		
 		//moveCamera();
@@ -90,9 +92,9 @@ public class View extends GLCanvas implements GLEventListener{
 		gl.glColor3f(1f, 1f, 1f);
 		
 		// draw each model with its texture
-		for (int i= 0; i < models.length; i++){
+		for (int i= 0; i < models.size(); i++){
 			gl.glPushMatrix();
-			Model model= models[i];
+			Model model= models.get(i);
 			
 			// assign texture
 			textures[model.getTxtr()].bind(gl);

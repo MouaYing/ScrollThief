@@ -1,5 +1,6 @@
 package scrollthief.controller;
 
+import java.util.ArrayList;
 import java.util.TimerTask;
 
 import javax.swing.JFrame;
@@ -10,6 +11,7 @@ import scrollthief.model.Boss;
 import scrollthief.model.GameModel;
 import scrollthief.model.Guard;
 import scrollthief.model.Character;
+import scrollthief.model.Projectile;
 import scrollthief.view.View;
 
 public class Controller extends TimerTask{
@@ -52,6 +54,8 @@ public class Controller extends TimerTask{
 		
 // ------------ Update Ninja -------------------------------------------------------------------------
 		ninja.move();
+		if (ninja.getHP() <= 0 && !devmode)
+			gameOver();
 		// say ("Location: " + ninja.getLoc().toString());
 		
 // ------------ Update Guards ------------------------------------------------------------------------		
@@ -75,10 +79,36 @@ public class Controller extends TimerTask{
 		}
 		
 // ------------ Update Boss --------------------------------------------------------------------------
-		boss.navigate();
-		boss.move();
+		boss.update();
 
-// ---------------------------------------------------------------------------------------------------		
+		ArrayList<Projectile> projs= gameModel.getProjectiles();
+		ArrayList<Projectile> collided= new ArrayList<Projectile>();
+		
+		for (int i= 0; i < projs.size(); i++){
+			Projectile proj= projs.get(i);
+			
+			proj.move();
+			
+			if (proj.ninjaCollision()){
+				ninja.takeDamage(1);
+				collided.add(proj);
+				say("You've been hit! Current HP: "+ ninja.getHP());
+				continue;
+			}
+			
+			if (proj.obsCollision()){
+				collided.add(proj);
+			}
+		}
+		
+		for (int j= 0; j < collided.size(); j++){ // destroy all that collided
+			Projectile proj= collided.get(j);
+			
+			gameModel.getModels().remove(proj.getModel());
+			gameModel.getProjectiles().remove(proj);
+		}
+// ---------------------------------------------------------------------------------------------------	
+		
 		view.display();
 		
 	}

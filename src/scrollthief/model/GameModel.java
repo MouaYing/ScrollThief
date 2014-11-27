@@ -25,7 +25,9 @@ public class GameModel {
 	int numModels;
 	Guard[] guards;
 	Obstacle[] obstacles;
-	Model[] models;
+//	Model[] models;
+	ArrayList<Model> models;
+	ArrayList<Projectile> projectiles;
 	OBJ[] objs;
 	Texture[] textures;
 	Character ninja;
@@ -34,11 +36,13 @@ public class GameModel {
 	
 	public GameModel(){
 		numModels= numGuards + numObs + 3;
-		models= new Model[numModels];
+//		models= new Model[numModels];
+		models= new ArrayList<Model>();
 		objs= new OBJ[7];
 		textures= new Texture[2];
 		guards= new Guard[numGuards];
 		obstacles= new Obstacle[numObs];
+		projectiles= new ArrayList<Projectile>();
 	}
 	
 	private void loadOBJs(){
@@ -78,69 +82,70 @@ public class GameModel {
 		say("Creating 3D models...");
 		
 // ---------------Environment model/s ------------------------------------------------------------------
-		models[0]= new Model(objs[0], 0, new Point3D(0, 0, 0), zero(), 1, false); // lot model
+		models.add( new Model(objs[0], 0, new Point3D(0, 0, 0), zero(), 1, false) ); // lot model (0)
 // ---------------Character models ---------------------------------------------------------------------
-		models[1]= new Model(objs[1], 1, new Point3D(0, 0, -5), zero(), .075, false); // ninja model
-		models[2]= new Model(objs[2], 1, new Point3D(15, 0, 23), zero(), .3, false); // a guard model
-		models[3]= new Model(objs[2], 1, new Point3D(24, 0, 33), zero(), .3, false); // a guard model
-		models[4]= new Model(objs[2], 1, new Point3D(32, 0, 39), zero(), .3, false); // a guard model
-		models[5]= new Model(objs[2], 1, new Point3D(20, 0, 54), zero(), .3, false); // a guard model
-		models[6]= new Model(objs[2], 1, new Point3D(11, 0, 50), zero(), .3, false); // a guard model
+		models.add( new Model(objs[1], 1, new Point3D(0, 0, -5), zero(), .075, false) ); // ninja model 1
+		
+		models.add( new Model(objs[2], 1, new Point3D(15, 0, 23), zero(), .3, false) ); // guard model 2
+		models.add( new Model(objs[2], 1, new Point3D(24, 0, 33), zero(), .3, false) ); // guard model 3
+		models.add( new Model(objs[2], 1, new Point3D(32, 0, 39), zero(), .3, false) ); // guard model 4
+		models.add( new Model(objs[2], 1, new Point3D(20, 0, 54), zero(), .3, false) ); // guard model 5
+		models.add( new Model(objs[2], 1, new Point3D(11, 0, 50), zero(), .3, false) ); // guard model 6
 // ---------------Obstacle models ----------------------------------------------------------------------
-		models[7]= new Model(objs[3], 1, new Point3D(0, .25, 83), new double[]{Math.PI/2,0,0}, .25, false); //scroll
+		models.add( new Model(objs[3], 1, new Point3D(0, .25, 83), new double[]{Math.PI/2,0,0}, .25, false)); //scroll
 		// foyer
-		models[8]= new Model(objs[5], 1, new Point3D(-4.2, 0, 4.2), zero(), 1, true); // wall
-		models[9]= new Model(objs[5], 1, new Point3D(7.8, 0, -10.7), zero(), 1, false); // wall
-		models[10]= new Model(objs[5], 1, new Point3D(-12.4, 0, -3.3), rtAngle(), 1, true); // wall
-		models[11]= new Model(objs[5], 1, new Point3D(12.4, 0, -3.3), rtAngle(), 1, true); // wall
-		models[12]= new Model(objs[5], 1, new Point3D(-4.2, 0, -10.7), zero(), 1, true); // wall
+		models.add( new Model(objs[5], 1, new Point3D(-4.2, 0, 4.2), zero(), 1, true)); // wall
+		models.add( new Model(objs[5], 1, new Point3D(7.8, 0, -10.7), zero(), 1, false)); // wall
+		models.add( new Model(objs[5], 1, new Point3D(-12.4, 0, -3.3), rtAngle(), 1, true)); // wall
+		models.add( new Model(objs[5], 1, new Point3D(12.4, 0, -3.3), rtAngle(), 1, true)); // wall
+		models.add( new Model(objs[5], 1, new Point3D(-4.2, 0, -10.7), zero(), 1, true)); // wall
 		// room 1
-		models[13]= new Model(objs[5], 1, new Point3D(20.8, 0, 4.2), zero(), 1, true); // wall
-		models[14]= new Model(objs[5], 1, new Point3D(20.8, 0, 29.2), zero(), 1, true); // wall
-		models[15]= new Model(objs[5], 1, new Point3D(29.2, 0, 12.6), rtAngle(), 1, true); // wall
-		models[16]= new Model(objs[5], 1, new Point3D(29.2, 0, 24.6), rtAngle(), 1, false); // wall
-		models[17]= new Model(objs[5], 1, new Point3D(4, 0, 21), rtAngle(), 1, true); // wall
+		models.add( new Model(objs[5], 1, new Point3D(20.8, 0, 4.2), zero(), 1, true)); // wall
+		models.add( new Model(objs[5], 1, new Point3D(20.8, 0, 29.2), zero(), 1, true)); // wall
+		models.add( new Model(objs[5], 1, new Point3D(29.2, 0, 12.6), rtAngle(), 1, true)); // wall
+		models.add( new Model(objs[5], 1, new Point3D(29.2, 0, 24.6), rtAngle(), 1, false)); // wall
+		models.add( new Model(objs[5], 1, new Point3D(4, 0, 21), rtAngle(), 1, true)); // wall
 		// room 2 (hard)
-		models[18]= new Model(objs[5], 1, new Point3D(4, 0, 37), rtAngle(), 1, true); // wall
-		models[19]= new Model(objs[5], 1, new Point3D(12.2, 0, 45.4), zero(), 1, true); // wall
-		models[20]= new Model(objs[5], 1, new Point3D(28.2, 0, 45.4), zero(), 1, true); // wall
-		models[21]= new Model(objs[5], 1, new Point3D(36.8, 0, 29.2), zero(), 1, true); // wall
-		models[22]= new Model(objs[5], 1, new Point3D(45.2, 0, 37.6), rtAngle(), 1, true); // wall
+		models.add( new Model(objs[5], 1, new Point3D(4, 0, 37), rtAngle(), 1, true)); // wall
+		models.add( new Model(objs[5], 1, new Point3D(12.2, 0, 45.4), zero(), 1, true)); // wall
+		models.add( new Model(objs[5], 1, new Point3D(28.2, 0, 45.4), zero(), 1, true)); // wall
+		models.add( new Model(objs[5], 1, new Point3D(36.8, 0, 29.2), zero(), 1, true)); // wall
+		models.add( new Model(objs[5], 1, new Point3D(45.2, 0, 37.6), rtAngle(), 1, true)); // wall
 		// room 3 (hard)
-		models[23]= new Model(objs[5], 1, new Point3D(45.2, 0, 53.6), rtAngle(), 1, true); // wall
-		models[24]= new Model(objs[5], 1, new Point3D(36.8, 0, 62), zero(), 1, true); // wall
-		models[25]= new Model(objs[5], 1, new Point3D(20.8, 0, 62), zero(), 1, true); // wall
-		models[26]= new Model(objs[5], 1, new Point3D(4, 0, 53), rtAngle(), 1, true); // wall
-		models[27]= new Model(objs[5], 1, new Point3D(26.6, 0, 61), rtAngle(), 1, false); // wall
-		models[28]= new Model(objs[5], 1, new Point3D(26.6, 0, 49), rtAngle(), 1, false); // wall
+		models.add( new Model(objs[5], 1, new Point3D(45.2, 0, 53.6), rtAngle(), 1, true)); // wall
+		models.add( new Model(objs[5], 1, new Point3D(36.8, 0, 62), zero(), 1, true)); // wall
+		models.add( new Model(objs[5], 1, new Point3D(20.8, 0, 62), zero(), 1, true)); // wall
+		models.add( new Model(objs[5], 1, new Point3D(4, 0, 53), rtAngle(), 1, true)); // wall
+		models.add( new Model(objs[5], 1, new Point3D(26.6, 0, 61), rtAngle(), 1, false)); // wall
+		models.add( new Model(objs[5], 1, new Point3D(26.6, 0, 49), rtAngle(), 1, false)); // wall
 		// Boss Chamber
-		models[29]= new Model(objs[5], 1, new Point3D(20.2, 0, 70.6), rtAngle(), 1, true); // wall
-		models[30]= new Model(objs[5], 1, new Point3D(-12.4, 0, 62), zero(), 1, true); // wall
-		models[31]= new Model(objs[5], 1, new Point3D(-20.8, 0, 70.4), rtAngle(), 1, true); // wall
-		models[32]= new Model(objs[5], 1, new Point3D(-12.4, 0, 87.2), zero(), 1, true); // wall
-		models[33]= new Model(objs[5], 1, new Point3D(3.6, 0, 87.2), zero(), 1, true); // wall
-		models[34]= new Model(objs[5], 1, new Point3D(15.6, 0, 87.2), zero(), 1, false); // wall
-		models[35]= new Model(objs[5], 1, new Point3D(20.2, 0, 82.6), rtAngle(), 1, false); // wall
+		models.add( new Model(objs[5], 1, new Point3D(20.2, 0, 70.6), rtAngle(), 1, true)); // wall
+		models.add( new Model(objs[5], 1, new Point3D(-12.4, 0, 62), zero(), 1, true)); // wall
+		models.add( new Model(objs[5], 1, new Point3D(-20.8, 0, 70.4), rtAngle(), 1, true)); // wall
+		models.add( new Model(objs[5], 1, new Point3D(-12.4, 0, 87.2), zero(), 1, true)); // wall
+		models.add( new Model(objs[5], 1, new Point3D(3.6, 0, 87.2), zero(), 1, true)); // wall
+		models.add( new Model(objs[5], 1, new Point3D(15.6, 0, 87.2), zero(), 1, false)); // wall
+		models.add( new Model(objs[5], 1, new Point3D(20.2, 0, 82.6), rtAngle(), 1, false)); // wall
 		// --- Pillars --- room 1
-		models[36]= new Model(objs[6], 1, new Point3D(10, 0, 11), zero(), .9, false); // pillar
+		models.add( new Model(objs[6], 1, new Point3D(10, 0, 11), zero(), .9, false)); // pillar
 		// room 2 (hard)
-		models[37]= new Model(objs[6], 1, new Point3D(14, 0, 34), zero(), .9, false); // pillar
+		models.add( new Model(objs[6], 1, new Point3D(14, 0, 34), zero(), .9, false)); // pillar
 		// room 3 (hard)
-		models[38]= new Model(objs[6], 1, new Point3D(38, 0, 51), zero(), .9, false); // pillar
-		models[39]= new Model(objs[6], 1, new Point3D(20, 0, 51), zero(), .9, false); // pillar
+		models.add( new Model(objs[6], 1, new Point3D(38, 0, 51), zero(), .9, false)); // pillar
+		models.add( new Model(objs[6], 1, new Point3D(20, 0, 51), zero(), .9, false)); // pillar
 		// Boss Chamber
-		models[40]= new Model(objs[6], 1, new Point3D(5, 0, 67), zero(), .9, false); // pillar
-		models[41]= new Model(objs[6], 1, new Point3D(11, 0, 76), zero(), .9, false); // pillar
-		models[42]= new Model(objs[6], 1, new Point3D(-7, 0, 69), zero(), .9, false); // pillar
-		models[43]= new Model(objs[6], 1, new Point3D(-13, 0, 77), zero(), .9, false); // pillar
+		models.add( new Model(objs[6], 1, new Point3D(5, 0, 67), zero(), .9, false)); // pillar
+		models.add( new Model(objs[6], 1, new Point3D(11, 0, 76), zero(), .9, false)); // pillar
+		models.add( new Model(objs[6], 1, new Point3D(-7, 0, 69), zero(), .9, false)); // pillar
+		models.add( new Model(objs[6], 1, new Point3D(-13, 0, 77), zero(), .9, false)); // pillar
 		// --- Tables --- room 2 (hard)
-		models[44]= new Model(objs[4], 1, new Point3D(20, 0, 40), rtAngle(), .4, false); // table
-		models[45]= new Model(objs[4], 1, new Point3D(28.5, 0, 40), rtAngle(), .4, false); // table
-		models[46]= new Model(objs[4], 1, new Point3D(37, 0, 40), rtAngle(), .4, false); // table
+		models.add( new Model(objs[4], 1, new Point3D(20, 0, 40), rtAngle(), .4, false)); // table
+		models.add( new Model(objs[4], 1, new Point3D(28.5, 0, 40), rtAngle(), .4, false)); // table
+		models.add( new Model(objs[4], 1, new Point3D(37, 0, 40), rtAngle(), .4, false)); // table
 		// room 3 (hard)
-		models[47]= new Model(objs[4], 1, new Point3D(15.5, 0, 58.4), rtAngle(), .4, false); // table
+		models.add( new Model(objs[4], 1, new Point3D(15.5, 0, 58.4), rtAngle(), .4, false)); // table
 		// --- Boss model ---
-		models[48]= new Model(objs[2], 1, new Point3D(0, 0, 76), zero(), .66, false); // table
+		models.add( new Model(objs[2], 1, new Point3D(0, 0, 76), zero(), .66, false)); // table
 	}
 	
 	// create the waypoints the guards will use for their patrol orders
@@ -158,31 +163,31 @@ public class GameModel {
 	
 	private void createCharacters(){
 		say("Creating characters...");
-		ninja= new Character(this, models[1], .35, .5);
+		ninja= new Character(this, models.get(1), .35, .5);
 		
 		Point3D[][] orders= createOrders();
 		for (int i= 0; i < numGuards; i++){
-			guards[i]= new Guard(this, models[i + 2], .35, .5, orders[i]); 
+			guards[i]= new Guard(this, models.get(i + 2), .35, .5, orders[i]); 
 		}
-		boss= new Boss(this, models[48], 1.5, 1.5);
+		boss= new Boss(this, models.get(48), 1.5, 1.5);
 	}
 	
 	private void createObstacles(){
 		say("Creating obstacles...");
 		// scroll
-		obstacles[0]= new Obstacle(models[7], true, .75, .2, .2); 
+		obstacles[0]= new Obstacle(models.get(7), true, .75, .2, .2); 
 		scroll= obstacles[0];
 		// walls
 		for (int i= 1; i < numObs; i++){
-			obstacles[i]= new Obstacle(models[i + 7], false, .35, 4.2, 10); 
+			obstacles[i]= new Obstacle(models.get(i + 7), false, .35, 4.2, 10); 
 		}
 		// pillars
 		for (int i= numWalls+1; i < numObs; i++){
-			obstacles[i]= new Obstacle(models[i + 7], false, 1.5, 1.5, 10); 
+			obstacles[i]= new Obstacle(models.get(i + 7), false, 1.5, 1.5, 10); 
 		}
 		// tables
 		for (int i= numWalls+numPillars+1; i < numObs; i++){
-			obstacles[i]= new Obstacle(models[i + 7], true, 2, 3, .95); 
+			obstacles[i]= new Obstacle(models.get(i + 7), true, 2, 3, .95); 
 		}
 	}
 	
@@ -212,11 +217,19 @@ public class GameModel {
 		return boss;
 	}
 	
+	public ArrayList<Projectile> getProjectiles(){
+		return projectiles;
+	}
+	
 	public Obstacle getScroll(){
 		return scroll;
 	}
 	
-	public Model[] getModels(){
+	public OBJ[] getOBJs(){
+		return objs;
+	}
+	
+	public ArrayList<Model> getModels(){
 		return models;
 	}
 

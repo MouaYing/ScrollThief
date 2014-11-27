@@ -29,7 +29,6 @@ public class Guard extends Character{
 	}
 	
 	public boolean isNear(){
-		
 		Point3D loc= model.getLoc();
 		Point3D ninjaLoc= gameModel.getNinjaLoc();
 		
@@ -194,8 +193,4 @@ public class Guard extends Character{
 		return goalIndex - 1;
 	}
 	
-	@SuppressWarnings("unused")
-	private void say(String message){
-		System.out.println(message);
-	}
 }

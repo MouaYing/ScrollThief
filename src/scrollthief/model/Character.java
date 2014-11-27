@@ -41,9 +41,9 @@ public class Character {
 		double deltaZ;
 		Point3D loc= getLoc();
 		Obstacle[] obstacles= gameModel.getObstacles();
-		Character[] guards= gameModel.getGuards();
+//		Character[] guards= gameModel.getGuards();
 		double threshold= 10; // needs tuning, or to be done away with
-		double threshold2= 2;
+//		double threshold2= 2;
 		ArrayList<Point2D[]> edges= new ArrayList<Point2D[]>();
 		Obstacle inBox= null; // the obstacle the ninja is standing on
 		// say("Location: "+ loc.toString());
@@ -201,6 +201,10 @@ public class Character {
 		goalAngle= -Math.atan2(lookTarget.x - getLoc().x, lookTarget.z - getLoc().z);
 	}
 	
+	public void takeDamage(int damage){
+		hp -= damage;
+	}
+	
 	//--------------- getters -----------------------------------------------------
 	public Model getModel(){
 		return model;
@@ -229,6 +233,11 @@ public class Character {
 	public double getTurnRate(){
 		return turnRate; 
 	}
+	
+	public int getHP(){
+		return hp;
+	}
+	
 	//--------------- setters -----------------------------------------------------
 	public void setAngle(double newAngle){
 		double[] newRot= model.getRot();
@@ -252,7 +261,7 @@ public class Character {
 		deltaY= newDelta;
 	}
 	
-	private void say(String message){
+	protected void say(String message){
 		System.out.println(message);
 	}
 	
