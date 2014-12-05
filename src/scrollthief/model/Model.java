@@ -11,15 +11,15 @@ public class Model {
 	private Point3D location;
 	double[] rotation;
 	double scale;
-	public boolean isLong;
+	public double scaleX;
 	
-	public Model(OBJ obj, int textureIndex, Point3D location, double[] rotation, double scale, boolean isLong){
+	public Model(OBJ obj, int textureIndex, Point3D location, double[] rotation, double scale, double scaleX){
 		this.obj= obj;
 		this.textureIndex= textureIndex;
 		this.location= location;
 		this.rotation= rotation;
 		this.scale= scale;
-		this.isLong= isLong;
+		this.scaleX= scaleX;
 	}
 	
 	// getters
@@ -58,5 +58,9 @@ public class Model {
 	
 	public void setScale(int newScale){
 		scale= newScale;
+	}
+	
+	public void setOBJ(OBJ newOBJ){
+		obj= newOBJ;
 	}
 }

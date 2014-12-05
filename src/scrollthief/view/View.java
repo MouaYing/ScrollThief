@@ -74,14 +74,11 @@ public class View extends GLCanvas implements GLEventListener{
 	@Override
 	public void display(GLAutoDrawable drawable) {
 		if (init){
-			// init= false;
 			return;
 		}
 		GL2 gl = drawable.getGL().getGL2();
 		ArrayList<Model> models= gameModel.getModels();
 		Texture[] textures= gameModel.getTextures();
-		
-		//moveCamera();
 		
 		// apply world-to-camera transform
 		world2camera(gl);
@@ -152,7 +149,7 @@ public class View extends GLCanvas implements GLEventListener{
 		double angle= Math.toDegrees(rot[1]);
 		double angleX= Math.toDegrees(rot[0]);
 		double scale= model.getScale();
-		double scaleX= model.isLong ? scale * 2 : scale;
+		double scaleX= scale * model.scaleX;
 		Point3D loc= model.getLoc();
 	
 		gl.glTranslated(loc.x, loc.y, loc.z);

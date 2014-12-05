@@ -35,7 +35,8 @@ public class XboxAdapter extends XboxControllerAdapter{
 	}
 	
 	public void leftThumbMagnitude(double magnitude){
-		double scale= .5;
+//		double scale= .5;
+		double scale= 1;
 		gameModel.setNinjaSpeed(scale * magnitude);
 	}
 	

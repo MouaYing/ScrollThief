@@ -6,11 +6,18 @@ public class Boss extends Character{
 	ArrayList<Character> projectiles= new ArrayList<Character>();
 	double sightRange= 15;
 	int tickCount= 0;
+	OBJ[] standing;
+	OBJ[] stomping;
+	boolean inBattle= false;
 
 	public Boss(GameModel gameModel, Model model, double boxLength, double boxWidth) {
 		super(gameModel, model, boxLength, boxWidth);
 		turnRate= .02;
-		setSpeed(.1);
+		setSpeed(.2);
+		standing= new OBJ[] {model.getObj()};
+//		stomping= gameModel.getBossStomp();
+		stomping= standing; // this is only until we get a stomp cycle
+		motion= standing;
 	}
 	
 	public void update(){
@@ -22,6 +29,19 @@ public class Boss extends Character{
 		move();
 		if (tickCount >= 30 && isFacingNinja()) // determine whether to shoot or not
 			shoot();
+	}
+	
+	public void animate(int tick){
+		if (isNear() && !inBattle){
+			inBattle= true;
+			motion= stomping;
+			animFrame= 0;
+		}
+		
+		if (tick % 2 == 0)
+			advanceFrame();
+		
+		model.setOBJ(motion[animFrame]);
 	}
 	
 	private void navigate(){
@@ -46,7 +66,7 @@ public class Boss extends Character{
 		Point3D targetVector= new Point3D(targetX, targetY, targetZ);
 		
 		// create projectile
-		Model projModel= new Model(objs[3], 1, bossHead, model.getRot().clone(), .5, false);
+		Model projModel= new Model(objs[3], 1, bossHead, model.getRot().clone(), .5, 1);
 		gameModel.getProjectiles().add(new Projectile(gameModel, projModel, targetVector));
 		gameModel.getModels().add(projModel);
 	}

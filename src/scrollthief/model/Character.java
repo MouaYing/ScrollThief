@@ -16,15 +16,19 @@ public class Character {
 	Model model;
 	GameModel gameModel;
 	Point2D[][] hitBox;
-	double speed, deltaY, angleDelta, goalAngle= 0;
+	OBJ defaultOBJ;
+	double speed, oldSpeed, deltaY, angleDelta, goalAngle= 0;
 	double turnRate= .3;
 	public boolean isJumping= false;
 	public boolean isMoving= false;
-	int hp = 3; // each hit will do one damage
+	int hp = 3; // player dies after 3 projectile hits, or one boss hit.
+	int animFrame= 0; // The frame of animation currently being displayed
+	OBJ[] motion= null; // The current animation loop
 
 	public Character(GameModel gameModel, Model model, double boxLength, double boxWidth){
 		this.gameModel= gameModel;
 		this.model= model;
+		defaultOBJ= model.getObj();
 		Point2D[] boxPoints= GameModel.findPoints(boxLength, boxWidth);
 		hitBox= GameModel.createHitBox(boxPoints);
 	}
@@ -33,7 +37,8 @@ public class Character {
 		adjustAngle();
 		//say("new angle: "+getAngle());
 		
-		float scale= .25f;
+//		float scale= .25f;
+		float scale= .125f;
 		float gravity= .01f; // tune this
 		double direction= getAngle() + Math.PI;
 		double speed= getSpeed();
@@ -41,9 +46,10 @@ public class Character {
 		double deltaZ;
 		Point3D loc= getLoc();
 		Obstacle[] obstacles= gameModel.getObstacles();
+		Character ninja= gameModel.getNinja();
 //		Character[] guards= gameModel.getGuards();
 		double threshold= 10; // needs tuning, or to be done away with
-//		double threshold2= 2;
+		double threshold2= 2;
 		ArrayList<Point2D[]> edges= new ArrayList<Point2D[]>();
 		Obstacle inBox= null; // the obstacle the ninja is standing on
 		// say("Location: "+ loc.toString());
@@ -84,6 +90,18 @@ public class Character {
 //			edges= gameModel.collision(hitBox, guardBox, edges);
 //		}
 		
+		if (model.getObj().equals(ninja.getModel().getObj())){
+			Character boss= gameModel.getBoss();
+			double dist= loc.minus(boss.getLoc()).length();
+			
+			if (dist < threshold2){
+				Point2D[][] bossBox= GameModel.boxToWorld(boss.getModel(), boss.getHitBox());
+				edges= gameModel.collision(hitBox, bossBox, edges);
+				if (!edges.isEmpty())
+					ninja.takeDamage(1);
+			}
+		}
+		
 		for (int i= 0; i < obstacles.length; i++){
 			double obsHeight= obstacles[i].getHeight(); // tune this
 			double dist= loc.minus(obstacles[i].getLoc()).length();
@@ -104,21 +122,39 @@ public class Character {
 			edges= gameModel.collision(hitBox, obstacles[i].hitBox, edges);
 			
 			if (!edges.isEmpty()){
-				// say("Number of collisions: "+edges.size());
+//				say("Number of collisions: "+edges.size());
 				for (int j= 0; j < edges.size(); j++){
 					Point2D[] edge= edges.get(j);
+					double distLoc2prime= 9999;
 					
 					if (edgePrime == null) 
 						edgePrime= edge;
 					else if (edgePrime[0].equals(edge[0]) && edgePrime[1].equals(edge[1]))
 						continue;
-					else if (loc.distanceToLine(edge[0], edge[1]) < loc.distanceToLine(edgePrime[0], edgePrime[1])){
-						edge2= edgePrime;
-						edgePrime= edge;
-					}else edge2= edge;
-				
-					if (loc.distanceToLine(edgePrime[0], edgePrime[1]) < 
-							newLoc.distanceToLine(edgePrime[0], edgePrime[1])){
+					else{ 
+						distLoc2prime= loc.distanceToLine(edgePrime[0], edgePrime[1]);
+						if (loc.distanceToLine(edge[0], edge[1]) < distLoc2prime){
+							edge2= edgePrime;
+							edgePrime= edge;
+						}else edge2= edge;
+					}
+					
+					distLoc2prime= loc.distanceToLine(edgePrime[0], edgePrime[1]);
+					double distNewLoc2prime= newLoc.distanceToLine(edgePrime[0], edgePrime[1]);
+					
+					double distLoc2edge2= 9999;
+					double distNewLoc2edge2= 9999;
+					if (edge2 != null){
+//						say("At least 2 distinct edges:"+edgePrime[0].toString()+","+edgePrime[1].toString()+
+//								" " + edge2[0].toString() + "," + edge2[1].toString());
+						distLoc2edge2= loc.distanceToLine(edge2[0], edge2[1]);
+						distNewLoc2edge2 = newLoc.distanceToLine(edge2[0], edge2[1]);
+					}
+					
+//					say("loc Dist: "+distLoc2prime+" newLoc dist: "+distNewLoc2prime);
+					if (distLoc2prime < distNewLoc2prime){
+//					if (distLoc2prime < distNewLoc2prime || distLoc2edge2 < distNewLoc2edge2){
+//						say("Facing away from prime");
 						setLoc(newLoc);
 						continue;
 					}
@@ -133,8 +169,9 @@ public class Character {
 					
 					Point3D undesired= normal.mult(input.dot(normal));
 					Point3D desired= input.minus(undesired); 
-					
+				
 					if (edge2 != null && edges.size() > 2){
+//					if (edge2 != null && distLoc2edge2 >= distNewLoc2edge2){
 						normal= new Point3D(-(edge2[0].getX() - edge2[1].getX()),0,
 								(edge2[0].getY() - edge2[1].getY()));
 						normal.Normalize();
@@ -181,6 +218,12 @@ public class Character {
 		//say("deltaY: "+character.getDeltaY());
 	}
 	
+	// Determine what OBJ to use this tick, and set it as model.obj
+	public void animate(int tick){
+		// This class is meant to be overridden my subclass
+		say("This was supposed to be overridden!");
+	}
+	
 	public Point3D calcDelta(double deltaX, double deltaZ) {
 		// override this
 		return null;
@@ -203,6 +246,12 @@ public class Character {
 	
 	public void takeDamage(int damage){
 		hp -= damage;
+	}
+	
+	public void advanceFrame(){
+		animFrame++;
+		if (animFrame >= motion.length)
+			animFrame= 0;
 	}
 	
 	//--------------- getters -----------------------------------------------------

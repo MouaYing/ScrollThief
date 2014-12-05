@@ -18,14 +18,19 @@ public class Guard extends Character{
 	Random rand= new Random();
 	boolean isLooking= true;
 	boolean waiting= false;
-	final double topSpeed= .15;
+	final double topSpeed= .30;
 	int waitTime;
+	OBJ[] standing;
+	OBJ[] walking;
 
 	public Guard(GameModel gameModel, Model model, double boxLength, double boxWidth, Point3D[] wayPoints){
 		super(gameModel, model, boxLength, boxWidth);
 		turnRate= .05;
 		this.waypoints= wayPoints;
 		pointToCheck= wayPoints[0];
+		standing= new OBJ[] {model.getObj()};
+//		walking= gameModel.getGuardWalk();
+		walking= standing; // this is here until we have a walk cycle
 	}
 	
 	public boolean isNear(){
@@ -78,6 +83,22 @@ public class Guard extends Character{
 		}
 		
 		return true;
+	}
+	
+	// Determine what OBJ to use this tick, and set it as model.obj
+	public void animate(int tick){
+		if (oldSpeed != 0 && speed == 0){ // guard has stopped
+			motion= standing;
+			animFrame= 0;
+		}
+		else if (oldSpeed == 0 && speed != 0){ // guard started moving
+			motion= walking;
+			animFrame= 0;
+		}
+		
+		oldSpeed= speed;
+		
+		model.setOBJ(motion[animFrame]);
 	}
 	
 	public void navigate(){ // calculate what the current goal should be

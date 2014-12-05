@@ -20,6 +20,7 @@ public class Controller extends TimerTask{
 	GameModel gameModel;
 	public XboxController xbc;
 	String dllPath;
+	int tick= 0;
 	boolean devmode= true;
 	
 	public Controller(JFrame window, View view, GameModel gameModel){
@@ -50,13 +51,16 @@ public class Controller extends TimerTask{
 		Character ninja= gameModel.getNinja();
 		Boss boss= (Boss) gameModel.getBoss();
 		
+		tick++;
+		if (tick > 10000) tick= 1; // reset
 		moveCamera();
 		
 // ------------ Update Ninja -------------------------------------------------------------------------
 		ninja.move();
+		ninja.animate(tick);
 		if (ninja.getHP() <= 0 && !devmode)
 			gameOver();
-		// say ("Location: " + ninja.getLoc().toString());
+//		say ("Location: " + ninja.getLoc().toString());
 		
 // ------------ Update Guards ------------------------------------------------------------------------		
 		
@@ -80,6 +84,7 @@ public class Controller extends TimerTask{
 		
 // ------------ Update Boss --------------------------------------------------------------------------
 		boss.update();
+		boss.animate(tick);
 
 		ArrayList<Projectile> projs= gameModel.getProjectiles();
 		ArrayList<Projectile> collided= new ArrayList<Projectile>();
@@ -88,6 +93,11 @@ public class Controller extends TimerTask{
 			Projectile proj= projs.get(i);
 			
 			proj.move();
+			
+			if (proj.getModel().getLoc().y <= 0){
+				collided.add(proj);
+				continue;
+			}
 			
 			if (proj.ninjaCollision()){
 				ninja.takeDamage(1);
