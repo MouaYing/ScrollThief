@@ -11,6 +11,7 @@ import scrollthief.model.Boss;
 import scrollthief.model.GameModel;
 import scrollthief.model.Guard;
 import scrollthief.model.Character;
+import scrollthief.model.Ninja;
 import scrollthief.model.Projectile;
 import scrollthief.view.View;
 
@@ -48,7 +49,11 @@ public class Controller extends TimerTask{
 	public void run() {
 		if (gameModel.initializing || paused)
 			return;
-		
+		if (gameModel.state == "start"){
+			paused= true;
+			view.display();
+			return;
+		}
 		Guard[] guards= gameModel.getGuards();
 		Character ninja= gameModel.getNinja();
 		Boss boss= (Boss) gameModel.getBoss();
@@ -59,7 +64,8 @@ public class Controller extends TimerTask{
 		moveCamera();
 		
 		if (hitTimer > 0){
-			vibrate(65535, 65535);
+			if (hitTimer > 25)
+				vibrate(65535, 65535);
 			hitTimer--;
 			if (hitTimer <= 0)
 				vibrate(0,0);
@@ -84,6 +90,7 @@ public class Controller extends TimerTask{
 			
 			guard.navigate();
 			guard.move();
+			guard.animate(tick);
 			
 			// check to see if the guard can see the ninja
 			if (guard.isNear()){ // first check if he is even in range
@@ -158,20 +165,25 @@ public class Controller extends TimerTask{
 	public void reset(){
 		say("Resetting game...");
 		
-		window.getContentPane().remove(view);
-		gameModel= new GameModel(); 
-		view= new View(gameModel);
+//		window.getContentPane().remove(view);
+//		gameModel= new GameModel(); 
+//		view= new View(gameModel);
+//		
+//		window.getContentPane().add(view);
+//		window.pack();
+//		//window.setLocation(100, 10);
+//		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//		window.setVisible(true);
+//		
+//		xbc.release();
+//		xbc= new XboxController(dllPath, 1, 50, 50);
+//        xbc.setLeftThumbDeadZone(.2);
+//        xbc.setRightThumbDeadZone(.2);
+//        xbc.addXboxControllerListener(new XboxAdapter(this));
 		
-		window.getContentPane().add(view);
-		window.pack();
-		//window.setLocation(100, 10);
-		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		window.setVisible(true);
-		
-		xbc= new XboxController(dllPath, 1, 50, 50);
-        xbc.setLeftThumbDeadZone(.2);
-        xbc.setRightThumbDeadZone(.2);
-        xbc.addXboxControllerListener(new XboxAdapter(this));
+		Ninja ninja= (Ninja) gameModel.getNinja();
+		ninja.reset();
+		gameModel.state= "start";
 	}
 	
 	private void gameOver(String reason){

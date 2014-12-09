@@ -58,6 +58,15 @@ public class XboxAdapter extends XboxControllerAdapter{
 		else controller.view.resetting= false;
 	}
 	
+	public void rightShoulder(boolean pressed){ // toggle devmode
+		if (pressed){
+			if (controller.devmode)
+				controller.devmode= false;
+			else controller.devmode= true;
+			say("Developer mode = " + controller.devmode);
+		}
+	}
+	
 	int leftVibrate= 0;
 	int rightVibrate= 0;
 	
@@ -90,13 +99,14 @@ public class XboxAdapter extends XboxControllerAdapter{
 	
 	public void start(boolean pressed){
 		if (pressed){
-			if (!gameModel.state.equals("running")){ // game is over---reset
-//				gameModel.state= "running";
+			if (!gameModel.state.equals("running") && !gameModel.state.equals("start")){ // game is over---reset
 				controller.reset();
 				controller.paused= false;
 			}
-			else if (controller.paused)
+			else if (controller.paused){
 				controller.paused= false;
+				gameModel.state= "running";
+			}
 			else controller.paused= true;
 		}
 	}
@@ -112,7 +122,7 @@ public class XboxAdapter extends XboxControllerAdapter{
 		view.setCamDelta(delta);
 	}
 	
-	@SuppressWarnings("unused")
+//	@SuppressWarnings("unused")
 	private void say(String message){
 		System.out.println(message);
 	}

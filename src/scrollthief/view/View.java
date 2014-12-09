@@ -113,7 +113,15 @@ public class View extends GLCanvas implements GLEventListener{
 			gl.glPopMatrix();
 			gl.glFlush();
 		}
-		if (gameModel.state.equals("spotted")){
+		if (gameModel.state.equals("start")){
+			String text= "Steal the enemy battle plans (scroll)";
+			overlayText(text,  windowX/2 - (15 * text.length()/2), windowY/2 + 150, Color.blue, "reg");
+			text= "without being detected";
+			overlayText(text,  windowX/2 - (15 * text.length()/2), windowY/2 + 100, Color.blue, "reg");
+			text= "Press start to begin";
+			overlayText(text,  windowX/2 - (30 * text.length()/2), windowY/2, Color.blue, "big");
+		}
+		else if (gameModel.state.equals("spotted")){
 			String text= "You've been spotted!";
 			overlayText(text,  windowX/2 - (30 * text.length()/2), windowY/2 + 100, Color.blue, "big");
 			
@@ -131,7 +139,7 @@ public class View extends GLCanvas implements GLEventListener{
 			String text= "Mission Complete!";
 			overlayText(text,  windowX/2 - (30 * text.length()/2), windowY/2 + 100, Color.blue, "big");
 			
-			text= "You obtained the enemy intelligence!";
+			text= "You obtained the enemy battle plans!";
 			overlayText(text,  windowX/2 - (15 * text.length()/2), windowY/2 + 50, Color.blue, "reg");
 		}
 	}
@@ -177,7 +185,7 @@ public class View extends GLCanvas implements GLEventListener{
 	
 	private void setupLighting(GL2 gl){
 		float[] lightPos = { 2000,3000,2000,1 };        // light position
-		float[] ambiance = { 0.1f, 0.1f, 0.1f, 1f };     // low ambient light
+		float[] ambiance = { 0.4f, 0.4f, 0.4f, 1f };     // low ambient light
 		float[] diffuse = { 1f, 1f, 1f, 1f };        // full diffuse color
 
 		gl.glEnable(GL2.GL_LIGHTING);

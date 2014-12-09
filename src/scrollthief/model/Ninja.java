@@ -55,5 +55,11 @@ public class Ninja extends Character {
 		
 		model.setOBJ(motion[animFrame]);
 	}
+	
+	public void reset(){
+		hp= 3;
+		setLoc(new Point3D(0, 0, -5));
+		setAngle(0);
+	}
 
 }

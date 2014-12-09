@@ -29,8 +29,8 @@ public class Guard extends Character{
 		this.waypoints= wayPoints;
 		pointToCheck= wayPoints[0];
 		standing= new OBJ[] {model.getObj()};
-//		walking= gameModel.getGuardWalk();
-		walking= standing; // this is here until we have a walk cycle
+		walking= gameModel.getGuardWalk();
+		motion= standing;
 	}
 	
 	public boolean isNear(){
@@ -97,6 +97,9 @@ public class Guard extends Character{
 		}
 		
 		oldSpeed= speed;
+		
+		if (tick % 2 == 0)
+			advanceFrame();
 		
 		model.setOBJ(motion[animFrame]);
 	}
