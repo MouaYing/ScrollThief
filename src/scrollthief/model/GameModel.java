@@ -45,7 +45,7 @@ public class GameModel {
 	public GameModel(){
 		numModels= numGuards + numObs + 3;
 		models= new ArrayList<Model>();
-		objs= new OBJ[8];
+		objs= new OBJ[9];
 		ninjaRun= new OBJ[21];
 		guardWalk= new OBJ[30];
 		textures= new Texture[9];
@@ -65,6 +65,7 @@ public class GameModel {
 		objs[5]= new OBJ("obj/wall2.obj");
 		objs[6]= new OBJ("obj/pillar2.obj");
 		objs[7]= new OBJ("obj/Boss");
+		objs[8]= new OBJ("obj/AcidBlob");
 	}
 	
 	// Loads the OBJ files for every frame of animation

@@ -60,6 +60,11 @@ public class Ninja extends Character {
 		hp= 3;
 		setLoc(new Point3D(0, 0, -5));
 		setAngle(0);
+		motion= standing;
+		isJumping= false;
+		setDeltaY(0);
+		setGoalAngle(0);
+		model.setOBJ(standing[0]);
 	}
 
 }

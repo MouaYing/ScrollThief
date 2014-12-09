@@ -66,7 +66,7 @@ public class Boss extends Character{
 		Point3D targetVector= new Point3D(targetX, targetY, targetZ);
 		
 		// create projectile
-		Model projModel= new Model(objs[3], 1, bossHead, model.getRot().clone(), .5, 1);
+		Model projModel= new Model(objs[8], 1, bossHead, model.getRot().clone(), .4, 1);
 		gameModel.getProjectiles().add(new Projectile(gameModel, projModel, targetVector));
 		gameModel.getModels().add(projModel);
 	}

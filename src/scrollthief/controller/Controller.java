@@ -183,6 +183,9 @@ public class Controller extends TimerTask{
 		
 		Ninja ninja= (Ninja) gameModel.getNinja();
 		ninja.reset();
+		view.setCamAngle(0);
+		view.setCamHeight(4);
+		view.setCamDistance(6);
 		gameModel.state= "start";
 	}
 	

@@ -219,8 +219,6 @@ public class View extends GLCanvas implements GLEventListener{
 		lookAt= new float[]{(float) ninjaLoc.x, (float) ninjaLoc.y * scale + 2, (float) ninjaLoc.z};
 		
 		if (resetting){ // center the camera behind the ninja
-//			dZ= Math.cos(ninjaAngle + Math.PI + cameraAngle); 
-//			dX= Math.sin(ninjaAngle + Math.PI + cameraAngle);
 			cameraAngle= ninjaAngle;
 			cameraDistance= 6;
 			lookFrom[1]= 4;
