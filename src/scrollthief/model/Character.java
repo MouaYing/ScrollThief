@@ -122,6 +122,9 @@ public class Character {
 			edges= gameModel.collision(hitBox, obstacles[i].hitBox, edges);
 			
 			if (!edges.isEmpty()){
+				if (obstacles[i].equals(gameModel.getScroll())){
+					gameModel.state= "victory";
+				}
 //				say("Number of collisions: "+edges.size());
 				for (int j= 0; j < edges.size(); j++){
 					Point2D[] edge= edges.get(j);

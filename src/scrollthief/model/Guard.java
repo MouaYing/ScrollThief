@@ -9,7 +9,7 @@ package scrollthief.model;
 import java.util.Random;
 
 public class Guard extends Character{
-	double sightRange= 15; // needs tuning
+	double sightRange= 10; // needs tuning
 	int goalIndex;
 	Point3D goal= null;
 	Point3D[] waypoints;
@@ -18,7 +18,7 @@ public class Guard extends Character{
 	Random rand= new Random();
 	boolean isLooking= true;
 	boolean waiting= false;
-	final double topSpeed= .30;
+	final double topSpeed= .25;
 	int waitTime;
 	OBJ[] standing;
 	OBJ[] walking;

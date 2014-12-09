@@ -23,6 +23,7 @@ import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
  */
 public class GameModel {
 	public boolean initializing= true;
+	public String state= "running";
 	final int numGuards= 5;
 	final int numWalls= 32;
 	final int numPillars= 8;
@@ -43,9 +44,9 @@ public class GameModel {
 	public GameModel(){
 		numModels= numGuards + numObs + 3;
 		models= new ArrayList<Model>();
-		objs= new OBJ[7];
+		objs= new OBJ[8];
 		ninjaRun= new OBJ[21];
-		textures= new Texture[2];
+		textures= new Texture[5];
 		guards= new Guard[numGuards];
 		obstacles= new Obstacle[numObs];
 		projectiles= new ArrayList<Projectile>();
@@ -54,14 +55,14 @@ public class GameModel {
 	// Loads the default OBJ files
 	private void loadOBJs(){
 		say("Loading OBJ files...");
-		objs[0]= new OBJ("obj/ParkingLot.obj");
+		objs[0]= new OBJ("obj/Floor");
 		objs[1]= new OBJ("obj/ninja_stand.obj");
-//		objs[1]= new OBJ("obj/anim/ninja/run.1.obj");
 		objs[2]= new OBJ("obj/NewGuard");
 		objs[3]= new OBJ("obj/Scroll");
 		objs[4]= new OBJ("obj/Table");
-		objs[5]= new OBJ("obj/Wall2");
-		objs[6]= new OBJ("obj/Pillar");
+		objs[5]= new OBJ("obj/wall2.obj");
+		objs[6]= new OBJ("obj/pillar2.obj");
+		objs[7]= new OBJ("obj/Boss");
 	}
 	
 	// Loads the OBJ files for every frame of animation
@@ -71,6 +72,7 @@ public class GameModel {
 		// Ninja run cycle
 		say("Loading Ninja animation frames...");
 		for (int i= 0; i < lastFrame; i++){
+			say("Loading run cycle frame " + (i+1));
 			String fileName= "obj/anim/ninja/run." + (i+1) + ".obj";
 			ninjaRun[i]= new OBJ(fileName);
 		}
@@ -83,10 +85,13 @@ public class GameModel {
 	private void loadTextures(GL2 gl){
 		say("Loading texture files...");
 		GLProfile profile= gl.getGLProfile();
-		String[] imgPaths= new String[2];
+		String[] imgPaths= new String[5];
 		
 		imgPaths[0]= "textures/ParkingLot.bmp";
 		imgPaths[1]= "textures/default.jpg";
+		imgPaths[2]= "textures/ninja.bmp";
+		imgPaths[3]= "textures/pillar.jpg";
+		imgPaths[4]= "textures/wood.jpg";
 		
 		for (int i= 0; i < imgPaths.length; i++){
 			try {
@@ -106,9 +111,9 @@ public class GameModel {
 		say("\nCreating 3D models...");
 		
 // ---------------Environment model/s ------------------------------------------------------------------
-		models.add( new Model(objs[0], 0, new Point3D(0, 0, 0), zero(), 1, 1) ); // lot model (0)
+		models.add( new Model(objs[0], 0, new Point3D(0, 0, 0), zero(), 1, 1) ); // floor model (0)
 // ---------------Character models ---------------------------------------------------------------------
-		models.add( new Model(objs[1], 1, new Point3D(0, 0, -5), zero(), .075, 1) ); // ninja model 1
+		models.add( new Model(objs[1], 2, new Point3D(0, 0, -5), zero(), .075, 1) ); // ninja model 1
 		
 		models.add( new Model(objs[2], 1, new Point3D(15, 0, 23), zero(), .3, 1) ); // guard model 2
 		models.add( new Model(objs[2], 1, new Point3D(24, 0, 33), zero(), .3, 1) ); // guard model 3
@@ -155,7 +160,7 @@ public class GameModel {
 		models.add( new Model(objs[5], 1, new Point3D(15.6, 0, 87), zero(), 1, 1)); // wall
 		models.add( new Model(objs[5], 1, new Point3D(20.2, 0, 82.4), rtAngle(), 1, 1)); // wall
 		// --- Pillars --- room 1
-		models.add( new Model(objs[6], 1, new Point3D(10, 0, 11), zero(), .9, 1)); // pillar
+		models.add( new Model(objs[6], 3, new Point3D(10, 0, 11), zero(), .9, 1)); // pillar
 		// room 2 (hard)
 		models.add( new Model(objs[6], 1, new Point3D(14, 0, 34), zero(), .9, 1)); // pillar
 		// room 3 (hard)
@@ -167,13 +172,15 @@ public class GameModel {
 		models.add( new Model(objs[6], 1, new Point3D(-7, 0, 69), zero(), .9, 1)); // pillar
 		models.add( new Model(objs[6], 1, new Point3D(-13, 0, 77), zero(), .9, 1)); // pillar
 		// --- Tables --- room 2 (hard)
-		models.add( new Model(objs[4], 1, new Point3D(20, 0, 40), rtAngle(), .4, 1)); // table
-		models.add( new Model(objs[4], 1, new Point3D(28.5, 0, 40), rtAngle(), .4, 1)); // table
-		models.add( new Model(objs[4], 1, new Point3D(37, 0, 40), rtAngle(), .4, 1)); // table
+		models.add( new Model(objs[4], 4, new Point3D(20, 0, 40), rtAngle(), .4, 1)); // table
+		models.add( new Model(objs[4], 4, new Point3D(28.5, 0, 40), rtAngle(), .4, 1)); // table
+		models.add( new Model(objs[4], 4, new Point3D(37, 0, 40), rtAngle(), .4, 1)); // table
 		// room 3 (hard)
-		models.add( new Model(objs[4], 1, new Point3D(15.5, 0, 58.4), rtAngle(), .4, 1)); // table
+		models.add( new Model(objs[4], 4, new Point3D(15.5, 0, 58.4), rtAngle(), .4, 1)); // table
+		// --- Ceiling ---
+		models.add( new Model(objs[0], 4, new Point3D(0, 10, 0), new double[] {Math.PI,0,0}, 1, 1) ); // ceiling model
 		// --- Boss model ---
-		models.add( new Model(objs[2], 1, new Point3D(0, 0, 76), zero(), .60, 1)); // table
+		models.add( new Model(objs[7], 1, new Point3D(0, 0, 76), zero(), .2, 1)); // Boss
 	}
 	
 	// create the waypoints the guards will use for their patrol orders

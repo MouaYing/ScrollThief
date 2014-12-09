@@ -27,7 +27,7 @@ public class Ninja extends Character {
 			motion= jumping;
 			animFrame= 0;
 		}
-		else if (oldSpeed != 0 && speed == 0 && !isJumping){ // Ninja is no longer moving
+		else if (speed == 0 && (oldSpeed != 0 || wasJumping) && !isJumping){ // Ninja is no longer moving
 			motion= standing;
 			animFrame= 0;
 		}

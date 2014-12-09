@@ -87,6 +87,19 @@ public class XboxAdapter extends XboxControllerAdapter{
 		if (pressed)
 			controller.reset();
 	}
+	
+	public void start(boolean pressed){
+		if (pressed){
+			if (!gameModel.state.equals("running")){ // game is over---reset
+//				gameModel.state= "running";
+				controller.reset();
+				controller.paused= false;
+			}
+			else if (controller.paused)
+				controller.paused= false;
+			else controller.paused= true;
+		}
+	}
 
 	private void updateCamera(){
 		double scale= .2;

@@ -1,5 +1,7 @@
 package scrollthief.view;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.util.ArrayList;
 
 import javax.media.opengl.GL2;
@@ -8,6 +10,8 @@ import javax.media.opengl.GLEventListener;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
 
+import com.jogamp.opengl.util.awt.TextRenderer;
+import com.jogamp.opengl.util.gl2.GLUT;
 import com.jogamp.opengl.util.texture.Texture;
 
 import scrollthief.model.Point3D;
@@ -19,7 +23,9 @@ public class View extends GLCanvas implements GLEventListener{
 	GameModel gameModel;
 	GL2 gl;
 	public boolean init= true;
-	int windowSize= 710;
+	int windowX= 710;
+	int windowY= 710;
+	GLUT glut= new GLUT();
 	float FOV= 45f;
 	float ASPECT = 1f;
 	float NEAR= .1f;
@@ -31,11 +37,13 @@ public class View extends GLCanvas implements GLEventListener{
 	double cameraAngle= 0;
 	double cameraRotRate= 0;
 	double[] cameraDelta= {0,0};
+	TextRenderer tRend;
+	TextRenderer tRend2;
 
 	public View(GameModel model){
 		say("Loading view...");
 		this.gameModel= model;
-		setPreferredSize(new java.awt.Dimension(windowSize, windowSize));
+		setPreferredSize(new java.awt.Dimension(windowX, windowY));
         addGLEventListener(this);
         init= false;
 		say("--View loaded--\n");
@@ -43,7 +51,9 @@ public class View extends GLCanvas implements GLEventListener{
 	
 	@Override
 	public void init(GLAutoDrawable drawable) {
-		GL2 gl= drawable.getGL().getGL2();
+		gl= drawable.getGL().getGL2();
+		tRend= new TextRenderer(new Font("Helvetica", Font.BOLD, 30));
+		tRend2= new TextRenderer(new Font("Helvetica", Font.BOLD, 60));
 		gameModel.init(gl);
 		
 		setupLighting(gl);
@@ -53,7 +63,6 @@ public class View extends GLCanvas implements GLEventListener{
 		gl.glClearDepth(1.0f);									// Depth Buffer Setup
 		gl.glEnable(GL2.GL_DEPTH_TEST);							// Enables Depth Testing
 		gl.glEnable(GL2.GL_TEXTURE_2D);
-		gl.glShadeModel(GL2.GL_SMOOTH);
 		gl.glDepthFunc(GL2.GL_LEQUAL);								// The Type Of Depth Testing To Do
 		gl.glEnable(GL2.GL_COLOR_MATERIAL);
 		gl.glHint(GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL2.GL_NICEST);
@@ -76,7 +85,7 @@ public class View extends GLCanvas implements GLEventListener{
 		if (init){
 			return;
 		}
-		GL2 gl = drawable.getGL().getGL2();
+		gl = drawable.getGL().getGL2();
 		ArrayList<Model> models= gameModel.getModels();
 		Texture[] textures= gameModel.getTextures();
 		
@@ -104,10 +113,33 @@ public class View extends GLCanvas implements GLEventListener{
 			gl.glPopMatrix();
 			gl.glFlush();
 		}
+		if (gameModel.state.equals("spotted")){
+			String text= "You've been spotted!";
+			overlayText(text,  windowX/2 - (30 * text.length()/2), windowY/2 + 100, Color.blue, "big");
+			
+			text= "Mission Failed! Press start to try again...";
+			overlayText(text,  windowX/2 - (15 * text.length()/2), windowY/2 + 50, Color.blue, "reg");
+		}
+		else if (gameModel.state.equals("killed")){
+			String text= "You've been killed!";
+			overlayText(text,  windowX/2 - (30 * text.length()/2), windowY/2 + 100, Color.red, "big");
+			
+			text= "Mission Failed! Press start to try again...";
+			overlayText(text,  windowX/2 - (15 * text.length()/2), windowY/2 + 50, Color.blue, "reg");
+		}
+		else if (gameModel.state.equals("victory")){
+			String text= "Mission Complete!";
+			overlayText(text,  windowX/2 - (30 * text.length()/2), windowY/2 + 100, Color.blue, "big");
+			
+			text= "You obtained the enemy intelligence!";
+			overlayText(text,  windowX/2 - (15 * text.length()/2), windowY/2 + 50, Color.blue, "reg");
+		}
 	}
 
 	@Override
 	public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
+		windowX= width;
+		windowY= height;
 		GL2 gl = drawable.getGL().getGL2();
 		gl.glViewport(x, y, width, height);
 		
@@ -124,6 +156,18 @@ public class View extends GLCanvas implements GLEventListener{
 
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
 		gl.glLoadIdentity();
+	}
+	
+	public void overlayText(String text, int x, int y, Color color, String type){
+		TextRenderer rend= tRend;
+		if (type == "big")
+			rend= tRend2;
+			
+		rend.setColor(color);
+		rend.beginRendering(windowX, windowY, true);
+		rend.draw(text, x, y);
+		rend.endRendering();
+		rend.flush();
 	}
 	
 	@Override
@@ -192,16 +236,6 @@ public class View extends GLCanvas implements GLEventListener{
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
 		//gl.glLoadIdentity();
 	}
-	
-//	public void moveCamera(){
-//		double scale= .25;
-//		double dX= cameraDelta[0];
-//		double dY= cameraDelta[1];
-//		
-//		cameraAngle+= dX;
-//		lookFrom[1]+= dY;
-//		cameraDistance+= dY * scale;
-//	}
 	
 // -----------------Camera getters -----------------------------
 	public double getCamDistance(){

@@ -21,7 +21,9 @@ public class Controller extends TimerTask{
 	public XboxController xbc;
 	String dllPath;
 	int tick= 0;
-	boolean devmode= true;
+	int hitTimer= 0;
+	boolean paused= false;
+	boolean devmode= false;
 	
 	public Controller(JFrame window, View view, GameModel gameModel){
 		say("Loading main controller...");
@@ -44,7 +46,7 @@ public class Controller extends TimerTask{
 
 	@Override
 	public void run() {
-		if (gameModel.initializing)
+		if (gameModel.initializing || paused)
 			return;
 		
 		Guard[] guards= gameModel.getGuards();
@@ -53,13 +55,26 @@ public class Controller extends TimerTask{
 		
 		tick++;
 		if (tick > 10000) tick= 1; // reset
+		
 		moveCamera();
+		
+		if (hitTimer > 0){
+			vibrate(65535, 65535);
+			hitTimer--;
+			if (hitTimer <= 0)
+				vibrate(0,0);
+		}
 		
 // ------------ Update Ninja -------------------------------------------------------------------------
 		ninja.move();
 		ninja.animate(tick);
 		if (ninja.getHP() <= 0 && !devmode)
-			gameOver();
+			gameOver("killed");
+		if (gameModel.state.equals("victory")){
+			paused= true;
+			vibrate(0,0);
+			hitTimer= 0;
+		}
 //		say ("Location: " + ninja.getLoc().toString());
 		
 // ------------ Update Guards ------------------------------------------------------------------------		
@@ -76,7 +91,7 @@ public class Controller extends TimerTask{
 					if (guard.canSeeNinja()){ // now check for line of sight
 						say("You have been spotted! Game Over!");
 						if (!devmode)
-							gameOver();
+							gameOver("spotted");
 					}
 				}
 			}
@@ -103,6 +118,7 @@ public class Controller extends TimerTask{
 				ninja.takeDamage(1);
 				collided.add(proj);
 				say("You've been hit! Current HP: "+ ninja.getHP());
+				hitTimer= 30;
 				continue;
 			}
 			
@@ -158,8 +174,11 @@ public class Controller extends TimerTask{
         xbc.addXboxControllerListener(new XboxAdapter(this));
 	}
 	
-	private void gameOver(){
-		// TODO implement this
+	private void gameOver(String reason){
+		paused= true;
+		gameModel.state= reason;
+		vibrate(0,0);
+		hitTimer= 0;
 	}
 	
 	private void say(String message){

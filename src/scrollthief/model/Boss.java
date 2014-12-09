@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Boss extends Character{
 	ArrayList<Character> projectiles= new ArrayList<Character>();
-	double sightRange= 15;
+	double sightRange= 17;
 	int tickCount= 0;
 	OBJ[] standing;
 	OBJ[] stomping;
@@ -51,12 +51,12 @@ public class Boss extends Character{
 	
 	private void shoot(){
 		tickCount= 0;
-		double scale= 2;
+		double scale= 3;
 		double direction= getAngle() - Math.PI;
 		OBJ[] objs= gameModel.getOBJs();
 		Point3D ninjaLoc= gameModel.getNinjaLoc();
 		// calculate target vector
-		Point3D bossHead= new Point3D(getLoc().x, getLoc().y + 3, getLoc().z);
+		Point3D bossHead= new Point3D(getLoc().x, getLoc().y + 3.2, getLoc().z);
 		double dist= ninjaLoc.minus(bossHead).length();
 		
 		double targetX= Math.sin(direction);
