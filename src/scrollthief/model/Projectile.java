@@ -50,7 +50,7 @@ public class Projectile {
 		Obstacle[] obstacles= gameModel.getObstacles();
 		Point2D[][] myBox= GameModel.boxToWorld(model, hitbox);
 		Point3D loc= model.getLoc();
-		double threshold= 5;
+		double threshold= 10;
 		ArrayList<Point2D[]> edges= new ArrayList<Point2D[]>();
 		
 		for(int i= 0; i < obstacles.length; i++){

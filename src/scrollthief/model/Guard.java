@@ -70,14 +70,12 @@ public class Guard extends Character{
 		Point3D guardLoc= getLoc();
 		Point3D ninjaLoc= gameModel.getNinjaLoc();
 		Obstacle[] obstacles= gameModel.getObstacles();
-		// Point3D dirToNinja= ninjaLoc.minus(guardLoc); // probably need to normalize
 		
 		for (int i= 0; i < obstacles.length; i++){
 			Obstacle obs= obstacles[i];
 			if ((obs.getLoc().minus(guardLoc)).length() > sightRange || obs.isLow)
 				continue;
 			
-//			if (!obs.boxHit(guardLoc, ninjaLoc).isEmpty()) // see if the line between guard and ninja crosses hitbox
 			if (!gameModel.boxHit(guardLoc, ninjaLoc, obs.hitBox).isEmpty()) // see if the line between guard and ninja crosses hitbox	
 				return false;
 		}

@@ -227,11 +227,11 @@ public class GameModel {
 		obstacles[0]= new Obstacle(models.get(7), true, .75, .2, .2); 
 		scroll= obstacles[0];
 		// walls
-		for (int i= 1; i < numObs; i++){
-			obstacles[i]= new Obstacle(models.get(i + 7), false, .6, 4, 10); 
+		for (int i= 1; i < numWalls+1; i++){
+			obstacles[i]= new Obstacle(models.get(i + 7), false, .6, 4, 5); 
 		}
 		// pillars
-		for (int i= numWalls+1; i < numObs; i++){
+		for (int i= numWalls+1; i < numPillars+numWalls+1; i++){
 			obstacles[i]= new Obstacle(models.get(i + 7), false, 1.5, 1.5, 10); 
 		}
 		// tables

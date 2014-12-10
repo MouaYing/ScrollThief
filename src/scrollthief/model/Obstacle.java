@@ -63,6 +63,10 @@ public class Obstacle {
 		return  dim;
 	}
 	
+	public Model getModel(){
+		return model;
+	}
+	
 	@SuppressWarnings("unused")
 	private void say(String message){
 		System.out.println(message);

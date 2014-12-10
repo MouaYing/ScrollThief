@@ -124,7 +124,7 @@ public class Character {
 			edges= gameModel.collision(hitBox, obstacles[i].hitBox, edges);
 			
 			if (!edges.isEmpty()){
-				if (obstacles[i].equals(gameModel.getScroll())){
+				if (obstacles[i].equals(gameModel.getScroll()) && model.getObj().equals(ninja.getModel().getObj())){
 					gameModel.state= "victory";
 				}
 //				say("Number of collisions: "+edges.size());
@@ -142,6 +142,12 @@ public class Character {
 							edge2= edgePrime;
 							edgePrime= edge;
 						}else edge2= edge;
+					}
+					
+					for (int k= 0; k < 4; k++){
+						Point2D[] curEdge= obstacles[i].hitBox[k];
+						if (loc.distanceToLine(curEdge[0], curEdge[1]) < distLoc2prime)
+							edgePrime= curEdge;
 					}
 					
 					distLoc2prime= loc.distanceToLine(edgePrime[0], edgePrime[1]);

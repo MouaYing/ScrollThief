@@ -11,7 +11,6 @@ import scrollthief.model.Boss;
 import scrollthief.model.GameModel;
 import scrollthief.model.Guard;
 import scrollthief.model.Character;
-import scrollthief.model.Ninja;
 import scrollthief.model.Projectile;
 import scrollthief.view.View;
 
