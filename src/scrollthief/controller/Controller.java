@@ -181,8 +181,9 @@ public class Controller extends TimerTask{
 //        xbc.setRightThumbDeadZone(.2);
 //        xbc.addXboxControllerListener(new XboxAdapter(this));
 		
-		Ninja ninja= (Ninja) gameModel.getNinja();
-		ninja.reset();
+		gameModel.getNinja().reset();
+		gameModel.getBoss().reset();
+		
 		view.setCamAngle(0);
 		view.setCamHeight(4);
 		view.setCamDistance(6);

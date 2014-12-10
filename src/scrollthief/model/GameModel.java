@@ -39,7 +39,7 @@ public class GameModel {
 	OBJ[] guardWalk;
 	Texture[] textures;
 	Ninja ninja;
-	Character boss;
+	Boss boss;
 	Obstacle scroll;
 	
 	public GameModel(){
@@ -259,11 +259,11 @@ public class GameModel {
 		return obstacles;
 	}
 	
-	public Character getNinja(){
+	public Ninja getNinja(){
 		return ninja;
 	}
 	
-	public Character getBoss(){
+	public Boss getBoss(){
 		return boss;
 	}
 	

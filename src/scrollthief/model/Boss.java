@@ -2,6 +2,8 @@ package scrollthief.model;
 
 import java.util.ArrayList;
 
+import scrollthief.model.Point3D;
+
 public class Boss extends Character{
 	ArrayList<Character> projectiles= new ArrayList<Character>();
 	double sightRange= 17;
@@ -44,6 +46,12 @@ public class Boss extends Character{
 		model.setOBJ(motion[animFrame]);
 	}
 	
+	public void reset(){
+		setAngle(0);
+		setGoalAngle(0);
+		setLoc(new Point3D(0,0,76));
+	}
+	
 	private void navigate(){
 		Point3D ninjaLoc= gameModel.getNinjaLoc();
 		faceToward(ninjaLoc);
@@ -66,7 +74,10 @@ public class Boss extends Character{
 		Point3D targetVector= new Point3D(targetX, targetY, targetZ);
 		
 		// create projectile
-		Model projModel= new Model(objs[8], 1, bossHead, model.getRot().clone(), .4, 1);
+		scale= 2;
+		double[] rot = model.getRot().clone();
+		rot[0]= -targetY * scale;
+		Model projModel= new Model(objs[8], 1, bossHead, rot, .4, 1);
 		gameModel.getProjectiles().add(new Projectile(gameModel, projModel, targetVector));
 		gameModel.getModels().add(projModel);
 	}

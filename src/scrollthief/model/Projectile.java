@@ -21,7 +21,6 @@ public class Projectile {
 		double speed= .15;
 		Point3D loc= model.getLoc(); 
 		Point3D delta= targetVector.mult(speed);
-		Character ninja= gameModel.getNinja();
 		
 		model.setLoc(new Point3D(loc.x + delta.x, loc.y + delta.y, loc.z + delta.z));
 		

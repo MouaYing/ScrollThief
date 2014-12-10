@@ -97,8 +97,10 @@ public class Character {
 			if (dist < threshold2){
 				Point2D[][] bossBox= GameModel.boxToWorld(boss.getModel(), boss.getHitBox());
 				edges= gameModel.collision(hitBox, bossBox, edges);
-				if (!edges.isEmpty())
+				if (!edges.isEmpty()){
 					ninja.takeDamage(1);
+					return;
+				}
 			}
 		}
 		

@@ -65,6 +65,8 @@ public class Ninja extends Character {
 		setDeltaY(0);
 		setGoalAngle(0);
 		model.setOBJ(standing[0]);
+		animFrame= 0;
+		oldSpeed= 0;
 	}
 
 }
