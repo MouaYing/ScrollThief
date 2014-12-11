@@ -37,6 +37,7 @@ public class GameModel {
 	OBJ[] objs;
 	OBJ[] ninjaRun;
 	OBJ[] guardWalk;
+	OBJ[] bossStomp;
 	Texture[] textures;
 	Ninja ninja;
 	Boss boss;
@@ -48,7 +49,8 @@ public class GameModel {
 		objs= new OBJ[9];
 		ninjaRun= new OBJ[21];
 		guardWalk= new OBJ[30];
-		textures= new Texture[9];
+		bossStomp= new OBJ[24];
+		textures= new Texture[12];
 		guards= new Guard[numGuards];
 		obstacles= new Obstacle[numObs];
 		projectiles= new ArrayList<Projectile>();
@@ -60,11 +62,11 @@ public class GameModel {
 		objs[0]= new OBJ("obj/floor.obj");
 		objs[1]= new OBJ("obj/ninja_stand.obj");
 		objs[2]= new OBJ("obj/guard_stand.obj");
-		objs[3]= new OBJ("obj/Scroll");
+		objs[3]= new OBJ("obj/Scroll.obj");
 		objs[4]= new OBJ("obj/table.obj");
 		objs[5]= new OBJ("obj/wall2.obj");
 		objs[6]= new OBJ("obj/pillar2.obj");
-		objs[7]= new OBJ("obj/Boss");
+		objs[7]= new OBJ("obj/boss_stand.obj");
 		objs[8]= new OBJ("obj/AcidBlob.obj");
 	}
 	
@@ -89,16 +91,23 @@ public class GameModel {
 			guardWalk[i]= new OBJ(fileName);
 		}
 		
-		// TODO Boss stomp cycle
+		// Boss stomp cycle
+		say("\nLoading Boss animation frames...");
+		lastFrame= 24;
+		for (int i= 0; i < lastFrame; i++){
+			say("Loading stomp cycle frame " + (i+1));
+			String fileName= "obj/anim/boss/stomp." + (i+1) + ".obj";
+			bossStomp[i]= new OBJ(fileName);
+		}
 	}
 	
 	private void loadTextures(GL2 gl){
 		say("\nLoading texture files...");
 		GLProfile profile= gl.getGLProfile();
-		String[] imgPaths= new String[9];
+		String[] imgPaths= new String[12];
 		
 		imgPaths[0]= "textures/wood.jpg";
-		imgPaths[1]= "textures/default.jpg";
+		imgPaths[1]= "textures/floor.jpg";
 		imgPaths[2]= "textures/ninja.bmp";
 		imgPaths[3]= "textures/pillar.jpg";
 		imgPaths[4]= "textures/table.jpg";
@@ -106,6 +115,9 @@ public class GameModel {
 		imgPaths[6]= "textures/longwall.jpg";
 		imgPaths[7]= "textures/shortwall.jpg";
 		imgPaths[8]= "textures/guard.jpg";
+		imgPaths[9]= "textures/scroll.jpg";
+		imgPaths[10]= "textures/alienSkin.jpg";
+		imgPaths[11]= "textures/goo.jpg";
 		
 		for (int i= 0; i < imgPaths.length; i++){
 			try {
@@ -125,7 +137,7 @@ public class GameModel {
 		say("\nCreating 3D models...");
 		
 // ---------------Environment model/s ------------------------------------------------------------------
-		models.add( new Model(objs[0], 0, new Point3D(0, 0, 0), zero(), 1, 1) ); // floor model (0)
+		models.add( new Model(objs[0], 1, new Point3D(14, 0, 36), zero(), .5, 1) ); // floor model (0)
 // ---------------Character models ---------------------------------------------------------------------
 		models.add( new Model(objs[1], 2, new Point3D(0, 0, -5), zero(), .075, 1) ); // ninja model 1
 		
@@ -135,7 +147,7 @@ public class GameModel {
 		models.add( new Model(objs[2], 8, new Point3D(20, 0, 54), zero(), .11, 1) ); // guard model 5
 		models.add( new Model(objs[2], 8, new Point3D(11, 0, 50), zero(), .11, 1) ); // guard model 6
 // ---------------Obstacle models ----------------------------------------------------------------------
-		models.add( new Model(objs[3], 1, new Point3D(0, 1.2, 83), new double[]{Math.PI/2,0,0}, .25, 1)); //scroll
+		models.add( new Model(objs[3], 9, new Point3D(0, 1.2, 83), new double[]{Math.PI/2,0,0}, .25, 1)); //scroll
 		// foyer
 		models.add( new Model(objs[5], 6, new Point3D(-3.6, 0, 4.4), zero(), 1, 2)); // wall
 		models.add( new Model(objs[5], 5, new Point3D(7.8, 0, -10.7), zero(), 1, 1)); // wall
@@ -198,7 +210,7 @@ public class GameModel {
 		// --- Ceiling ---
 		models.add( new Model(objs[0], 0, new Point3D(0, 5, 0), new double[] {Math.PI,0,0}, 1, 1) ); // ceiling model
 		// --- Boss model ---
-		models.add( new Model(objs[7], 1, new Point3D(0, 0, 76), zero(), .2, 1)); // Boss
+		models.add( new Model(objs[7], 10, new Point3D(0, 0, 76), zero(), .2, 1)); // Boss
 	}
 	
 	// create the waypoints the guards will use for their patrol orders
@@ -289,6 +301,10 @@ public class GameModel {
 
 	public Texture[] getTextures(){
 		return textures;
+	}
+	
+	public OBJ[] getBossStomp(){
+		return bossStomp;
 	}
 	
 	public OBJ[] getGuardWalk(){

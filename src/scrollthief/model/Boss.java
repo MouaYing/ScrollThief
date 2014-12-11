@@ -17,8 +17,7 @@ public class Boss extends Character{
 		turnRate= .02;
 		setSpeed(.2);
 		standing= new OBJ[] {model.getObj()};
-//		stomping= gameModel.getBossStomp();
-		stomping= standing; // this is only until we get a stomp cycle
+		stomping= gameModel.getBossStomp();
 		motion= standing;
 	}
 	
@@ -77,7 +76,7 @@ public class Boss extends Character{
 		scale= 2;
 		double[] rot = model.getRot().clone();
 		rot[0]= -targetY * scale;
-		Model projModel= new Model(objs[8], 1, bossHead, rot, .4, 1);
+		Model projModel= new Model(objs[8], 11, bossHead, rot, .4, 1);
 		gameModel.getProjectiles().add(new Projectile(gameModel, projModel, targetVector));
 		gameModel.getModels().add(projModel);
 	}
