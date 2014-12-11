@@ -25,9 +25,9 @@ public class GameModel {
 	public boolean initializing= true;
 	public String state= "start";
 	final int numGuards= 5;
-	final int numWalls= 32;
+	final int numWalls= 34;
 	final int numPillars= 8;
-	final int numTables= 4;
+	final int numTables= 5;
 	final int numObs= numWalls + numPillars + numTables + 1;
 	int numModels;
 	Guard[] guards;
@@ -65,7 +65,7 @@ public class GameModel {
 		objs[5]= new OBJ("obj/wall2.obj");
 		objs[6]= new OBJ("obj/pillar2.obj");
 		objs[7]= new OBJ("obj/Boss");
-		objs[8]= new OBJ("obj/AcidBlob");
+		objs[8]= new OBJ("obj/AcidBlob.obj");
 	}
 	
 	// Loads the OBJ files for every frame of animation
@@ -135,14 +135,15 @@ public class GameModel {
 		models.add( new Model(objs[2], 8, new Point3D(20, 0, 54), zero(), .11, 1) ); // guard model 5
 		models.add( new Model(objs[2], 8, new Point3D(11, 0, 50), zero(), .11, 1) ); // guard model 6
 // ---------------Obstacle models ----------------------------------------------------------------------
-		models.add( new Model(objs[3], 1, new Point3D(0, .25, 83), new double[]{Math.PI/2,0,0}, .25, 1)); //scroll
+		models.add( new Model(objs[3], 1, new Point3D(0, 1.2, 83), new double[]{Math.PI/2,0,0}, .25, 1)); //scroll
 		// foyer
-		models.add( new Model(objs[5], 6, new Point3D(-4.2, 0, 4.2), zero(), 1, 2)); // wall
+		models.add( new Model(objs[5], 6, new Point3D(-3.6, 0, 4.4), zero(), 1, 2)); // wall
 		models.add( new Model(objs[5], 5, new Point3D(7.8, 0, -10.7), zero(), 1, 1)); // wall
-		models.add( new Model(objs[5], 6, new Point3D(-12.4, 0, -3.3), rtAngle(), 1, 2)); // wall
+		models.add( new Model(objs[5], 6, new Point3D(-12, 0, -3.1), rtAngle(), 1, 2)); // wall
 		models.add( new Model(objs[5], 6, new Point3D(12.4, 0, -3.3), rtAngle(), 1, 2)); // wall
 		models.add( new Model(objs[5], 6, new Point3D(-4.2, 0, -10.7), zero(), 1, 2)); // wall
 		// room 1
+		models.add( new Model(objs[5], 5, new Point3D(4, 0, 9), rtAngle(), 1, 1)); // wall
 		models.add( new Model(objs[5], 6, new Point3D(20.8, 0, 4.2), zero(), 1, 2)); // wall
 		models.add( new Model(objs[5], 6, new Point3D(20.8, 0, 29.2), zero(), 1, 2)); // wall
 		models.add( new Model(objs[5], 6, new Point3D(29.2, 0, 12.6), rtAngle(), 1, 2)); // wall
@@ -166,31 +167,34 @@ public class GameModel {
 		models.add( new Model(objs[5], 5, new Point3D(26.6, 0, 49), rtAngle(), 1, 1)); // wall
 		// Boss Chamber
 		models.add( new Model(objs[5], 6, new Point3D(20.2, 0, 70.4), rtAngle(), 1, 2)); // wall
-		models.add( new Model(objs[5], 6, new Point3D(-12.4, 0, 62), zero(), 1, 2)); // wall
-		models.add( new Model(objs[5], 6, new Point3D(-20.8, 0, 70.4), rtAngle(), 1, 2)); // wall
-		models.add( new Model(objs[5], 5, new Point3D(-20.8, 0, 82.4), rtAngle(), 1, 1)); // wall
-		models.add( new Model(objs[5], 6, new Point3D(-12.4, 0, 87), zero(), 1, 2)); // wall
-		models.add( new Model(objs[5], 6, new Point3D(3.6, 0, 87), zero(), 1, 2)); // wall
-		models.add( new Model(objs[5], 5, new Point3D(15.6, 0, 87), zero(), 1, 1)); // wall
+		models.add( new Model(objs[5], 6, new Point3D(-11.6, 0, 61.6), zero(), 1, 2)); // wall
+		models.add( new Model(objs[5], 5, new Point3D(.4, 0, 61.6), zero(), 1, 1)); // wall
+		models.add( new Model(objs[5], 6, new Point3D(-20, 0, 70), rtAngle(), 1, 2)); // wall
+		models.add( new Model(objs[5], 5, new Point3D(-20, 0, 82), rtAngle(), 1, 1)); // wall
+		models.add( new Model(objs[5], 6, new Point3D(-12.4, 0, 86.6), zero(), 1, 2)); // wall
+		models.add( new Model(objs[5], 6, new Point3D(3.6, 0, 86.6), zero(), 1, 2)); // wall
+		models.add( new Model(objs[5], 5, new Point3D(15.6, 0, 86.6), zero(), 1, 1)); // wall
 		models.add( new Model(objs[5], 5, new Point3D(20.2, 0, 82.4), rtAngle(), 1, 1)); // wall
 		// --- Pillars --- room 1
-		models.add( new Model(objs[6], 3, new Point3D(10, 0, 11), zero(), .9, 1)); // pillar
+		models.add( new Model(objs[6], 3, new Point3D(10, 0, 11), zero(), 1, 1)); // pillar
 		// room 2 (hard)
-		models.add( new Model(objs[6], 3, new Point3D(14, 0, 34), zero(), .9, 1)); // pillar
+		models.add( new Model(objs[6], 3, new Point3D(14, 0, 34), zero(), 1, 1)); // pillar
 		// room 3 (hard)
-		models.add( new Model(objs[6], 3, new Point3D(38, 0, 51), zero(), .9, 1)); // pillar
-		models.add( new Model(objs[6], 3, new Point3D(20, 0, 51), zero(), .9, 1)); // pillar
+		models.add( new Model(objs[6], 3, new Point3D(38, 0, 51), zero(), 1, 1)); // pillar
+		models.add( new Model(objs[6], 3, new Point3D(20, 0, 51), zero(), 1, 1)); // pillar
 		// Boss Chamber
-		models.add( new Model(objs[6], 3, new Point3D(5, 0, 67), zero(), .9, 1)); // pillar
-		models.add( new Model(objs[6], 3, new Point3D(11, 0, 76), zero(), .9, 1)); // pillar
-		models.add( new Model(objs[6], 3, new Point3D(-7, 0, 69), zero(), .9, 1)); // pillar
-		models.add( new Model(objs[6], 3, new Point3D(-13, 0, 77), zero(), .9, 1)); // pillar
+		models.add( new Model(objs[6], 3, new Point3D(5, 0, 67), zero(), 1, 1)); // pillar
+		models.add( new Model(objs[6], 3, new Point3D(11, 0, 76), zero(), 1, 1)); // pillar
+		models.add( new Model(objs[6], 3, new Point3D(-7, 0, 69), zero(), 1, 1)); // pillar
+		models.add( new Model(objs[6], 3, new Point3D(-13, 0, 77), zero(), 1, 1)); // pillar
 		// --- Tables --- room 2 (hard)
-		models.add( new Model(objs[4], 4, new Point3D(20, 0, 40), rtAngle(), .4, 1)); // table
-		models.add( new Model(objs[4], 4, new Point3D(28.5, 0, 40), rtAngle(), .4, 1)); // table
-		models.add( new Model(objs[4], 4, new Point3D(37, 0, 40), rtAngle(), .4, 1)); // table
+		models.add( new Model(objs[4], 4, new Point3D(20, 0, 41.8), rtAngle(), .4, 1)); // table
+		models.add( new Model(objs[4], 4, new Point3D(28.5, 0, 41.8), rtAngle(), .4, 1)); // table
+		models.add( new Model(objs[4], 4, new Point3D(37, 0, 41.8), rtAngle(), .4, 1)); // table
 		// room 3 (hard)
 		models.add( new Model(objs[4], 4, new Point3D(15.5, 0, 58.4), rtAngle(), .4, 1)); // table
+		// Boss Chamber
+		models.add( new Model(objs[4], 4, new Point3D(0, 0, 83), zero(), .4, 1)); // table
 		// --- Ceiling ---
 		models.add( new Model(objs[0], 0, new Point3D(0, 5, 0), new double[] {Math.PI,0,0}, 1, 1) ); // ceiling model
 		// --- Boss model ---
@@ -224,7 +228,7 @@ public class GameModel {
 	private void createObstacles(){
 		say("Creating obstacles...");
 		// scroll
-		obstacles[0]= new Obstacle(models.get(7), true, .75, .2, .2); 
+		obstacles[0]= new Obstacle(models.get(7), true, .2, .2, 1.3); 
 		scroll= obstacles[0];
 		// walls
 		for (int i= 1; i < numWalls+1; i++){
@@ -232,7 +236,7 @@ public class GameModel {
 		}
 		// pillars
 		for (int i= numWalls+1; i < numPillars+numWalls+1; i++){
-			obstacles[i]= new Obstacle(models.get(i + 7), false, 1.5, 1.5, 10); 
+			obstacles[i]= new Obstacle(models.get(i + 7), false, 1.5, 1.5, 5); 
 		}
 		// tables
 		for (int i= numWalls+numPillars+1; i < numObs; i++){

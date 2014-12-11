@@ -29,6 +29,8 @@ public class OBJ {
         OBJModelPath = Modelpath;
         LoadOBJModel(OBJModelPath);
         SetFaceRenderType();
+        ConstructInterleavedArray();
+        cleanup();
     }
     
     private void LoadOBJModel(String ModelPath) {
@@ -120,7 +122,7 @@ public class OBJ {
         }
     }
     
-    private void ConstructInterleavedArray(GL2 gl) {
+    private void ConstructInterleavedArray() {
         final int tv[] = (int[]) fv.get(0);
         final int tt[] = (int[]) ft.get(0);
         final int tn[] = (int[]) fn.get(0);
@@ -242,11 +244,11 @@ public class OBJ {
     }
        
     public void DrawModel(GL2 gl) {
-        if (init) {
-            ConstructInterleavedArray(gl);
-            cleanup();
-            init = false;
-        }
+//        if (init) {
+//            ConstructInterleavedArray();
+//            cleanup();
+//            init = false;
+//        }
         gl.glInterleavedArrays(type, 0, modeldata);
         gl.glEnable(GL2.GL_CULL_FACE);
         gl.glCullFace(GL2.GL_BACK);
@@ -268,6 +270,6 @@ public class OBJ {
         ft.clear();
         fn.clear();
         //modeldata.clear();
-        System.gc();
+        //System.gc();
     }
 }

@@ -57,7 +57,7 @@ public class Projectile {
 			Obstacle obs= obstacles[i];
 			double dist= loc.minus(obs.getLoc()).length();
 			
-			if (dist > threshold)
+			if (dist > threshold || obs.isLow)
 				continue;
 			
 			edges= gameModel.collision(myBox, obstacles[i].hitBox, edges);
