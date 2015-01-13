@@ -1,6 +1,6 @@
 ScrollThief
 ===========
-by Jon Pimentel and Melissa Smith, Copyright 2014
+by Jon Pimentel, Taft Sandbakken, TJ Besendorfer, Ryan Palmer, Kevin Hinton and Melissa Smith, Copyright 2014-2015
 
     A few notes:
     
