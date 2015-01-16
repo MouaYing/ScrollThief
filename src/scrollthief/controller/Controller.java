@@ -19,6 +19,7 @@ public class Controller extends TimerTask{
 	View view;
 	GameModel gameModel;
 	public XboxController xbc;
+	public KeyboardControl keyboard;
 	String dllPath;
 	int tick= 0;
 	int hitTimer= 0;
@@ -38,8 +39,12 @@ public class Controller extends TimerTask{
         xbc.setLeftThumbDeadZone(.2);
         xbc.setRightThumbDeadZone(.2);
         xbc.addXboxControllerListener(new XboxAdapter(this));
+        keyboard = new KeyboardControl(this);
+        view.addKeyListener(keyboard);
         if(!xbc.isConnected())
+        {
         	System.out.println("Xbox controller not connected...");
+        }
         
 		say("--Main controller loaded--\n");
 	}

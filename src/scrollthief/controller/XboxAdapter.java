@@ -11,17 +11,12 @@ import scrollthief.view.View;
 import ch.aplu.xboxcontroller.XboxControllerAdapter;
 
 public class XboxAdapter extends XboxControllerAdapter{
-	Controller controller;
-	View view;
-	GameModel gameModel;
-	
-	double rightStickDir= 0;
-	double rightStickMag= 0;
+	private Controller controller;
+	private GameControl gameControl;
 	
 	public XboxAdapter(Controller controller){
-		this.controller= controller;
-		this.view= controller.view;
-		this.gameModel= controller.gameModel;
+		this.controller = controller;
+		gameControl = new GameControl(controller);
 	}
 	
 	public void isConnected(boolean connected){
@@ -31,39 +26,31 @@ public class XboxAdapter extends XboxControllerAdapter{
 	}
 	
 	public void leftThumbDirection(double direction){
-		gameModel.setNinjaAngle(Math.toRadians(direction) +  view.getCamAngle());
+		gameControl.setNinjaAngle(direction);
 	}
 	
 	public void leftThumbMagnitude(double magnitude){
-//		double scale= .5;
-		double scale= 1;
-		gameModel.setNinjaSpeed(scale * magnitude);
+		gameControl.setNinjaSpeed(magnitude);
 	}
 	
 	public void rightThumbDirection(double direction){
-		rightStickDir= Math.toRadians(direction);
-		updateCamera();
+		gameControl.setCameraDirection(direction);
 	}
 	
 	public void rightThumbMagnitude(double magnitude){
-		rightStickMag= magnitude;
-		updateCamera();
+		gameControl.setCameraMagnitude(magnitude);
 	}
 	
 	public void leftShoulder(boolean pressed){
 		if (pressed){
-			controller.view.resetting= true;
-			System.out.println("Camera reset");
+			gameControl.resetCamera();
 		}
 		else controller.view.resetting= false;
 	}
 	
 	public void rightShoulder(boolean pressed){ // toggle devmode
 		if (pressed){
-			if (controller.devmode)
-				controller.devmode= false;
-			else controller.devmode= true;
-			say("Developer mode = " + controller.devmode);
+			gameControl.toggleDevMode();
 		}
 	}
 	
@@ -83,12 +70,7 @@ public class XboxAdapter extends XboxControllerAdapter{
 	
 	public void buttonA(boolean pressed){
 		if (pressed){
-			scrollthief.model.Character ninja= gameModel.getNinja();
-			if (ninja != null && !ninja.isJumping){
-				ninja.isJumping= true;
-				gameModel.getNinja().setDeltaY(.2);
-				// say("Jump!");
-			}
+			gameControl.jump();
 		}
 	}
 	
@@ -99,31 +81,7 @@ public class XboxAdapter extends XboxControllerAdapter{
 	
 	public void start(boolean pressed){
 		if (pressed){
-			if (!gameModel.state.equals("running") && !gameModel.state.equals("start")){ // game is over---reset
-				controller.reset();
-				controller.paused= false;
-			}
-			else if (controller.paused){
-				controller.paused= false;
-				gameModel.state= "running";
-			}
-			else controller.paused= true;
+			gameControl.pause();
 		}
-	}
-
-	private void updateCamera(){
-		double scale= .2;
-		
-		double dHoriz= -Math.sin(rightStickDir) * rightStickMag * scale;
-		double dVert= Math.cos(rightStickDir) * rightStickMag * scale;
-		
-		double[] delta= {dHoriz, dVert};
-		
-		view.setCamDelta(delta);
-	}
-	
-//	@SuppressWarnings("unused")
-	private void say(String message){
-		System.out.println(message);
 	}
 }
