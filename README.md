@@ -1,12 +1,15 @@
 ScrollThief
 ===========
 by Jon Pimentel, Taft Sandbakken, TJ Besendorfer, Ryan Palmer, Kevin Hinton and Melissa Smith, Copyright 2014-2015
-
-    A few notes:
     
-    - To create an instance of XboxAdapter, right now you need to hard-code an absolute path for xboxcontroller64.dll 
-    or xboxcontroller.dll. This is problematic for running on different machines. It would be good to get this to work 
-    by looking for the DLL in the PATH. ***EDIT: This has been fixed, but needs to be tested on other machines***
+    To get this to run in Eclipse (Try using Libra version, just to be safe):
     
-    - Whatever OpenGL library the View ends up using (e.g. JOGL) will probably need to be added to the repository 
- 
+    * Make a new project using the code in the repository
+    * Open the "Project" drop-down menu and select "Properties"
+    * Click "Java Build Path" on the list to the left
+    * Select the "Libraries" tab, and click "Add JARs..."
+    * The ones you need are:
+        Xbox_Java/lib/jaw.jar
+        Xbox_Java/lib/XboxController.jar
+        jogamp-all-platforms/jar/gluegen-rt.jar
+        jogamp-all-platforms/jar/jogl-all.jar
