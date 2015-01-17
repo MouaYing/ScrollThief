@@ -64,6 +64,14 @@ public class GameControl {
 		updateCamera();
 	}
 	
+	public void setNinjaRotationIncrement(double increment) {
+		ninjaRotationIncrement = increment;
+	}
+	
+	public void setCameraRotationIncrement(double increment) {
+		cameraRotationIncrement = increment;
+	}
+	
 	public void resetCamera(){
 		controller.view.resetting= true;
 		System.out.println("Camera reset");

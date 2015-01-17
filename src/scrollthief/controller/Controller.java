@@ -20,6 +20,7 @@ public class Controller extends TimerTask{
 	GameModel gameModel;
 	public XboxController xbc;
 	public KeyboardControl keyboard;
+	public MouseControl mouse;
 	String dllPath;
 	int tick= 0;
 	int hitTimer= 0;
@@ -41,6 +42,8 @@ public class Controller extends TimerTask{
         xbc.addXboxControllerListener(new XboxAdapter(this));
         keyboard = new KeyboardControl(this);
         view.addKeyListener(keyboard);
+        mouse = new MouseControl(this);
+        view.addMouseMotionListener(mouse);;
         if(!xbc.isConnected())
         {
         	System.out.println("Xbox controller not connected...");
