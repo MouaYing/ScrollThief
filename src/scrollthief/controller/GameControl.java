@@ -13,6 +13,7 @@ public class GameControl {
 	private double speedIncrement = 0.7;
 	private double ninjaRotationIncrement = 0.2;
 	private double cameraRotationIncrement = 0.1;
+	private float cameraHeightIncrement = 0.1f;
 	
 	public GameControl(Controller controller){
 		this.controller= controller;
@@ -34,6 +35,14 @@ public class GameControl {
 	
 	public void rotateCameraRight(){
 		view.setCamAngle(view.getCamAngle() + cameraRotationIncrement);
+	}
+	
+	public void increaseCameraHeight(){
+		view.setCamHeight(view.getCamHeight() + cameraHeightIncrement);
+	}
+	
+	public void decreaseCameraHeight(){
+		view.setCamHeight(view.getCamHeight() - cameraHeightIncrement);
 	}
 	
 	public void increaseSpeed(){
