@@ -29,7 +29,7 @@ public class Guard extends Character{
 		this.waypoints= wayPoints;
 		pointToCheck= wayPoints[0];
 		standing= new OBJ[] {model.getObj()};
-		walking= gameModel.getGuardWalk();
+		walking= gameModel.getResource().getGuardWalk();
 		motion= standing;
 	}
 	

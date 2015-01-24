@@ -87,7 +87,7 @@ public class View extends GLCanvas implements GLEventListener{
 		}
 		gl = drawable.getGL().getGL2();
 		ArrayList<Model> models= gameModel.getModels();
-		Texture[] textures= gameModel.getTextures();
+		Texture[] textures= gameModel.getResource().getTextures();
 		
 		// apply world-to-camera transform
 		world2camera(gl);

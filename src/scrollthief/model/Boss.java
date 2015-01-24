@@ -17,7 +17,7 @@ public class Boss extends Character{
 		turnRate= .02;
 		setSpeed(.2);
 		standing= new OBJ[] {model.getObj()};
-		stomping= gameModel.getBossStomp();
+		stomping= gameModel.getResource().getBossStomp();
 		motion= standing;
 	}
 	
@@ -60,7 +60,7 @@ public class Boss extends Character{
 		tickCount= 0;
 		double scale= 3;
 		double direction= getAngle() - Math.PI;
-		OBJ[] objs= gameModel.getOBJs();
+		OBJ[] objs= gameModel.getResource().getOBJs();
 		Point3D ninjaLoc= gameModel.getNinjaLoc();
 		// calculate target vector
 		Point3D bossHead= new Point3D(getLoc().x, getLoc().y + 3.2, getLoc().z);
