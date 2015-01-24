@@ -72,6 +72,7 @@ public class GameModel {
 		// room 1
 		models.add( new Model(resource.getOBJs()[5], 5, new Point3D(4, 0, 9), rtAngle(), 1, 1)); // wall
 		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(20.8, 0, 4.2), zero(), 1, 2)); // wall
+		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(20.8, 0, 29.2), zero(), 1, 2)); // wall
 		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(29.2, 0, 12.6), rtAngle(), 1, 2)); // wall
 		models.add( new Model(resource.getOBJs()[5], 5, new Point3D(29.2, 0, 24.6), rtAngle(), 1, 1)); // wall
 		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(4, 0, 21), rtAngle(), 1, 2)); // wall
