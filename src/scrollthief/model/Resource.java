@@ -13,6 +13,11 @@ import com.jogamp.opengl.util.awt.ImageUtil;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
 
+/**
+ * @author Taft Sandbakken
+ *
+ * This class handles texture and animation importing using multithreads
+ */
 public class Resource {
 	boolean debug = false;
 	
@@ -58,7 +63,6 @@ public class Resource {
 		threads.add(new Thread() {
 			public void run() {
 				loadNinjaAnimations();
-				say("done with ninja ");
 			}
 		});
 		threads.get(threads.size() - 1).start();
@@ -66,7 +70,6 @@ public class Resource {
 		threads.add(new Thread() {
 			public void run() {
 				loadGuardAnimations();
-				say("done with guard ");
 			}
 		});
 		threads.get(threads.size() - 1).start();
@@ -74,7 +77,6 @@ public class Resource {
 		threads.add(new Thread() {
 			public void run() {
 				loadBossAnimations();
-				say("done with boss ");
 			}
 		});
 		threads.get(threads.size() - 1).start();
@@ -102,6 +104,7 @@ public class Resource {
 			String fileName= "obj/anim/ninja/run." + (i+1) + ".obj";
 			ninjaRun[i]= new OBJ(fileName);
 		}
+		say("done with ninja ");
 	}
 	
 	private void loadGuardAnimations() {
@@ -112,6 +115,7 @@ public class Resource {
 			String fileName= "obj/anim/guard/walk." + (i+1) + ".obj";
 			guardWalk[i]= new OBJ(fileName);
 		}
+		say("done with guard ");
 	}
 	
 	private void loadBossAnimations() {
@@ -122,6 +126,7 @@ public class Resource {
 			String fileName= "obj/anim/boss/stomp." + (i+1) + ".obj";
 			bossStomp[i]= new OBJ(fileName);
 		}
+		say("done with boss ");
 	}
 	
 	private void loadTextures(GL2 gl){
