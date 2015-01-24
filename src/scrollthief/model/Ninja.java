@@ -15,7 +15,7 @@ public class Ninja extends Character {
 	public Ninja(GameModel gameModel, Model model, double boxLength, double boxWidth) {
 		super(gameModel, model, boxLength, boxWidth);
 		standing= new OBJ[] {defaultOBJ};
-		running= gameModel.getNinjaRun();
+		running= gameModel.getResource().getNinjaRun();
 		jumping= new OBJ[] {running[0]};
 		motion= standing;
 	}
