@@ -23,8 +23,7 @@ import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
  */
 public class GameModel {
 	Resource resource;
-	public boolean initializing= true;
-	public String state= "start";
+	private GameState state = GameState.Uninitialized;
 	final int numGuards= 5;
 	final int numWalls= 34;
 	final int numPillars= 8;
@@ -40,7 +39,8 @@ public class GameModel {
 	Obstacle scroll;
 	
 	public GameModel(){
-		resource = new Resource();
+		changeState(GameState.Initialized);
+		resource = new Resource(this);
 		numModels= numGuards + numObs + 3;
 		models= new ArrayList<Model>();
 		guards= new Guard[numGuards];
@@ -171,17 +171,45 @@ public class GameModel {
 		}
 	}
 	
-	public void init(GL2 gl){
-		resource.init(gl);
-		createModels();
-		createCharacters();
-		createObstacles();
-		say("--Game model loaded--\n\nStarting game. Good luck!\n");
-		initializing= false;
+	public void init(final GL2 gl){
+		changeState(GameState.ResourceLoading);
+		Thread resourceThread = new Thread() {
+			public void run() {
+				resource.init();
+			}
+		};
+		resourceThread.start();
+		resource.loadTextures(gl);
+	}
+	
+	public void finishedLoading(String type){
+		if(type.equals("resource")){
+			say("LevelLoading");
+			changeState(GameState.LevelLoading);
+			createModels();
+			createCharacters();
+			createObstacles();
+			say("--Game model loaded--\n\nStarting game. Good luck!\n");
+			changeState(GameState.Start);
+		}
+	}
+	
+	//This makes 
+	public void changeState(GameState newState) {
+		say("Game State moving from " + state + " to " + newState);
+		state = newState;
+	}
+	
+	public GameState getState(){
+		return state;
 	}
 	
 	public Guard[] getGuards(){
 		return guards;
+	}
+	
+	public LoadingBar getResourceLoadingBar(){
+		return resource.getLoadingBar();
 	}
 	
 	public Obstacle[] getObstacles(){
@@ -209,6 +237,9 @@ public class GameModel {
 	}
 
 	public double getNinjaAngle(){
+		if(ninja == null){
+			return 0;
+		}
 		return ninja.getAngle();
 	}
 	
@@ -217,6 +248,9 @@ public class GameModel {
 	}
 	
 	public Point3D getNinjaLoc(){
+		if(ninja == null){
+			return new Point3D(0,0,0);
+		}
 		return ninja.getLoc();
 	}
 	
@@ -358,10 +392,6 @@ public class GameModel {
 			angle -= 2 * Math.PI;
 		
 		return angle;
-	}
-	
-	public void finishedLoading(){
-		
 	}
 	
 	private double[] zero(){

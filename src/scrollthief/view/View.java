@@ -14,6 +14,8 @@ import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.gl2.GLUT;
 import com.jogamp.opengl.util.texture.Texture;
 
+import scrollthief.model.GameState;
+import scrollthief.model.LoadingBar;
 import scrollthief.model.Point3D;
 import scrollthief.model.Model;
 import scrollthief.model.GameModel;
@@ -85,9 +87,7 @@ public class View extends GLCanvas implements GLEventListener{
 		if (init){
 			return;
 		}
-		gl = drawable.getGL().getGL2();
-		ArrayList<Model> models= gameModel.getModels();
-		Texture[] textures= gameModel.getResource().getTextures();
+		gl = drawable.getGL().getGL2();		
 		
 		// apply world-to-camera transform
 		world2camera(gl);
@@ -97,45 +97,59 @@ public class View extends GLCanvas implements GLEventListener{
 		gl.glLoadIdentity();
 		gl.glColor3f(1f, 1f, 1f);
 		
-		// draw each model with its texture
-		for (int i= 0; i < models.size(); i++){
-			gl.glPushMatrix();
-			Model model= models.get(i);
-			
-			// assign texture
-			textures[model.getTxtr()].bind(gl);
-			
-			//apply object to window transform
-			obj2world(gl, model);
-			
-			model.getObj().DrawModel(gl);
-			
-			gl.glPopMatrix();
-			gl.glFlush();
+
+		if(gameModel.getState() != GameState.ResourceLoading && gameModel.getState() != GameState.LevelLoading){
+
+			ArrayList<Model> models= gameModel.getModels();
+			Texture[] textures= gameModel.getResource().getTextures();
+			// draw each model with its texture
+			for (int i= 0; i < models.size(); i++){
+				gl.glPushMatrix();
+				Model model= models.get(i);
+				
+				// assign texture
+				textures[model.getTxtr()].bind(gl);
+				
+				//apply object to window transform
+				obj2world(gl, model);
+				
+				model.getObj().DrawModel(gl);
+				
+				gl.glPopMatrix();
+				gl.glFlush();
+			}
 		}
-		if (gameModel.state.equals("start")){
+		else if(gameModel.getState() == GameState.ResourceLoading){
+			LoadingBar loading = gameModel.getResourceLoadingBar();
+			String text= "Resource Loading:" + loading.getProgress() + "/" + loading.getTotal();
+			overlayText(text,  windowX/2 - (15 * text.length()/2), windowY/2 + 150, Color.blue, "reg");
+		}
+		else if(gameModel.getState() == GameState.LevelLoading){
+			
+		}
+		if (gameModel.getState() == GameState.Paused){
 			String text= "Steal the enemy battle plans (scroll)";
 			overlayText(text,  windowX/2 - (15 * text.length()/2), windowY/2 + 150, Color.blue, "reg");
 			text= "without being detected";
 			overlayText(text,  windowX/2 - (15 * text.length()/2), windowY/2 + 100, Color.blue, "reg");
-			text= "Press start to begin";
+			text= "Press start to continue";
 			overlayText(text,  windowX/2 - (30 * text.length()/2), windowY/2, Color.blue, "big");
 		}
-		else if (gameModel.state.equals("spotted")){
+		else if (gameModel.getState() == GameState.Spotted){
 			String text= "You've been spotted!";
 			overlayText(text,  windowX/2 - (30 * text.length()/2), windowY/2 + 100, Color.blue, "big");
 			
 			text= "Mission Failed! Press start to try again...";
 			overlayText(text,  windowX/2 - (15 * text.length()/2), windowY/2 + 50, Color.blue, "reg");
 		}
-		else if (gameModel.state.equals("killed")){
+		else if (gameModel.getState() == GameState.Killed){
 			String text= "You've been killed!";
 			overlayText(text,  windowX/2 - (30 * text.length()/2), windowY/2 + 100, Color.red, "big");
 			
 			text= "Mission Failed! Press start to try again...";
 			overlayText(text,  windowX/2 - (15 * text.length()/2), windowY/2 + 50, Color.blue, "reg");
 		}
-		else if (gameModel.state.equals("victory")){
+		else if (gameModel.getState() == GameState.Victory){
 			String text= "Mission Complete!";
 			overlayText(text,  windowX/2 - (30 * text.length()/2), windowY/2 + 100, Color.blue, "big");
 			

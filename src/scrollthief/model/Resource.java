@@ -27,19 +27,22 @@ public class Resource {
 	private OBJ[] guardWalk;
 	private OBJ[] bossStomp;
 	private Texture[] textures;
+	private LoadingBar loadingBar;
 	
+	private final int total = 5;
 	private final int OBJS_NUM = 9;
 	private final int NINJA_RUN_NUM = 21;
 	private final int GUARD_WALK_NUM = 30;
 	private final int BOSS_STOMP_NUM = 24;
 	private final int TEXTURES_NUM = 12;
 	
-	public Resource() {
+	public Resource(GameModel gameModel) {
 		objs = new OBJ[OBJS_NUM];
 		ninjaRun = new OBJ[NINJA_RUN_NUM];
 		guardWalk = new OBJ[GUARD_WALK_NUM];
 		bossStomp = new OBJ[BOSS_STOMP_NUM];
 		textures = new Texture[TEXTURES_NUM];
+		loadingBar = new LoadingBar(total,gameModel,"resource");
 	}
 	
 	// Loads the default OBJ files
@@ -54,6 +57,7 @@ public class Resource {
 		objs[6]= new OBJ("obj/pillar2.obj");
 		objs[7]= new OBJ("obj/boss_stand.obj");
 		objs[8]= new OBJ("obj/AcidBlob.obj");
+		loadingBar.increaseProgress(1);
 	}
 	
 	// Loads the OBJ files for every frame of animation
@@ -105,6 +109,7 @@ public class Resource {
 			ninjaRun[i]= new OBJ(fileName);
 		}
 		say("done with ninja ");
+		loadingBar.increaseProgress(1);
 	}
 	
 	private void loadGuardAnimations() {
@@ -116,6 +121,7 @@ public class Resource {
 			guardWalk[i]= new OBJ(fileName);
 		}
 		say("done with guard ");
+		loadingBar.increaseProgress(1);
 	}
 	
 	private void loadBossAnimations() {
@@ -127,9 +133,10 @@ public class Resource {
 			bossStomp[i]= new OBJ(fileName);
 		}
 		say("done with boss ");
+		loadingBar.increaseProgress(1);
 	}
 	
-	private void loadTextures(GL2 gl){
+	public void loadTextures(GL2 gl){
 		say("\nLoading texture files...");
 		GLProfile profile= gl.getGLProfile();
 		String[] imgPaths= new String[12];
@@ -159,6 +166,7 @@ public class Resource {
 				e.printStackTrace();
 			}
 		}
+		loadingBar.increaseProgress(1);
 	}
 	
 	public OBJ[] getOBJs(){
@@ -181,14 +189,18 @@ public class Resource {
 		return textures;
 	}
 	
-	public void init(GL2 gl){
+	public LoadingBar getLoadingBar() {
+		return loadingBar;
+	}
+	
+	public void init(){
 		loadOBJs();
 		
 		long startTime = System.nanoTime();
 		loadAnimations();
 		long total = (System.nanoTime() - startTime) / 1000000000;
 		
-		loadTextures(gl);
+		//loadTextures(gl);
 		
 		say("time to load Animations: " + total);
 	}

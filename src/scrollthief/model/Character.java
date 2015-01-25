@@ -125,7 +125,7 @@ public class Character {
 			
 			if (!edges.isEmpty()){
 				if (obstacles[i].equals(gameModel.getScroll()) && model.getObj().equals(ninja.getModel().getObj())){
-					gameModel.state= "victory";
+					gameModel.changeState(GameState.Victory);
 				}
 //				say("Number of collisions: "+edges.size());
 				for (int j= 0; j < edges.size(); j++){
