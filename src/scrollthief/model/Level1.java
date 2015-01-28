@@ -3,7 +3,6 @@ package scrollthief.model;
 import java.util.ArrayList;
 
 public class Level1 implements Level {
-	// Level variables
 	int numGuards;
 	int numWalls;
 	int numPillars;
@@ -117,8 +116,7 @@ public class Level1 implements Level {
 		models.add( new Model(resource.getOBJs()[7], 10, new Point3D(0, 0, 76), gameModel.zero(), .2, 1)); // Boss
 	}
 	
-	@Override
-	public Point3D[][] createGuardOrders() {
+	private Point3D[][] createGuardOrders() {
 		Point3D[][] orders= new Point3D[][]{
 /*guard 0*/	new Point3D[]{new Point3D(6,0,26),new Point3D(16,0,26)}, 
 /*guard 1*/	new Point3D[]{new Point3D(24,0,31),new Point3D(24,0,41)},

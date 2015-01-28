@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 public interface Level {
 	public void createModels();
-	public Point3D[][] createGuardOrders();
 	public void createCharacters();
 	public void createObstacles();
 	public Guard[] getGuards();
