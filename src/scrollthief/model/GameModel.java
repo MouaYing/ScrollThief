@@ -15,18 +15,16 @@ import javax.media.opengl.GL2;
 public class GameModel {
 	Resource resource;
 	private GameState state = GameState.Uninitialized;
-	private LevelState levelState;
 	private Level currentLevel;
 	private LevelFactory levelFactory;
 	
 	public GameModel(){
 		changeState(GameState.Initialized);
 		resource = new Resource(this);
-		
-		levelState = LevelState.Level1;
+
 		levelFactory = new LevelFactory();
 		
-		currentLevel = levelFactory.getLevel(levelState, resource, this);
+		currentLevel = levelFactory.getNextLevel(resource, this);
 	}
 	
 	private void createModels(){

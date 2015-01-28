@@ -1,5 +1,5 @@
 package scrollthief.model;
 
 public enum LevelState {
-	Level1
+	Level0, Level1
 }

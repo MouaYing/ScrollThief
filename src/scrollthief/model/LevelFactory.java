@@ -1,17 +1,18 @@
 package scrollthief.model;
 
 public class LevelFactory {
-	public Level getLevel(LevelState levelState, Resource resource, GameModel gameModel) {
-		if(levelState == LevelState.Level1)
-			return new Level1(resource, gameModel);
-		
-		return null;
+	private LevelState levelState;
+	
+	public LevelFactory() {
+		levelState = LevelState.Level0;
 	}
 	
-	public LevelState nextLevel(LevelState levelState) {
-		//if(levelState == LevelState.Level1)
-		//	return LevelState.Level2
-		//...
+	public Level getNextLevel(Resource resource, GameModel gameModel) {
+		if(levelState == LevelState.Level0)
+			return new Level1(resource, gameModel);
+//		if(levelState == LevelState.Level1)
+//			return new Level2(resource, gameModel);
+//		...
 		
 		return null;
 	}
