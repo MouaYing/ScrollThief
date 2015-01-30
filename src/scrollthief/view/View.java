@@ -121,6 +121,9 @@ public class View extends GLCanvas implements GLEventListener{
 		}
 		else if(gameModel.getState() == GameState.ResourceLoading){
 			LoadingBar loading = gameModel.getResourceLoadingBar();
+//			float width = 100 * (loading.getProgress()/loading.getTotal());
+//			gl.glRectf(400+width, 400, 500, 450);
+//			gl.glRectf(400, 400, 400+width, 450);
 			String text= "Resource Loading:" + loading.getProgress() + "/" + loading.getTotal();
 			overlayText(text,  windowX/2 - (15 * text.length()/2), windowY/2 + 150, Color.blue, "reg");
 		}

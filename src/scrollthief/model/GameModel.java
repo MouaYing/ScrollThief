@@ -6,10 +6,13 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.EventListener;
+import java.util.EventObject;
 
 import javax.imageio.ImageIO;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLProfile;
+import javax.swing.event.EventListenerList;
 
 import com.jogamp.opengl.util.awt.ImageUtil;
 import com.jogamp.opengl.util.texture.Texture;
@@ -37,6 +40,23 @@ public class GameModel {
 	Ninja ninja;
 	Boss boss;
 	Obstacle scroll;
+	
+	protected EventListenerList listenerList = new EventListenerList();
+
+	  public void addMyEventListener(StateChangedListener listener) {
+	    listenerList.add(StateChangedListener.class, listener);
+	  }
+	  public void removeMyEventListener(StateChangedListener listener) {
+	    listenerList.remove(StateChangedListener.class, listener);
+	  }
+	  void fireMyEvent(StateChange evt) {
+	    Object[] listeners = listenerList.getListenerList();
+	    for (int i = 0; i < listeners.length; i = i+2) {
+	      if (listeners[i] == StateChangedListener.class) {
+	        ((StateChangedListener) listeners[i+1]).stateChanged(evt);
+	      }
+	    }
+	  }
 	
 	public GameModel(){
 		changeState(GameState.Initialized);
@@ -406,3 +426,6 @@ public class GameModel {
 		System.out.println(message);
 	}
 }
+
+
+
