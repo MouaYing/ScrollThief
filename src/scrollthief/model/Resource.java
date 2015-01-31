@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.media.opengl.GL2;
@@ -28,7 +29,8 @@ public class Resource {
 	private OBJ[] bossStomp;
 	private Texture[] textures;
 	private LoadingBar loadingBar;
-	
+	private ArrayList<BufferedImage> images;
+	private Random rand;
 	private final int total = 5;
 	private final int OBJS_NUM = 9;
 	private final int NINJA_RUN_NUM = 21;
@@ -37,12 +39,26 @@ public class Resource {
 	private final int TEXTURES_NUM = 12;
 	
 	public Resource(GameModel gameModel) {
+		images = new ArrayList<BufferedImage>();
+		rand = new Random();
 		objs = new OBJ[OBJS_NUM];
 		ninjaRun = new OBJ[NINJA_RUN_NUM];
 		guardWalk = new OBJ[GUARD_WALK_NUM];
 		bossStomp = new OBJ[BOSS_STOMP_NUM];
 		textures = new Texture[TEXTURES_NUM];
 		loadingBar = new LoadingBar(total,gameModel,"resource");
+		String[] imgPaths= new String[2];
+		imgPaths[0]= "images/ninja_moon.jpg";
+		imgPaths[1]= "images/ninja_slice.jpg";
+		for(int i = 0; i < imgPaths.length; i++){
+			try{
+			BufferedImage image= ImageIO.read(new File(imgPaths[i]));
+			ImageUtil.flipImageVertically(image);
+			images.add(image);
+			}catch(IOException e){
+				System.out.println("Error Loading Splash Images");
+			}
+		}
 	}
 	
 	// Loads the default OBJ files
@@ -191,6 +207,11 @@ public class Resource {
 	
 	public LoadingBar getLoadingBar() {
 		return loadingBar;
+	}
+	
+	public BufferedImage getSplashImage() {
+		int index = rand.nextInt(images.size());
+		return images.get(index);
 	}
 	
 	public void init(){

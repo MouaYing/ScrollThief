@@ -43,13 +43,13 @@ public class GameModel {
 	
 	protected EventListenerList listenerList = new EventListenerList();
 
-	  public void addMyEventListener(StateChangedListener listener) {
+	  public void addStateChangedListener(StateChangedListener listener) {
 	    listenerList.add(StateChangedListener.class, listener);
 	  }
-	  public void removeMyEventListener(StateChangedListener listener) {
+	  public void removeStateChangedListener(StateChangedListener listener) {
 	    listenerList.remove(StateChangedListener.class, listener);
 	  }
-	  void fireMyEvent(StateChange evt) {
+	  void fireStateChanged(StateChange evt) {
 	    Object[] listeners = listenerList.getListenerList();
 	    for (int i = 0; i < listeners.length; i = i+2) {
 	      if (listeners[i] == StateChangedListener.class) {
@@ -218,6 +218,11 @@ public class GameModel {
 	public void changeState(GameState newState) {
 		say("Game State moving from " + state + " to " + newState);
 		state = newState;
+		fireStateChanged(new StateChange(newState));
+	}
+	
+	public BufferedImage getSplashImage(){
+		return resource.getSplashImage();
 	}
 	
 	public GameState getState(){

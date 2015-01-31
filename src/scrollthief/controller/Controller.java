@@ -52,7 +52,7 @@ public class Controller extends TimerTask{
         }
         
 
-		this.gameModel.addMyEventListener(new StateChangedListener() {
+		this.gameModel.addStateChangedListener(new StateChangedListener() {
 	      public void stateChanged(StateChange evt) {
 	        redisplay();
 	      }

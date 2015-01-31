@@ -120,12 +120,24 @@ public class View extends GLCanvas implements GLEventListener{
 			}
 		}
 		else if(gameModel.getState() == GameState.ResourceLoading){
+			
 			LoadingBar loading = gameModel.getResourceLoadingBar();
-//			float width = 100 * (loading.getProgress()/loading.getTotal());
-//			gl.glRectf(400+width, 400, 500, 450);
-//			gl.glRectf(400, 400, 400+width, 450);
 			String text= "Resource Loading:" + loading.getProgress() + "/" + loading.getTotal();
 			overlayText(text,  windowX/2 - (15 * text.length()/2), windowY/2 + 150, Color.blue, "reg");
+			int leftX = windowX - 400;
+			int leftY = windowY - 200;
+			float percentage = (loading.getProgress()/loading.getTotal());
+			float width = 100 * percentage;
+			say("Loading is at percentage" + percentage + " ");
+			say(leftX + ", " + leftY + " is here");
+			say("Loading has made" + width + " progress");
+			gl.glColor3f(1, 1, 1);
+			gl.glRectf(leftX+width, leftY, leftX+100, leftY+50);
+			gl.glColor3f(0, 0, 1);
+			gl.glRectf(leftX, leftY, leftX+width, leftY+50);
+
+			gl.glFlush();
+
 		}
 		else if(gameModel.getState() == GameState.LevelLoading){
 			
