@@ -8,6 +8,7 @@ import java.util.Timer;
 import javax.swing.JFrame;
 
 import scrollthief.controller.Controller;
+import scrollthief.controller.GameControl;
 import scrollthief.model.GameModel;
 import scrollthief.view.View;
 
@@ -23,6 +24,8 @@ public class ScrollThief {
 		GameModel gameModel= new GameModel();
 		View view= new View(gameModel);
 		Controller controller = new Controller(window, view, gameModel);
+		GameControl gameControl = new GameControl(controller);
+		controller.setGameControl(gameControl);
 		
 		//anim= new FPSAnimator(view, FPS);
 		

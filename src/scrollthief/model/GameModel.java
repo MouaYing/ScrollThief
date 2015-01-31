@@ -39,6 +39,11 @@ public class GameModel {
 	Boss boss;
 	Obstacle scroll;
 	
+	private boolean aPressed;
+	private boolean sPressed;
+	private boolean dPressed;
+	private boolean wPressed;
+	
 	public GameModel(){
 		resource = new Resource();
 		numModels= numGuards + numObs + 3;
@@ -46,6 +51,43 @@ public class GameModel {
 		guards= new Guard[numGuards];
 		obstacles= new Obstacle[numObs];
 		projectiles= new ArrayList<Projectile>();
+		
+		this.aPressed = false;
+		this.sPressed = false;
+		this.dPressed = false;
+		this.wPressed = false;
+	}
+	
+	public boolean getAPressed() {
+		return aPressed;
+	}
+	
+	public void setAPressed(boolean aPressed) {
+		this.aPressed = aPressed;
+	}
+	
+	public boolean getSPressed() {
+		return sPressed;
+	}
+	
+	public void setSPressed(boolean sPressed) {
+		this.sPressed = sPressed;
+	}
+	
+	public boolean getDPressed() {
+		return dPressed;
+	}
+	
+	public void setDPressed(boolean dPressed) {
+		this.dPressed = dPressed;
+	}
+	
+	public boolean getWPressed() {
+		return wPressed;
+	}
+	
+	public void setWPressed(boolean wPressed) {
+		this.wPressed = wPressed;
 	}
 	
 	private void createModels(){

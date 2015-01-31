@@ -18,6 +18,7 @@ public class Controller extends TimerTask{
 	JFrame window;
 	View view;
 	GameModel gameModel;
+	private GameControl gameControl;
 	public XboxController xbc;
 	public KeyboardControl keyboard;
 	public MouseControl mouse;
@@ -29,6 +30,8 @@ public class Controller extends TimerTask{
 	
 	public Controller(JFrame window, View view, GameModel gameModel){
 		say("Loading main controller...");
+		
+		gameControl = new GameControl(this);
 		
 		this.window= window;
 		this.view= view;
@@ -149,8 +152,27 @@ public class Controller extends TimerTask{
 		}
 // ---------------------------------------------------------------------------------------------------	
 		
+		if(gameModel.getWPressed())
+			gameControl.increaseSpeed();
+		if(gameModel.getSPressed())
+			gameControl.stop();
+		if(gameModel.getAPressed())
+			gameControl.rotateNinjaLeft();
+		if(gameModel.getDPressed())
+			gameControl.rotateNinjaRight();
+		
+// ---------------------------------------------------------------------------------------------------	
+		
 		view.display();
 		
+	}
+
+	public void setGameControl(GameControl gameControl) {
+		this.gameControl = gameControl;
+	}
+	
+	public GameControl getGameControl() {
+		return gameControl;
 	}
 	
 	public void moveCamera(){
