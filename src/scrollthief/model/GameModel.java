@@ -192,6 +192,7 @@ public class GameModel {
 	}
 	
 	public void init(final GL2 gl){
+		resource.loadImages(gl);
 		changeState(GameState.ResourceLoading);
 		Thread resourceThread = new Thread() {
 			public void run() {
@@ -221,7 +222,7 @@ public class GameModel {
 		fireStateChanged(new StateChange(newState));
 	}
 	
-	public BufferedImage getSplashImage(){
+	public Texture getSplashImage(){
 		return resource.getSplashImage();
 	}
 	

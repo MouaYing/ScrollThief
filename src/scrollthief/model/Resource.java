@@ -1,5 +1,6 @@
 package scrollthief.model;
 
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -29,18 +30,21 @@ public class Resource {
 	private OBJ[] bossStomp;
 	private Texture[] textures;
 	private LoadingBar loadingBar;
-	private ArrayList<BufferedImage> images;
+	private Texture[] images;
 	private Random rand;
+	private int mainSplashIndex;
 	private final int total = 5;
 	private final int OBJS_NUM = 9;
 	private final int NINJA_RUN_NUM = 21;
 	private final int GUARD_WALK_NUM = 30;
 	private final int BOSS_STOMP_NUM = 24;
 	private final int TEXTURES_NUM = 12;
+	private final int IMAGES_NUM = 2;
 	
 	public Resource(GameModel gameModel) {
-		images = new ArrayList<BufferedImage>();
+		images = new Texture[IMAGES_NUM];
 		rand = new Random();
+		mainSplashIndex = rand.nextInt(IMAGES_NUM);
 		objs = new OBJ[OBJS_NUM];
 		ninjaRun = new OBJ[NINJA_RUN_NUM];
 		guardWalk = new OBJ[GUARD_WALK_NUM];
@@ -48,18 +52,7 @@ public class Resource {
 		textures = new Texture[TEXTURES_NUM];
 		int total = OBJS_NUM + NINJA_RUN_NUM + GUARD_WALK_NUM + BOSS_STOMP_NUM + TEXTURES_NUM;
 		loadingBar = new LoadingBar(total,gameModel,"resource");
-		String[] imgPaths= new String[2];
-		imgPaths[0]= "images/ninja_moon.jpg";
-		imgPaths[1]= "images/ninja_slice.jpg";
-		for(int i = 0; i < imgPaths.length; i++){
-			try{
-			BufferedImage image= ImageIO.read(new File(imgPaths[i]));
-			ImageUtil.flipImageVertically(image);
-			images.add(image);
-			}catch(IOException e){
-				System.out.println("Error Loading Splash Images");
-			}
-		}
+		
 	}
 	
 	// Loads the default OBJ files
@@ -194,6 +187,22 @@ public class Resource {
 		}
 	}
 	
+	public void loadImages(GL2 gl) {
+		GLProfile profile= gl.getGLProfile();
+		String[] imgPaths= new String[2];
+		imgPaths[0]= "images/ninja_moon.jpg";
+		imgPaths[1]= "images/ninja_slice.jpg";
+		for(int i = 0; i < imgPaths.length; i++){
+			try{
+			BufferedImage image= ImageIO.read(new File(imgPaths[i]));
+			ImageUtil.flipImageVertically(image);
+			images[i] = AWTTextureIO.newTexture(profile, image, false);
+			}catch(IOException e){
+				System.out.println("Error Loading Splash Images");
+			}
+		}
+	}
+	
 	public OBJ[] getOBJs(){
 		return objs;
 	}
@@ -218,9 +227,8 @@ public class Resource {
 		return loadingBar;
 	}
 	
-	public BufferedImage getSplashImage() {
-		int index = rand.nextInt(images.size());
-		return images.get(index);
+	public Texture getSplashImage() {
+		return images[mainSplashIndex];
 	}
 	
 	public void init(){
