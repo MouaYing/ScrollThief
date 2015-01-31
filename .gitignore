@@ -17,6 +17,8 @@ $RECYCLE.BIN/
 # Java files
 .project
 .classpath
+out/
+.gitignore
 
 # =========================
 # Operating System Files

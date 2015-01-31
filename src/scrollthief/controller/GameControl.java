@@ -1,6 +1,7 @@
 package scrollthief.controller;
 
 import scrollthief.model.GameModel;
+import scrollthief.model.GameState;
 import scrollthief.view.View;
 
 public class GameControl {
@@ -107,15 +108,15 @@ public class GameControl {
 	}
 	
 	public void pause(){
-		if (!gameModel.state.equals("running") && !gameModel.state.equals("start")){ // game is over---reset
+		if (gameModel.getState() == GameState.Spotted || gameModel.getState() == GameState.Killed && gameModel.getState() == GameState.Victory){ // game is over---reset
 			controller.reset();
-			controller.paused= false;
 		}
-		else if (controller.paused){
-			controller.paused= false;
-			gameModel.state= "running";
+		else if (gameModel.getState() == GameState.Paused){
+			gameModel.changeState(GameState.Playing);
 		}
-		else controller.paused= true;
+		else {
+			gameModel.changeState(GameState.Paused);
+		}
 	}
 	
 	private void updateCamera(){
