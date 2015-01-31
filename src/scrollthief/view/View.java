@@ -122,21 +122,33 @@ public class View extends GLCanvas implements GLEventListener{
 		else if(gameModel.getState() == GameState.ResourceLoading){
 			
 			LoadingBar loading = gameModel.getResourceLoadingBar();
-			String text= "Resource Loading:" + loading.getProgress() + "/" + loading.getTotal();
-			overlayText(text,  windowX/2 - (15 * text.length()/2), windowY/2 + 150, Color.blue, "reg");
 			int leftX = windowX - 400;
 			int leftY = windowY - 200;
-			float percentage = (loading.getProgress()/loading.getTotal());
+			float percentage = ((float)loading.getProgress()/(float)loading.getTotal());
 			float width = 100 * percentage;
-			say("Loading is at percentage" + percentage + " ");
-			say(leftX + ", " + leftY + " is here");
-			say("Loading has made" + width + " progress");
-			gl.glColor3f(1, 1, 1);
-			gl.glRectf(leftX+width, leftY, leftX+100, leftY+50);
-			gl.glColor3f(0, 0, 1);
-			gl.glRectf(leftX, leftY, leftX+width, leftY+50);
+			int maxWidth = 100;
+			int height = 25;
+			gl.glPushMatrix();
+			gl.glMatrixMode(gl.GL_PROJECTION);
+			gl.glLoadIdentity();
+			gl.glOrtho(0, windowX, windowY, 0, -10, 10);
+			gl.glBegin(gl.GL_QUADS);
+				gl.glColor3f(1, 0, 0);
+				gl.glVertex2f(leftX, leftY);
+				gl.glVertex2f(leftX, leftY+height);
+				gl.glVertex2f(leftX+maxWidth, leftY+height);
+				gl.glVertex2f(leftX+maxWidth, leftY);
+			gl.glEnd();
+			
+			gl.glBegin(gl.GL_QUADS);
+				gl.glColor3f(1, 1, 1);
+				gl.glVertex2f(leftX, leftY);
+				gl.glVertex2f(leftX, leftY+height);
+				gl.glVertex2f(leftX+width, leftY+height);
+				gl.glVertex2f(leftX+width, leftY);
+			gl.glEnd();
 
-			gl.glFlush();
+			gl.glPopMatrix();
 
 		}
 		else if(gameModel.getState() == GameState.LevelLoading){

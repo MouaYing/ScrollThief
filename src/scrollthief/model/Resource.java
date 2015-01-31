@@ -46,6 +46,7 @@ public class Resource {
 		guardWalk = new OBJ[GUARD_WALK_NUM];
 		bossStomp = new OBJ[BOSS_STOMP_NUM];
 		textures = new Texture[TEXTURES_NUM];
+		int total = OBJS_NUM + NINJA_RUN_NUM + GUARD_WALK_NUM + BOSS_STOMP_NUM + TEXTURES_NUM;
 		loadingBar = new LoadingBar(total,gameModel,"resource");
 		String[] imgPaths= new String[2];
 		imgPaths[0]= "images/ninja_moon.jpg";
@@ -65,13 +66,21 @@ public class Resource {
 	private void loadOBJs(){
 		say("Loading OBJ files...");
 		objs[0]= new OBJ("obj/floor.obj");
+		loadingBar.increaseProgress(1);
 		objs[1]= new OBJ("obj/ninja_stand.obj");
+		loadingBar.increaseProgress(1);
 		objs[2]= new OBJ("obj/guard_stand.obj");
+		loadingBar.increaseProgress(1);
 		objs[3]= new OBJ("obj/Scroll.obj");
+		loadingBar.increaseProgress(1);
 		objs[4]= new OBJ("obj/table.obj");
+		loadingBar.increaseProgress(1);
 		objs[5]= new OBJ("obj/wall2.obj");
+		loadingBar.increaseProgress(1);
 		objs[6]= new OBJ("obj/pillar2.obj");
+		loadingBar.increaseProgress(1);
 		objs[7]= new OBJ("obj/boss_stand.obj");
+		loadingBar.increaseProgress(1);
 		objs[8]= new OBJ("obj/AcidBlob.obj");
 		loadingBar.increaseProgress(1);
 	}
@@ -123,9 +132,9 @@ public class Resource {
 			say("Loading run cycle frame " + (i+1));
 			String fileName= "obj/anim/ninja/run." + (i+1) + ".obj";
 			ninjaRun[i]= new OBJ(fileName);
+			loadingBar.increaseProgress(1);
 		}
 		say("done with ninja ");
-		loadingBar.increaseProgress(1);
 	}
 	
 	private void loadGuardAnimations() {
@@ -135,9 +144,9 @@ public class Resource {
 			say("Loading walk cycle frame " + (i+1));
 			String fileName= "obj/anim/guard/walk." + (i+1) + ".obj";
 			guardWalk[i]= new OBJ(fileName);
+			loadingBar.increaseProgress(1);
 		}
 		say("done with guard ");
-		loadingBar.increaseProgress(1);
 	}
 	
 	private void loadBossAnimations() {
@@ -147,9 +156,9 @@ public class Resource {
 			say("Loading stomp cycle frame " + (i+1));
 			String fileName= "obj/anim/boss/stomp." + (i+1) + ".obj";
 			bossStomp[i]= new OBJ(fileName);
+			loadingBar.increaseProgress(1);
 		}
 		say("done with boss ");
-		loadingBar.increaseProgress(1);
 	}
 	
 	public void loadTextures(GL2 gl){
@@ -176,13 +185,13 @@ public class Resource {
 				ImageUtil.flipImageVertically(image);
 				
 				textures[i]= AWTTextureIO.newTexture(profile, image, false);
+				loadingBar.increaseProgress(1);
 				 
 			} catch (IOException e) {
 				say("Problem loading texture file " + imgPaths[i]);
 				e.printStackTrace();
 			}
 		}
-		loadingBar.increaseProgress(1);
 	}
 	
 	public OBJ[] getOBJs(){
