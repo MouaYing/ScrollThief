@@ -9,6 +9,7 @@ import ch.aplu.xboxcontroller.XboxController;
 import scrollthief.ScrollThief;
 import scrollthief.model.Boss;
 import scrollthief.model.GameModel;
+import scrollthief.model.GameState;
 import scrollthief.model.Guard;
 import scrollthief.model.Character;
 import scrollthief.model.Projectile;
@@ -24,7 +25,6 @@ public class Controller extends TimerTask{
 	String dllPath;
 	int tick= 0;
 	int hitTimer= 0;
-	boolean paused= false;
 	boolean devmode= false;
 	
 	public Controller(JFrame window, View view, GameModel gameModel){
@@ -54,10 +54,14 @@ public class Controller extends TimerTask{
 
 	@Override
 	public void run() {
-		if (gameModel.initializing || paused)
+		if (gameModel.getState() == GameState.Uninitialized || gameModel.getState() == GameState.Initialized)
 			return;
-		if (gameModel.state == "start"){
-			paused= true;
+		if (gameModel.getState() == GameState.Start){
+			gameModel.changeState(GameState.Paused);
+			view.display();
+			return;
+		}
+		if(gameModel.getState() != GameState.Playing){
 			view.display();
 			return;
 		}
@@ -82,9 +86,9 @@ public class Controller extends TimerTask{
 		ninja.move();
 		ninja.animate(tick);
 		if (ninja.getHP() <= 0 && !devmode)
-			gameOver("killed");
-		if (gameModel.state.equals("victory")){
-			paused= true;
+			gameOver(GameState.Killed);
+		if (gameModel.getState() == GameState.Victory){
+			gameModel.changeState(GameState.Paused);
 			vibrate(0,0);
 			hitTimer= 0;
 		}
@@ -105,7 +109,7 @@ public class Controller extends TimerTask{
 					if (guard.canSeeNinja()){ // now check for line of sight
 						say("You have been spotted! Game Over!");
 						if (!devmode)
-							gameOver("spotted");
+							gameOver(GameState.Spotted);
 					}
 				}
 			}
@@ -194,12 +198,11 @@ public class Controller extends TimerTask{
 		view.setCamAngle(0);
 		view.setCamHeight(4);
 		view.setCamDistance(6);
-		gameModel.state= "start";
+		gameModel.changeState(GameState.Start);
 	}
 	
-	private void gameOver(String reason){
-		paused= true;
-		gameModel.state= reason;
+	private void gameOver(GameState reason){
+		gameModel.changeState(reason);
 		vibrate(0,0);
 		hitTimer= 0;
 	}
