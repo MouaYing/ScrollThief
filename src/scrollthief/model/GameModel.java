@@ -24,13 +24,12 @@ public class GameModel {
 	private boolean wPressed;
 	
 	public GameModel(){
-<<<<<<< HEAD
-		resource = new Resource();
-		numModels= numGuards + numObs + 3;
-		models= new ArrayList<Model>();
-		guards= new Guard[numGuards];
-		obstacles= new Obstacle[numObs];
-		projectiles= new ArrayList<Projectile>();
+		changeState(GameState.Initialized);
+		resource = new Resource(this);
+
+		levelFactory = new LevelFactory();
+		
+		currentLevel = levelFactory.getNextLevel(resource, this);
 		
 		this.aPressed = false;
 		this.sPressed = false;
@@ -68,14 +67,6 @@ public class GameModel {
 	
 	public void setWPressed(boolean wPressed) {
 		this.wPressed = wPressed;
-=======
-		changeState(GameState.Initialized);
-		resource = new Resource(this);
-
-		levelFactory = new LevelFactory();
-		
-		currentLevel = levelFactory.getNextLevel(resource, this);
->>>>>>> teancum/level-abstraction
 	}
 	
 	private void createModels(){

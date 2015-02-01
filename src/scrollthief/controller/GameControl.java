@@ -108,6 +108,8 @@ public class GameControl {
 	}
 	
 	public void pause(){
+		System.out.println(gameModel == null);
+		
 		if (gameModel.getState() == GameState.Spotted || gameModel.getState() == GameState.Killed && gameModel.getState() == GameState.Victory){ // game is over---reset
 			controller.reset();
 		}

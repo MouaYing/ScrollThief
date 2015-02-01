@@ -31,11 +31,11 @@ public class Controller extends TimerTask{
 	public Controller(JFrame window, View view, GameModel gameModel){
 		say("Loading main controller...");
 		
-		gameControl = new GameControl(this);
-		
 		this.window= window;
 		this.view= view;
 		this.gameModel= gameModel;
+		
+		gameControl = new GameControl(this);
 		
 		dllPath= System.getProperty("user.dir") + 
 				(ScrollThief.is64bit() ? "\\xboxcontroller64.dll" : "\\xboxcontroller.dll");
@@ -157,7 +157,9 @@ public class Controller extends TimerTask{
 // ---------------------------------------------------------------------------------------------------	
 		
 		if(gameModel.getWPressed())
-			gameControl.increaseSpeed();
+			gameControl.setNinjaSpeed(1);
+		if(!gameModel.getWPressed())
+			gameControl.setNinjaSpeed(0);
 		if(gameModel.getSPressed())
 			gameControl.stop();
 		if(gameModel.getAPressed())

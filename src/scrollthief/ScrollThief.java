@@ -3,6 +3,14 @@
  */
 package scrollthief;
 
+import java.awt.Cursor;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.util.Timer;
 
 import javax.swing.JFrame;
@@ -34,6 +42,29 @@ public class ScrollThief {
 		window.setLocation(100, 10);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setVisible(true);
+		
+		// Make cursor invisible
+		Toolkit t = Toolkit.getDefaultToolkit();
+	    Image i = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+		Cursor noCursor = t.createCustomCursor(i, new Point(0, 0), "none");
+		window.setCursor(noCursor);
+		
+		window.addMouseListener(new MouseAdapter(){
+			public void mouseExited(MouseEvent arg0) {
+				System.out.println("inside mouse listener");
+			  if(window.isShowing()){
+			    Point locOnScreen = window.getLocationOnScreen();
+			    int middleX = locOnScreen.x + (window.getWidth() / 2);
+			    int middleY = locOnScreen.y + (window.getHeight() / 2);
+			    try{
+			      Robot rob = new Robot();
+			      rob.mouseMove(middleX, middleY);
+			    }catch(Exception e){System.out.println(e);}
+			    //setting mouse coords
+			  }
+			  System.out.println(arg0.getSource());
+			};
+		});
 		
 		//anim.start();
 		timer.scheduleAtFixedRate(controller, 3000, 1000/FPS); 
