@@ -132,6 +132,7 @@ public class View extends GLCanvas implements GLEventListener{
 			String text = "THE SCROLL THIEF";
 			overlayText(text, (int)(windowX/2 - windowX*.15), windowY-100, Color.white, "reg");
 			
+			gl.glEnable(GL2.GL_TEXTURE_2D);
 		}
 		else if(gameModel.getState() == GameState.LevelLoading){
 			
@@ -169,13 +170,13 @@ public class View extends GLCanvas implements GLEventListener{
 	
 	private void displaySplashImage(Texture t){
 		gl.glPushMatrix();
-		gl.glMatrixMode(gl.GL_PROJECTION);
+		gl.glMatrixMode(GL2.GL_PROJECTION);
 		gl.glLoadIdentity();
 		gl.glOrtho(0, windowX, windowY, 0, -10, 10);
-		gl.glEnable( gl.GL_TEXTURE_2D );
+		gl.glEnable( GL2.GL_TEXTURE_2D );
 		t.bind(gl);
 		gl.glLoadIdentity();
-		gl.glBegin( gl.GL_QUADS );
+		gl.glBegin( GL2.GL_QUADS );
 			double originX = -1.0;//-(windowX/2);
 			double originY = -1.0;//-(windowY/2);
 			
@@ -187,6 +188,7 @@ public class View extends GLCanvas implements GLEventListener{
 			gl.glTexCoord2d(0.0,1.0); gl.glVertex2d(originX,y);
 		gl.glEnd();
 		
+		gl.glDisable(GL2.GL_TEXTURE_2D);
 		gl.glPopMatrix();
 	}
 	
@@ -198,10 +200,10 @@ public class View extends GLCanvas implements GLEventListener{
 		int maxWidth = 100;
 		int height = 25;
 		gl.glPushMatrix();
-		gl.glMatrixMode(gl.GL_PROJECTION);
+		gl.glMatrixMode(GL2.GL_PROJECTION);
 		gl.glLoadIdentity();
 		gl.glOrtho(0, windowX, windowY, 0, -10, 10);
-		gl.glBegin(gl.GL_QUADS);
+		gl.glBegin(GL2.GL_QUADS);
 			gl.glColor3f(1, 1, 0);
 			gl.glVertex2d(leftX, leftY);
 			gl.glVertex2d(leftX, leftY+height);
@@ -209,7 +211,7 @@ public class View extends GLCanvas implements GLEventListener{
 			gl.glVertex2d(leftX+maxWidth, leftY);
 		gl.glEnd();
 		
-		gl.glBegin(gl.GL_QUADS);
+		gl.glBegin(GL2.GL_QUADS);
 			gl.glColor3f(1, 1, 1);
 			gl.glVertex2d(leftX, leftY);
 			gl.glVertex2d(leftX, leftY+height);
