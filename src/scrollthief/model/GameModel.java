@@ -2,21 +2,14 @@ package scrollthief.model;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.EventObject;
 
-import javax.imageio.ImageIO;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLProfile;
 import javax.swing.event.EventListenerList;
-
-import com.jogamp.opengl.util.awt.ImageUtil;
 import com.jogamp.opengl.util.texture.Texture;
-import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
 
 /**
  * @author Jon "Neo" Pimentel
@@ -27,19 +20,8 @@ import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
 public class GameModel {
 	Resource resource;
 	private GameState state = GameState.Uninitialized;
-	final int numGuards= 5;
-	final int numWalls= 34;
-	final int numPillars= 8;
-	final int numTables= 5;
-	final int numObs= numWalls + numPillars + numTables + 1;
-	int numModels;
-	Guard[] guards;
-	Obstacle[] obstacles;
-	ArrayList<Model> models;
-	ArrayList<Projectile> projectiles;
-	Ninja ninja;
-	Boss boss;
-	Obstacle scroll;
+	private Level currentLevel;
+	private LevelFactory levelFactory;
 	
 	protected EventListenerList listenerList = new EventListenerList();
 
@@ -61,134 +43,22 @@ public class GameModel {
 	public GameModel(){
 		changeState(GameState.Initialized);
 		resource = new Resource(this);
-		numModels= numGuards + numObs + 3;
-		models= new ArrayList<Model>();
-		guards= new Guard[numGuards];
-		obstacles= new Obstacle[numObs];
-		projectiles= new ArrayList<Projectile>();
+
+		levelFactory = new LevelFactory();
+		
+		currentLevel = levelFactory.getNextLevel(resource, this);
 	}
 	
 	private void createModels(){
-		say("\nCreating 3D models...");
-		
-// ---------------Environment model/s ------------------------------------------------------------------
-		models.add( new Model(resource.getOBJs()[0], 1, new Point3D(14, 0, 36), zero(), .5, 1) ); // floor model (0)
-// ---------------Character models ---------------------------------------------------------------------
-		models.add( new Model(resource.getOBJs()[1], 2, new Point3D(0, 0, -5), zero(), .075, 1) ); // ninja model 1
-		
-		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(15, 0, 23), zero(), .11, 1) ); // guard model 2
-		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(24, 0, 33), zero(), .11, 1) ); // guard model 3
-		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(32, 0, 39), zero(), .11, 1) ); // guard model 4
-		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(20, 0, 54), zero(), .11, 1) ); // guard model 5
-		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(11, 0, 50), zero(), .11, 1) ); // guard model 6
-// ---------------Obstacle models ----------------------------------------------------------------------
-		models.add( new Model(resource.getOBJs()[3], 9, new Point3D(0, 1.2, 83), new double[]{Math.PI/2,0,0}, .25, 1)); //scroll
-		// foyer
-		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(-3.6, 0, 4.4), zero(), 1, 2)); // wall
-		models.add( new Model(resource.getOBJs()[5], 5, new Point3D(7.8, 0, -10.7), zero(), 1, 1)); // wall
-		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(-12, 0, -3.1), rtAngle(), 1, 2)); // wall
-		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(12.4, 0, -3.3), rtAngle(), 1, 2)); // wall
-		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(-4.2, 0, -10.7), zero(), 1, 2)); // wall
-		// room 1
-		models.add( new Model(resource.getOBJs()[5], 5, new Point3D(4, 0, 9), rtAngle(), 1, 1)); // wall
-		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(20.8, 0, 4.2), zero(), 1, 2)); // wall
-		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(20.8, 0, 29.2), zero(), 1, 2)); // wall
-		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(29.2, 0, 12.6), rtAngle(), 1, 2)); // wall
-		models.add( new Model(resource.getOBJs()[5], 5, new Point3D(29.2, 0, 24.6), rtAngle(), 1, 1)); // wall
-		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(4, 0, 21), rtAngle(), 1, 2)); // wall
-		models.add( new Model(resource.getOBJs()[5], 7, new Point3D(11, 0, 29.2), zero(), 1, .5)); // wall
-		// room 2 (hard)
-		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(4, 0, 37), rtAngle(), 1, 2)); // wall
-		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(12.2, 0, 45.4), zero(), 1, 2)); // wall
-		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(28.2, 0, 45.4), zero(), 1, 2)); // wall
-		models.add( new Model(resource.getOBJs()[5], 7, new Point3D(38.2, 0, 45.4), zero(), 1, .5)); // wall
-		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(36.8, 0, 29.2), zero(), 1, 2)); // wall
-		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(45.2, 0, 37.6), rtAngle(), 1, 2)); // wall
-		// room 3 (hard)
-		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(45.2, 0, 53.6), rtAngle(), 1, 2)); // wall
-		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(36.8, 0, 62), zero(), 1, 2)); // wall
-		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(20.8, 0, 62), zero(), 1, 2)); // wall
-		models.add( new Model(resource.getOBJs()[5], 7, new Point3D(11, 0, 62), zero(), 1, .5)); // wall
-		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(4, 0, 53), rtAngle(), 1, 2)); // wall
-		models.add( new Model(resource.getOBJs()[5], 5, new Point3D(26.6, 0, 61), rtAngle(), 1, 1)); // wall
-		models.add( new Model(resource.getOBJs()[5], 5, new Point3D(26.6, 0, 49), rtAngle(), 1, 1)); // wall
-		// Boss Chamber
-		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(20.2, 0, 70.4), rtAngle(), 1, 2)); // wall
-		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(-11.6, 0, 61.6), zero(), 1, 2)); // wall
-		models.add( new Model(resource.getOBJs()[5], 5, new Point3D(.4, 0, 61.6), zero(), 1, 1)); // wall
-		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(-20, 0, 70), rtAngle(), 1, 2)); // wall
-		models.add( new Model(resource.getOBJs()[5], 5, new Point3D(-20, 0, 82), rtAngle(), 1, 1)); // wall
-		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(-12.4, 0, 86.6), zero(), 1, 2)); // wall
-		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(3.6, 0, 86.6), zero(), 1, 2)); // wall
-		models.add( new Model(resource.getOBJs()[5], 5, new Point3D(15.6, 0, 86.6), zero(), 1, 1)); // wall
-		models.add( new Model(resource.getOBJs()[5], 5, new Point3D(20.2, 0, 82.4), rtAngle(), 1, 1)); // wall
-		// --- Pillars --- room 1
-		models.add( new Model(resource.getOBJs()[6], 3, new Point3D(10, 0, 11), zero(), 1, 1)); // pillar
-		// room 2 (hard)
-		models.add( new Model(resource.getOBJs()[6], 3, new Point3D(14, 0, 34), zero(), 1, 1)); // pillar
-		// room 3 (hard)
-		models.add( new Model(resource.getOBJs()[6], 3, new Point3D(38, 0, 51), zero(), 1, 1)); // pillar
-		models.add( new Model(resource.getOBJs()[6], 3, new Point3D(20, 0, 51), zero(), 1, 1)); // pillar
-		// Boss Chamber
-		models.add( new Model(resource.getOBJs()[6], 3, new Point3D(5, 0, 67), zero(), 1, 1)); // pillar
-		models.add( new Model(resource.getOBJs()[6], 3, new Point3D(11, 0, 76), zero(), 1, 1)); // pillar
-		models.add( new Model(resource.getOBJs()[6], 3, new Point3D(-7, 0, 69), zero(), 1, 1)); // pillar
-		models.add( new Model(resource.getOBJs()[6], 3, new Point3D(-13, 0, 77), zero(), 1, 1)); // pillar
-		// --- Tables --- room 2 (hard)
-		models.add( new Model(resource.getOBJs()[4], 4, new Point3D(20, 0, 41.8), rtAngle(), .4, 1)); // table
-		models.add( new Model(resource.getOBJs()[4], 4, new Point3D(28.5, 0, 41.8), rtAngle(), .4, 1)); // table
-		models.add( new Model(resource.getOBJs()[4], 4, new Point3D(37, 0, 41.8), rtAngle(), .4, 1)); // table
-		// room 3 (hard)
-		models.add( new Model(resource.getOBJs()[4], 4, new Point3D(15.5, 0, 58.4), rtAngle(), .4, 1)); // table
-		// Boss Chamber
-		models.add( new Model(resource.getOBJs()[4], 4, new Point3D(0, 0, 83), zero(), .4, 1)); // table
-		// --- Ceiling ---
-		models.add( new Model(resource.getOBJs()[0], 0, new Point3D(0, 5, 0), new double[] {Math.PI,0,0}, 1, 1) ); // ceiling model
-		// --- Boss model ---
-		models.add( new Model(resource.getOBJs()[7], 10, new Point3D(0, 0, 76), zero(), .2, 1)); // Boss
-	}
-	
-	// create the waypoints the guards will use for their patrol orders
-	private Point3D[][] createOrders(){
-		Point3D[][] orders= new Point3D[][]{
-/*guard 0*/	new Point3D[]{new Point3D(6,0,26),new Point3D(16,0,26)}, 
-/*guard 1*/	new Point3D[]{new Point3D(24,0,31),new Point3D(24,0,41)},
-/*guard 2*/	new Point3D[]{new Point3D(32,0,31),new Point3D(32,0,41)},
-/*guard 3*/	new Point3D[]{new Point3D(37,0,54),new Point3D(14,0,54)},
-/*guard 4*/	new Point3D[]{new Point3D(11,0,60),new Point3D(11,0,47)},
-		};
-		
-		return orders;
+		currentLevel.createModels();
 	}
 	
 	private void createCharacters(){
-		say("Creating characters...");
-		ninja= new Ninja(this, models.get(1), .35, .5);
-		
-		Point3D[][] orders= createOrders();
-		for (int i= 0; i < numGuards; i++){
-			guards[i]= new Guard(this, models.get(i + 2), .35, .5, orders[i]); 
-		}
-		boss= new Boss(this, models.get(models.size()-1), 1.5, 1.5);
+		currentLevel.createCharacters();
 	}
 	
 	private void createObstacles(){
-		say("Creating obstacles...");
-		// scroll
-		obstacles[0]= new Obstacle(models.get(7), true, .2, .2, 1.3); 
-		scroll= obstacles[0];
-		// walls
-		for (int i= 1; i < numWalls+1; i++){
-			obstacles[i]= new Obstacle(models.get(i + 7), false, .6, 4, 5); 
-		}
-		// pillars
-		for (int i= numWalls+1; i < numPillars+numWalls+1; i++){
-			obstacles[i]= new Obstacle(models.get(i + 7), false, 1.5, 1.5, 5); 
-		}
-		// tables
-		for (int i= numWalls+numPillars+1; i < numObs; i++){
-			obstacles[i]= new Obstacle(models.get(i + 7), true, 2.25, 3, .95); 
-		}
+		currentLevel.createObstacles();
 	}
 	
 	public void init(final GL2 gl){
@@ -231,7 +101,7 @@ public class GameModel {
 	}
 	
 	public Guard[] getGuards(){
-		return guards;
+		return currentLevel.getGuards();
 	}
 	
 	public LoadingBar getResourceLoadingBar(){
@@ -239,61 +109,61 @@ public class GameModel {
 	}
 	
 	public Obstacle[] getObstacles(){
-		return obstacles;
+		return currentLevel.getObstacles();
 	}
 	
 	public Ninja getNinja(){
-		return ninja;
+		return currentLevel.getNinja();
 	}
 	
 	public Boss getBoss(){
-		return boss;
+		return currentLevel.getBoss();
 	}
 	
 	public ArrayList<Projectile> getProjectiles(){
-		return projectiles;
+		return currentLevel.getProjectiles();
 	}
 	
 	public Obstacle getScroll(){
-		return scroll;
+		return currentLevel.getScroll();
 	}
 	
 	public ArrayList<Model> getModels(){
-		return models;
+		return currentLevel.getModels();
 	}
 
 	public double getNinjaAngle(){
-		if(ninja == null){
+		if(getNinja() == null){
 			return 0;
 		}
-		return ninja.getAngle();
+		return getNinja().getAngle();
 	}
 	
 	public double getNinjaSpeed(){
-		return ninja.getSpeed();
+		return getNinja().getSpeed();
 	}
 	
 	public Point3D getNinjaLoc(){
-		if(ninja == null){
+		if(getNinja() == null){
 			return new Point3D(0,0,0);
 		}
-		return ninja.getLoc();
+		return getNinja().getLoc();
 	}
 	
 	public void setNinjaAngle(double newAngle){
-		if (ninja != null)
+		if (getNinja() != null)
 //			ninja.setAngle(newAngle);
-			ninja.setGoalAngle(newAngle);
+			getNinja().setGoalAngle(newAngle);
 	}
 	
 	public void setNinjaSpeed(double newSpeed){
-		if (ninja != null)
-			ninja.setSpeed(newSpeed);
+		if (getNinja() != null)
+			getNinja().setSpeed(newSpeed);
 	}
 	
 	public void setNinjaLoc(Point3D newPoint){
-		if (ninja != null)
-			ninja.setLoc(newPoint);
+		if (getNinja() != null)
+			getNinja().setLoc(newPoint);
 	}
 	
 	public Resource getResource() {
@@ -420,11 +290,11 @@ public class GameModel {
 		return angle;
 	}
 	
-	private double[] zero(){
+	public double[] zero(){
 		return new double[]{0, 0, 0};
 	}
 	
-	private double[] rtAngle(){
+	public double[] rtAngle(){
 		return new double[]{0, Math.PI/2, 0};
 	}
 	
