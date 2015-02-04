@@ -1,7 +1,6 @@
 package scrollthief.view;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.util.ArrayList;
 
 import javax.media.opengl.GL2;
@@ -10,12 +9,13 @@ import javax.media.opengl.GLEventListener;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
 
-import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.gl2.GLUT;
 import com.jogamp.opengl.util.texture.Texture;
 
 import scrollthief.model.GameState;
 import scrollthief.model.LoadingBar;
+import scrollthief.model.Data;
+import scrollthief.model.DialogRenderer;
 import scrollthief.model.Point3D;
 import scrollthief.model.Model;
 import scrollthief.model.GameModel;
@@ -25,8 +25,6 @@ public class View extends GLCanvas implements GLEventListener{
 	GameModel gameModel;
 	GL2 gl;
 	public boolean init= true;
-	int windowX= 710;
-	int windowY= 710;
 	GLUT glut= new GLUT();
 	float FOV= 45f;
 	float ASPECT = 1f;
@@ -39,13 +37,12 @@ public class View extends GLCanvas implements GLEventListener{
 	double cameraAngle= 0;
 	double cameraRotRate= 0;
 	double[] cameraDelta= {0,0};
-	TextRenderer tRend;
-	TextRenderer tRend2;
+	DialogRenderer dialogRenderer;
 
 	public View(GameModel model){
 		say("Loading view...");
 		this.gameModel= model;
-		setPreferredSize(new java.awt.Dimension(windowX, windowY));
+		setPreferredSize(new java.awt.Dimension(Data.windowX, Data.windowY));
         addGLEventListener(this);
         init= false;
 		say("--View loaded--\n");
@@ -54,9 +51,8 @@ public class View extends GLCanvas implements GLEventListener{
 	@Override
 	public void init(GLAutoDrawable drawable) {
 		gl= drawable.getGL().getGL2();
-		tRend= new TextRenderer(new Font("Helvetica", Font.BOLD, 30));
-		tRend2= new TextRenderer(new Font("Helvetica", Font.BOLD, 60));
 		gameModel.init(gl);
+		dialogRenderer = new DialogRenderer(gl);
 		
 		setupLighting(gl);
 		
@@ -122,46 +118,48 @@ public class View extends GLCanvas implements GLEventListener{
 		else if(gameModel.getState() == GameState.ResourceLoading){
 			LoadingBar loading = gameModel.getResourceLoadingBar();
 			String text= "Resource Loading:" + loading.getProgress() + "/" + loading.getTotal();
-			overlayText(text,  windowX/2 - (15 * text.length()/2), windowY/2 + 150, Color.blue, "reg");
+			dialogRenderer.overlayText(text,  Data.windowX/2 - (15 * text.length()/2), Data.windowY/2 + 150, Color.blue, "reg");
 		}
 		else if(gameModel.getState() == GameState.LevelLoading){
 			
 		}
 		if (gameModel.getState() == GameState.Paused){
 			String text= "Steal the enemy battle plans (scroll)";
-			overlayText(text,  windowX/2 - (15 * text.length()/2), windowY/2 + 150, Color.blue, "reg");
+			dialogRenderer.overlayText(text,  Data.windowX/2 - (15 * text.length()/2), Data.windowY/2 + 150, Color.blue, "reg");
 			text= "without being detected";
-			overlayText(text,  windowX/2 - (15 * text.length()/2), windowY/2 + 100, Color.blue, "reg");
-			text= "Press start to continue";
-			overlayText(text,  windowX/2 - (30 * text.length()/2), windowY/2, Color.blue, "big");
+			dialogRenderer.overlayText(text,  Data.windowX/2 - (15 * text.length()/2), Data.windowY/2 + 100, Color.blue, "reg");
+			text= "Press start to begin";
+			dialogRenderer.overlayText(text,  Data.windowX/2 - (30 * text.length()/2), Data.windowY/2, Color.blue, "big");
 		}
 		else if (gameModel.getState() == GameState.Spotted){
 			String text= "You've been spotted!";
-			overlayText(text,  windowX/2 - (30 * text.length()/2), windowY/2 + 100, Color.blue, "big");
+			dialogRenderer.overlayText(text,  Data.windowX/2 - (30 * text.length()/2), Data.windowY/2 + 100, Color.blue, "big");
 			
 			text= "Mission Failed! Press start to try again...";
-			overlayText(text,  windowX/2 - (15 * text.length()/2), windowY/2 + 50, Color.blue, "reg");
+			dialogRenderer.overlayText(text,  Data.windowX/2 - (15 * text.length()/2), Data.windowY/2 + 50, Color.blue, "reg");
 		}
 		else if (gameModel.getState() == GameState.Killed){
 			String text= "You've been killed!";
-			overlayText(text,  windowX/2 - (30 * text.length()/2), windowY/2 + 100, Color.red, "big");
+			dialogRenderer.overlayText(text,  Data.windowX/2 - (30 * text.length()/2), Data.windowY/2 + 100, Color.red, "big");
 			
 			text= "Mission Failed! Press start to try again...";
-			overlayText(text,  windowX/2 - (15 * text.length()/2), windowY/2 + 50, Color.blue, "reg");
+			dialogRenderer.overlayText(text,  Data.windowX/2 - (15 * text.length()/2), Data.windowY/2 + 50, Color.blue, "reg");
 		}
 		else if (gameModel.getState() == GameState.Victory){
 			String text= "Mission Complete!";
-			overlayText(text,  windowX/2 - (30 * text.length()/2), windowY/2 + 100, Color.blue, "big");
+			dialogRenderer.overlayText(text,  Data.windowX/2 - (30 * text.length()/2), Data.windowY/2 + 100, Color.blue, "big");
 			
 			text= "You obtained the enemy battle plans!";
-			overlayText(text,  windowX/2 - (15 * text.length()/2), windowY/2 + 50, Color.blue, "reg");
+			dialogRenderer.overlayText(text,  Data.windowX/2 - (15 * text.length()/2), Data.windowY/2 + 50, Color.blue, "reg");
 		}
+		
+		dialogRenderer.render("Hello World");
 	}
 
 	@Override
 	public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
-		windowX= width;
-		windowY= height;
+		Data.windowX= width;
+		Data.windowY= height;
 		GL2 gl = drawable.getGL().getGL2();
 		gl.glViewport(x, y, width, height);
 		
@@ -178,18 +176,6 @@ public class View extends GLCanvas implements GLEventListener{
 
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
 		gl.glLoadIdentity();
-	}
-	
-	public void overlayText(String text, int x, int y, Color color, String type){
-		TextRenderer rend= tRend;
-		if (type == "big")
-			rend= tRend2;
-			
-		rend.setColor(color);
-		rend.beginRendering(windowX, windowY, true);
-		rend.draw(text, x, y);
-		rend.endRendering();
-		rend.flush();
 	}
 	
 	@Override
