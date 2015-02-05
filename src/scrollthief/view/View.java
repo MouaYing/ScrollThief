@@ -203,21 +203,22 @@ public class View extends GLCanvas implements GLEventListener{
 		gl.glMatrixMode(GL2.GL_PROJECTION);
 		gl.glLoadIdentity();
 		gl.glOrtho(0, windowX, windowY, 0, -10, 10);
-		gl.glBegin(GL2.GL_QUADS);
-			gl.glColor3f(1, 1, 0);
+		gl.glColor3f(0f, 1f, 1f);
+		gl.glBegin(gl.GL_QUADS);
 			gl.glVertex2d(leftX, leftY);
 			gl.glVertex2d(leftX, leftY+height);
 			gl.glVertex2d(leftX+maxWidth, leftY+height);
 			gl.glVertex2d(leftX+maxWidth, leftY);
 		gl.glEnd();
-		
-		gl.glBegin(GL2.GL_QUADS);
-			gl.glColor3f(1, 1, 1);
+
+		gl.glColor3f(1f, 0f, 1f);
+		gl.glBegin(gl.GL_QUADS);
 			gl.glVertex2d(leftX, leftY);
 			gl.glVertex2d(leftX, leftY+height);
 			gl.glVertex2d(leftX+width, leftY+height);
 			gl.glVertex2d(leftX+width, leftY);
 		gl.glEnd();
+	    gl.glFlush();
 
 		gl.glPopMatrix();
 	}
