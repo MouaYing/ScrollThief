@@ -19,6 +19,27 @@ public class MouseControl implements MouseMotionListener {
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
 		// TODO Auto-generated method stub
+//		if(arg0.getX() > prevX) {
+//			gameControl.rotateCameraRight();
+//		}
+//		else if(arg0.getX() < prevX) {
+//			gameControl.rotateCameraLeft();
+//		}
+//		
+//		if (arg0.getY() > prevY) {
+//			gameControl.increaseCameraHeight();
+//		}
+//		else if (arg0.getY() < prevY) {
+//			gameControl.decreaseCameraHeight();
+//		}
+//				
+//		prevX = arg0.getX();
+//		prevY = arg0.getY();
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent arg0) {
+		// TODO Auto-generated method stub
 		if(arg0.getX() > prevX) {
 			gameControl.rotateCameraRight();
 			gameControl.rotateNinjaRight();
@@ -34,32 +55,9 @@ public class MouseControl implements MouseMotionListener {
 		else if (arg0.getY() < prevY) {
 			gameControl.decreaseCameraHeight();
 		}
-				
+		
 		prevX = arg0.getX();
 		prevY = arg0.getY();
-	}
-
-	@Override
-	public void mouseMoved(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-//		if(arg0.getX() > prevX) {
-//			gameControl.rotateCameraRight();
-//			gameControl.rotateNinjaRight();
-//		}
-//		else if(arg0.getX() < prevX) {
-//			gameControl.rotateCameraLeft();
-//			gameControl.rotateNinjaLeft();
-//		}
-//		
-//		if (arg0.getY() > prevY) {
-//			gameControl.increaseCameraHeight();
-//		}
-//		else if (arg0.getY() < prevY) {
-//			gameControl.decreaseCameraHeight();
-//		}
-//		
-//		prevX = arg0.getX();
-//		prevY = arg0.getY();
 	}
 
 }

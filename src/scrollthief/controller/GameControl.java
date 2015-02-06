@@ -34,6 +34,14 @@ public class GameControl {
 		view.setCamAngle(view.getCamAngle() - cameraRotationIncrement);
 	}
 	
+	public void strafeNinjaRight() {
+		
+	}
+	
+	public void strafeNinjaLeft() {
+		
+	}
+	
 	public void rotateCameraRight(){
 		view.setCamAngle(view.getCamAngle() + cameraRotationIncrement);
 	}
@@ -53,6 +61,14 @@ public class GameControl {
 	
 	public void stop(){
 		gameModel.setNinjaSpeed(0);
+	}
+	
+	public void forward() {
+		
+	}
+	
+	public void backward() {
+		
 	}
 	
 	public void setNinjaAngle(double direction){

@@ -37,6 +37,21 @@ public class ScrollThief {
 		
 		//anim= new FPSAnimator(view, FPS);
 		
+		view.addMouseListener(new MouseAdapter(){
+			public void mouseExited(MouseEvent arg0) {
+			  if(window.isShowing()){
+			    Point locOnScreen = window.getLocationOnScreen();
+			    int middleX = locOnScreen.x + (window.getWidth() / 2);
+			    int middleY = locOnScreen.y + (window.getHeight() / 2);
+			    try{
+			      Robot rob = new Robot();
+			      rob.mouseMove(middleX, middleY);
+			    }catch(Exception e){System.out.println(e);}
+			    //setting mouse coords
+			  }
+			};
+		});
+		
 		window.getContentPane().add(view);
 		window.pack();
 		window.setLocation(100, 10);
@@ -48,23 +63,6 @@ public class ScrollThief {
 	    Image i = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 		Cursor noCursor = t.createCustomCursor(i, new Point(0, 0), "none");
 		window.setCursor(noCursor);
-		
-		window.addMouseListener(new MouseAdapter(){
-			public void mouseExited(MouseEvent arg0) {
-				System.out.println("inside mouse listener");
-			  if(window.isShowing()){
-			    Point locOnScreen = window.getLocationOnScreen();
-			    int middleX = locOnScreen.x + (window.getWidth() / 2);
-			    int middleY = locOnScreen.y + (window.getHeight() / 2);
-			    try{
-			      Robot rob = new Robot();
-			      rob.mouseMove(middleX, middleY);
-			    }catch(Exception e){System.out.println(e);}
-			    //setting mouse coords
-			  }
-			  System.out.println(arg0.getSource());
-			};
-		});
 		
 		//anim.start();
 		timer.scheduleAtFixedRate(controller, 3000, 1000/FPS); 
