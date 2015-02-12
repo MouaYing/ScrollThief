@@ -22,64 +22,89 @@ public class GameControl {
 		this.gameModel= controller.gameModel;
 	}
 	
+	public boolean canPlay(){
+		if(gameModel.getState() == GameState.Playing || 
+				gameModel.getState() == GameState.Paused ||
+				gameModel.getState() == GameState.Spotted || 
+				gameModel.getState() == GameState.Killed || 
+				gameModel.getState() == GameState.Victory){
+			return true;
+		}
+		return false;
+	}
+	
 	public void rotateNinjaLeft(){
-		gameModel.setNinjaAngle(gameModel.getNinjaAngle() - ninjaRotationIncrement);
+		if(canPlay())
+			gameModel.setNinjaAngle(gameModel.getNinjaAngle() - ninjaRotationIncrement);
 	}
 	
 	public void rotateNinjaRight(){
-		gameModel.setNinjaAngle(gameModel.getNinjaAngle() + ninjaRotationIncrement);
+		if(canPlay())
+			gameModel.setNinjaAngle(gameModel.getNinjaAngle() + ninjaRotationIncrement);
 	}
 	
 	public void rotateCameraLeft(){
-		view.setCamAngle(view.getCamAngle() - cameraRotationIncrement);
+		if(canPlay())
+			view.setCamAngle(view.getCamAngle() - cameraRotationIncrement);
 	}
 	
 	public void rotateCameraRight(){
-		view.setCamAngle(view.getCamAngle() + cameraRotationIncrement);
+		if(canPlay())
+			view.setCamAngle(view.getCamAngle() + cameraRotationIncrement);
 	}
 	
 	public void increaseCameraHeight(){
-		view.setCamHeight(view.getCamHeight() + cameraHeightIncrement);
+		if(canPlay())
+			view.setCamHeight(view.getCamHeight() + cameraHeightIncrement);
 	}
 	
 	public void decreaseCameraHeight(){
-		view.setCamHeight(view.getCamHeight() - cameraHeightIncrement);
+		if(canPlay())
+			view.setCamHeight(view.getCamHeight() - cameraHeightIncrement);
 	}
 	
 	public void increaseSpeed(){
-		if (gameModel.getNinjaSpeed() < 1)
-			gameModel.setNinjaSpeed(gameModel.getNinjaSpeed() + speedIncrement);
+		if(canPlay())
+			if (gameModel.getNinjaSpeed() < 1)
+				gameModel.setNinjaSpeed(gameModel.getNinjaSpeed() + speedIncrement);
 	}
 	
 	public void stop(){
-		gameModel.setNinjaSpeed(0);
+		if(canPlay())
+			gameModel.setNinjaSpeed(0);
 	}
 	
 	public void setNinjaAngle(double direction){
-		gameModel.setNinjaAngle(Math.toRadians(direction) +  view.getCamAngle());
+		if(canPlay())
+			gameModel.setNinjaAngle(Math.toRadians(direction) +  view.getCamAngle());
 	}
 	
 	public void setNinjaSpeed(double magnitude){
 		double scale= 1;
-		gameModel.setNinjaSpeed(scale * magnitude);
+		if(canPlay())
+			gameModel.setNinjaSpeed(scale * magnitude);
 	}
 	
 	public void setCameraDirection(double direction){
 		cameraDir = Math.toRadians(direction);
-		updateCamera();
+		if(canPlay())
+			updateCamera();
 	}
 	
 	public void setCameraMagnitude(double magnitude){
 		cameraMag = magnitude;
-		updateCamera();
+		if(canPlay())
+			updateCamera();
 	}
 	
 	public void setNinjaRotationIncrement(double increment) {
-		ninjaRotationIncrement = increment;
+		if(canPlay())
+			ninjaRotationIncrement = increment;
 	}
 	
 	public void setCameraRotationIncrement(double increment) {
-		cameraRotationIncrement = increment;
+		if(canPlay())
+			cameraRotationIncrement = increment;
 	}
 	
 	public void resetCamera(){
@@ -96,11 +121,12 @@ public class GameControl {
 	
 	public void jump(){
 		scrollthief.model.Character ninja= gameModel.getNinja();
-		if (ninja != null && !ninja.isJumping){
-			ninja.isJumping= true;
-			gameModel.getNinja().setDeltaY(.2);
-			// say("Jump!");
-		}
+		if(canPlay())
+			if (ninja != null && !ninja.isJumping){
+				ninja.isJumping= true;
+				gameModel.getNinja().setDeltaY(.2);
+				// say("Jump!");
+			}
 	}
 	
 	public void reset(){
@@ -108,18 +134,19 @@ public class GameControl {
 	}
 	
 	public void pause(){
-		if (gameModel.getState() == GameState.Spotted || gameModel.getState() == GameState.Killed && gameModel.getState() == GameState.Victory){ // game is over---reset
-			controller.reset();
-		}
-		else if (gameModel.getState() == GameState.Paused){
-			gameModel.changeState(GameState.Playing);
-		}
-		else if (gameModel.getState() == GameState.Dialog) {
-			view.getDialogRenderer().setIsNextScroll(true);
-		}
-		else {
-			gameModel.changeState(GameState.Paused);
-		}
+		if(canPlay())
+			if (gameModel.getState() == GameState.Spotted || gameModel.getState() == GameState.Killed && gameModel.getState() == GameState.Victory){ // game is over---reset
+				controller.reset();
+			}
+			else if (gameModel.getState() == GameState.Paused){
+				gameModel.changeState(GameState.Playing);
+			}
+			else if (gameModel.getState() == GameState.Dialog) {
+				view.getDialogRenderer().setIsNextScroll(true);
+			}
+			else {
+				gameModel.changeState(GameState.Paused);
+			}
 	}
 	
 	private void updateCamera(){
@@ -129,8 +156,8 @@ public class GameControl {
 		double dVert= Math.cos(cameraDir) * cameraMag * scale;
 		
 		double[] delta= {dHoriz, dVert};
-		
-		view.setCamDelta(delta);
+		if(canPlay())
+			view.setCamDelta(delta);
 	}
 	
 //	@SuppressWarnings("unused")

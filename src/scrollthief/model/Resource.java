@@ -1,9 +1,11 @@
 package scrollthief.model;
 
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.media.opengl.GL2;
@@ -28,34 +30,50 @@ public class Resource {
 	private OBJ[] bossStomp;
 	private Texture[] textures;
 	private LoadingBar loadingBar;
-	
+	private Texture[] images;
+	private Random rand;
+	private int mainSplashIndex;
 	private final int total = 5;
 	private final int OBJS_NUM = 9;
 	private final int NINJA_RUN_NUM = 21;
 	private final int GUARD_WALK_NUM = 30;
 	private final int BOSS_STOMP_NUM = 24;
 	private final int TEXTURES_NUM = 12;
+	private final int IMAGES_NUM = 2;
 	
 	public Resource(GameModel gameModel) {
+		images = new Texture[IMAGES_NUM];
+		rand = new Random();
+		mainSplashIndex = rand.nextInt(IMAGES_NUM);
 		objs = new OBJ[OBJS_NUM];
 		ninjaRun = new OBJ[NINJA_RUN_NUM];
 		guardWalk = new OBJ[GUARD_WALK_NUM];
 		bossStomp = new OBJ[BOSS_STOMP_NUM];
 		textures = new Texture[TEXTURES_NUM];
+		int total = OBJS_NUM + NINJA_RUN_NUM + GUARD_WALK_NUM + BOSS_STOMP_NUM + TEXTURES_NUM;
 		loadingBar = new LoadingBar(total,gameModel,"resource");
+		
 	}
 	
 	// Loads the default OBJ files
 	private void loadOBJs(){
 		say("Loading OBJ files...");
 		objs[0]= new OBJ("obj/floor.obj");
+		loadingBar.increaseProgress(1);
 		objs[1]= new OBJ("obj/ninja_stand.obj");
+		loadingBar.increaseProgress(1);
 		objs[2]= new OBJ("obj/guard_stand.obj");
+		loadingBar.increaseProgress(1);
 		objs[3]= new OBJ("obj/Scroll.obj");
+		loadingBar.increaseProgress(1);
 		objs[4]= new OBJ("obj/table.obj");
+		loadingBar.increaseProgress(1);
 		objs[5]= new OBJ("obj/wall2.obj");
+		loadingBar.increaseProgress(1);
 		objs[6]= new OBJ("obj/pillar2.obj");
+		loadingBar.increaseProgress(1);
 		objs[7]= new OBJ("obj/boss_stand.obj");
+		loadingBar.increaseProgress(1);
 		objs[8]= new OBJ("obj/AcidBlob.obj");
 		loadingBar.increaseProgress(1);
 	}
@@ -107,9 +125,9 @@ public class Resource {
 			say("Loading run cycle frame " + (i+1));
 			String fileName= "obj/anim/ninja/run." + (i+1) + ".obj";
 			ninjaRun[i]= new OBJ(fileName);
+			loadingBar.increaseProgress(1);
 		}
 		say("done with ninja ");
-		loadingBar.increaseProgress(1);
 	}
 	
 	private void loadGuardAnimations() {
@@ -119,9 +137,9 @@ public class Resource {
 			say("Loading walk cycle frame " + (i+1));
 			String fileName= "obj/anim/guard/walk." + (i+1) + ".obj";
 			guardWalk[i]= new OBJ(fileName);
+			loadingBar.increaseProgress(1);
 		}
 		say("done with guard ");
-		loadingBar.increaseProgress(1);
 	}
 	
 	private void loadBossAnimations() {
@@ -131,9 +149,9 @@ public class Resource {
 			say("Loading stomp cycle frame " + (i+1));
 			String fileName= "obj/anim/boss/stomp." + (i+1) + ".obj";
 			bossStomp[i]= new OBJ(fileName);
+			loadingBar.increaseProgress(1);
 		}
 		say("done with boss ");
-		loadingBar.increaseProgress(1);
 	}
 	
 	public void loadTextures(GL2 gl){
@@ -160,13 +178,29 @@ public class Resource {
 				ImageUtil.flipImageVertically(image);
 				
 				textures[i]= AWTTextureIO.newTexture(profile, image, false);
+				loadingBar.increaseProgress(1);
 				 
 			} catch (IOException e) {
 				say("Problem loading texture file " + imgPaths[i]);
 				e.printStackTrace();
 			}
 		}
-		loadingBar.increaseProgress(1);
+	}
+	
+	public void loadImages(GL2 gl) {
+		GLProfile profile= gl.getGLProfile();
+		String[] imgPaths= new String[2];
+		imgPaths[0]= "images/ninja_moon.jpg";
+		imgPaths[1]= "images/ninja_slice.jpg";
+		for(int i = 0; i < imgPaths.length; i++){
+			try{
+			BufferedImage image= ImageIO.read(new File(imgPaths[i]));
+			ImageUtil.flipImageVertically(image);
+			images[i] = AWTTextureIO.newTexture(profile, image, false);
+			}catch(IOException e){
+				System.out.println("Error Loading Splash Images");
+			}
+		}
 	}
 	
 	public OBJ[] getOBJs(){
@@ -191,6 +225,10 @@ public class Resource {
 	
 	public LoadingBar getLoadingBar() {
 		return loadingBar;
+	}
+	
+	public Texture getSplashImage() {
+		return images[mainSplashIndex];
 	}
 	
 	public void init(){

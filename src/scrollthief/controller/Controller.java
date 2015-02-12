@@ -13,6 +13,8 @@ import scrollthief.model.GameState;
 import scrollthief.model.Guard;
 import scrollthief.model.Character;
 import scrollthief.model.Projectile;
+import scrollthief.model.StateChange;
+import scrollthief.model.StateChangedListener;
 import scrollthief.view.View;
 
 public class Controller extends TimerTask{
@@ -49,7 +51,18 @@ public class Controller extends TimerTask{
 //        	System.out.println("Xbox controller not connected...");
 //        }
         
+
+		this.gameModel.addStateChangedListener(new StateChangedListener() {
+	      public void stateChanged(StateChange evt) {
+	        redisplay();
+	      }
+	    });
+        
 		say("--Main controller loaded--\n");
+	}
+	
+	public void redisplay() {
+		view.display();
 	}
 
 	@Override
