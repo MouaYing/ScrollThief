@@ -115,6 +115,10 @@ public class GameModel {
 		return getNinja().getSpeed();
 	}
 	
+	public Level getCurrentLevel() {
+		return currentLevel;
+	}
+	
 	public Point3D getNinjaLoc(){
 		if(getNinja() == null){
 			return new Point3D(0,0,0);
@@ -140,6 +144,10 @@ public class GameModel {
 	
 	public Resource getResource() {
 		return resource;
+	}
+	
+	public LevelFactory getLevelFactory() {
+		return levelFactory;
 	}
 	
 	public double floorMod(double a, double n){

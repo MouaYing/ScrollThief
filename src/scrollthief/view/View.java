@@ -38,7 +38,7 @@ public class View extends GLCanvas implements GLEventListener{
 	double cameraRotRate= 0;
 	double[] cameraDelta= {0,0};
 	DialogRenderer dialogRenderer;
-
+	
 	public View(GameModel model){
 		say("Loading view...");
 		this.gameModel= model;
@@ -114,6 +114,8 @@ public class View extends GLCanvas implements GLEventListener{
 				gl.glPopMatrix();
 				gl.glFlush();
 			}
+			
+			dialogRenderer.render(gameModel.getCurrentLevel().getDialog());
 		}
 		else if(gameModel.getState() == GameState.ResourceLoading){
 			LoadingBar loading = gameModel.getResourceLoadingBar();
@@ -152,8 +154,9 @@ public class View extends GLCanvas implements GLEventListener{
 			text= "You obtained the enemy battle plans!";
 			dialogRenderer.overlayText(text,  Data.windowX/2 - (15 * text.length()/2), Data.windowY/2 + 50, Color.blue, "reg");
 		}
-		
-		dialogRenderer.render("Hello World");
+		else if(gameModel.getState() == GameState.Dialog) {
+			dialogRenderer.render(gameModel.getCurrentLevel().getDialog());
+		}
 	}
 
 	@Override
@@ -241,6 +244,10 @@ public class View extends GLCanvas implements GLEventListener{
 
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
 		//gl.glLoadIdentity();
+	}
+	
+	public DialogRenderer getDialogRenderer() {
+		return dialogRenderer;
 	}
 	
 // -----------------Camera getters -----------------------------

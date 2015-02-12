@@ -13,4 +13,5 @@ public interface Level {
 	public ArrayList<Projectile> getProjectiles();
 	public Obstacle getScroll();
 	public ArrayList<Model> getModels();
+	public String getDialog();
 }

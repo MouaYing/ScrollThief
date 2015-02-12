@@ -18,6 +18,7 @@ public class Level1 implements Level {
 	Boss boss;
 	Obstacle scroll;
 	GameModel gameModel;
+	String dialog;
 
 	public Level1(Resource resource, GameModel gameModel) {
 		numGuards = 5;
@@ -33,6 +34,7 @@ public class Level1 implements Level {
 		guards= new Guard[numGuards];
 		obstacles= new Obstacle[numObs];
 		projectiles= new ArrayList<Projectile>();
+		setDialog();
 	}
 	
 	@Override
@@ -186,6 +188,14 @@ public class Level1 implements Level {
 	
 	public ArrayList<Model> getModels(){
 		return models;
+	}
+	
+	public String getDialog() {
+		return dialog;
+	}
+	
+	public void setDialog() {
+		dialog = "Sensei: Young one, be careful, there are many guards patrolling the area. Avoid them and obtain the scroll!";
 	}
 	
 	private void say(String message){

@@ -114,6 +114,9 @@ public class GameControl {
 		else if (gameModel.getState() == GameState.Paused){
 			gameModel.changeState(GameState.Playing);
 		}
+		else if (gameModel.getState() == GameState.Dialog) {
+			view.getDialogRenderer().setIsNextScroll(true);
+		}
 		else {
 			gameModel.changeState(GameState.Paused);
 		}

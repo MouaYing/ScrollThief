@@ -35,19 +35,19 @@ public class Controller extends TimerTask{
 		this.gameModel= gameModel;
 		
 		dllPath= System.getProperty("user.dir") + 
-				(ScrollThief.is64bit() ? "\\xboxcontroller64.dll" : "\\xboxcontroller.dll");
-		xbc= new XboxController(dllPath, 1, 50, 50);
-        xbc.setLeftThumbDeadZone(.2);
-        xbc.setRightThumbDeadZone(.2);
-        xbc.addXboxControllerListener(new XboxAdapter(this));
+				(ScrollThief.is64bit() ? "/xboxcontroller64.dll" : "\\xboxcontroller.dll");
+//		xbc= new XboxController(dllPath, 1, 50, 50);
+//        xbc.setLeftThumbDeadZone(.2);
+//        xbc.setRightThumbDeadZone(.2);
+//        xbc.addXboxControllerListener(new XboxAdapter(this));
         keyboard = new KeyboardControl(this);
         view.addKeyListener(keyboard);
         mouse = new MouseControl(this);
-        view.addMouseMotionListener(mouse);;
-        if(!xbc.isConnected())
-        {
-        	System.out.println("Xbox controller not connected...");
-        }
+        view.addMouseMotionListener(mouse);
+//        if(!xbc.isConnected())
+//        {
+//        	System.out.println("Xbox controller not connected...");
+//        }
         
 		say("--Main controller loaded--\n");
 	}
@@ -62,6 +62,10 @@ public class Controller extends TimerTask{
 			return;
 		}
 		if(gameModel.getState() != GameState.Playing){
+			view.display();
+			return;
+		}
+		if(gameModel.getState() != GameState.Dialog){
 			view.display();
 			return;
 		}
