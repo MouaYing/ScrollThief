@@ -134,8 +134,12 @@ public class GameControl {
 	}
 	
 	public void pause(){
-		if(canPlay())
-			if (gameModel.getState() == GameState.Spotted || gameModel.getState() == GameState.Killed && gameModel.getState() == GameState.Victory){ // game is over---reset
+		if(canPlay() || gameModel.getState() == GameState.Start){
+			if(gameModel.getState() == GameState.Start){
+				gameModel.changeState(GameState.Playing);
+				return;
+			}
+			if (gameModel.getState() == GameState.Spotted || gameModel.getState() == GameState.Killed || gameModel.getState() == GameState.Victory){ // game is over---reset
 				controller.reset();
 			}
 			else if (gameModel.getState() == GameState.Paused){
@@ -144,6 +148,7 @@ public class GameControl {
 			else {
 				gameModel.changeState(GameState.Paused);
 			}
+		}
 	}
 	
 	private void updateCamera(){

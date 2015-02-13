@@ -5,10 +5,12 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.EventObject;
+import java.util.HashMap;
 
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLProfile;
 import javax.swing.event.EventListenerList;
+
 import com.jogamp.opengl.util.texture.Texture;
 
 /**
@@ -19,6 +21,9 @@ import com.jogamp.opengl.util.texture.Texture;
  */
 public class GameModel {
 	Resource resource;
+	private HashMap<String, ArrayList<String>> loadingPhrases;
+	private ArrayList<Button> pauseButtons;
+	
 	private GameState state = GameState.Uninitialized;
 	private Level currentLevel;
 	private LevelFactory levelFactory;
@@ -41,12 +46,29 @@ public class GameModel {
 	  }
 	
 	public GameModel(){
-		changeState(GameState.Initialized);
-		resource = new Resource(this);
+
+		loadingPhrases = new HashMap<String, ArrayList<String>>();
+		ArrayList<String> phrases = new ArrayList<String>();
+		phrases.add("Training with Sensai...");
+		phrases.add("Sharpening Katana...");
+		phrases.add("Meditating...");
+		loadingPhrases.put("resource", phrases);
+		phrases = new ArrayList<String>();
+		phrases.add("Preparing Ninja Skills...");
+		phrases.add("Meditating...");
+		phrases.add("Memorizing Floor Plan...");
+		loadingPhrases.put("level", phrases);
+		pauseButtons = new ArrayList<Button>();
+		pauseButtons.add(new Button(300,200,100,50, "Restart"));
+		pauseButtons.add(new Button(300,400,100,50, "Quit"));
+		
+		resource = new Resource(this, loadingPhrases);
 
 		levelFactory = new LevelFactory();
 		
-		currentLevel = levelFactory.getNextLevel(resource, this);
+		currentLevel = levelFactory.getNextLevel(resource, this, loadingPhrases);
+		changeState(GameState.Initialized);
+		
 	}
 	
 	private void createModels(){
@@ -80,7 +102,9 @@ public class GameModel {
 			createModels();
 			createCharacters();
 			createObstacles();
-			say("--Game model loaded--\n\nStarting game. Good luck!\n");
+		}
+		else if(type.equals("level")){
+			say("Waiting to start");
 			changeState(GameState.Start);
 		}
 	}
@@ -96,6 +120,10 @@ public class GameModel {
 		return resource.getSplashImage();
 	}
 	
+	public Texture getLevelSplashImage(){
+		return resource.getLevelSplash();
+	}
+	
 	public GameState getState(){
 		return state;
 	}
@@ -106,6 +134,10 @@ public class GameModel {
 	
 	public LoadingBar getResourceLoadingBar(){
 		return resource.getLoadingBar();
+	}
+	
+	public LoadingBar getLevelLoadingBar() {
+		return currentLevel.getLoadingBar();
 	}
 	
 	public Obstacle[] getObstacles(){
@@ -300,6 +332,9 @@ public class GameModel {
 	
 	private void say(String message){
 		System.out.println(message);
+	}
+	public ArrayList<Button> getPauseButtons() {
+		return pauseButtons;
 	}
 }
 

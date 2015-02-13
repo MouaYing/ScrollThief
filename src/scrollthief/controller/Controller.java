@@ -69,11 +69,6 @@ public class Controller extends TimerTask{
 	public void run() {
 		if (gameModel.getState() == GameState.Uninitialized || gameModel.getState() == GameState.Initialized)
 			return;
-		if (gameModel.getState() == GameState.Start){
-			gameModel.changeState(GameState.Paused);
-			view.display();
-			return;
-		}
 		if(gameModel.getState() != GameState.Playing){
 			view.display();
 			return;
@@ -211,7 +206,7 @@ public class Controller extends TimerTask{
 		view.setCamAngle(0);
 		view.setCamHeight(4);
 		view.setCamDistance(6);
-		gameModel.changeState(GameState.Start);
+		gameModel.changeState(GameState.Paused);
 	}
 	
 	private void gameOver(GameState reason){
