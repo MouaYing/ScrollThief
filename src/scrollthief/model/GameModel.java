@@ -3,8 +3,13 @@ package scrollthief.model;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.EventListener;
+import java.util.EventObject;
 
 import javax.media.opengl.GL2;
+import javax.media.opengl.GLProfile;
+import javax.swing.event.EventListenerList;
+import com.jogamp.opengl.util.texture.Texture;
 
 /**
  * @author Jon "Neo" Pimentel
@@ -18,10 +23,29 @@ public class GameModel {
 	private Level currentLevel;
 	private LevelFactory levelFactory;
 	
+<<<<<<< HEAD
 	private boolean aPressed;
 	private boolean sPressed;
 	private boolean dPressed;
 	private boolean wPressed;
+=======
+	protected EventListenerList listenerList = new EventListenerList();
+
+	  public void addStateChangedListener(StateChangedListener listener) {
+	    listenerList.add(StateChangedListener.class, listener);
+	  }
+	  public void removeStateChangedListener(StateChangedListener listener) {
+	    listenerList.remove(StateChangedListener.class, listener);
+	  }
+	  void fireStateChanged(StateChange evt) {
+	    Object[] listeners = listenerList.getListenerList();
+	    for (int i = 0; i < listeners.length; i = i+2) {
+	      if (listeners[i] == StateChangedListener.class) {
+	        ((StateChangedListener) listeners[i+1]).stateChanged(evt);
+	      }
+	    }
+	  }
+>>>>>>> master
 	
 	public GameModel(){
 		changeState(GameState.Initialized);
@@ -82,6 +106,7 @@ public class GameModel {
 	}
 	
 	public void init(final GL2 gl){
+		resource.loadImages(gl);
 		changeState(GameState.ResourceLoading);
 		Thread resourceThread = new Thread() {
 			public void run() {
@@ -108,6 +133,11 @@ public class GameModel {
 	public void changeState(GameState newState) {
 		say("Game State moving from " + state + " to " + newState);
 		state = newState;
+		fireStateChanged(new StateChange(newState));
+	}
+	
+	public Texture getSplashImage(){
+		return resource.getSplashImage();
 	}
 	
 	public GameState getState(){
@@ -316,3 +346,6 @@ public class GameModel {
 		System.out.println(message);
 	}
 }
+
+
+

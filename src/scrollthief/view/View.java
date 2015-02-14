@@ -120,9 +120,19 @@ public class View extends GLCanvas implements GLEventListener{
 			}
 		}
 		else if(gameModel.getState() == GameState.ResourceLoading){
+			
+			//Display the 
+			displaySplashImage(gameModel.getSplashImage());
+			
+			//Display Loading Bar
 			LoadingBar loading = gameModel.getResourceLoadingBar();
-			String text= "Resource Loading:" + loading.getProgress() + "/" + loading.getTotal();
-			overlayText(text,  windowX/2 - (15 * text.length()/2), windowY/2 + 150, Color.blue, "reg");
+			drawLoadingBar(gl,loading);
+			
+			//Display Game Title
+			String text = "THE SCROLL THIEF";
+			overlayText(text, (int)(windowX/2 - windowX*.15), windowY-100, Color.white, "reg");
+			
+			gl.glEnable(GL2.GL_TEXTURE_2D);
 		}
 		else if(gameModel.getState() == GameState.LevelLoading){
 			
@@ -156,6 +166,60 @@ public class View extends GLCanvas implements GLEventListener{
 			text= "You obtained the enemy battle plans!";
 			overlayText(text,  windowX/2 - (15 * text.length()/2), windowY/2 + 50, Color.blue, "reg");
 		}
+	}
+	
+	private void displaySplashImage(Texture t){
+		gl.glPushMatrix();
+		gl.glMatrixMode(GL2.GL_PROJECTION);
+		gl.glLoadIdentity();
+		gl.glOrtho(0, windowX, windowY, 0, -10, 10);
+		gl.glEnable( GL2.GL_TEXTURE_2D );
+		t.bind(gl);
+		gl.glLoadIdentity();
+		gl.glBegin( GL2.GL_QUADS );
+			double originX = -1.0;//-(windowX/2);
+			double originY = -1.0;//-(windowY/2);
+			
+			double x = 1.0;//windowX;
+			double y = 1.0;//windowY;
+			gl.glTexCoord2d(0.0,0.0); gl.glVertex2d(originX,originY);
+			gl.glTexCoord2d(1.0,0.0); gl.glVertex2d(x,originY);
+			gl.glTexCoord2d(1.0,1.0); gl.glVertex2d(x,y);
+			gl.glTexCoord2d(0.0,1.0); gl.glVertex2d(originX,y);
+		gl.glEnd();
+		
+		gl.glDisable(GL2.GL_TEXTURE_2D);
+		gl.glPopMatrix();
+	}
+	
+	private void drawLoadingBar(GL2 gl, LoadingBar loading){
+		double leftX = windowX/2 - windowX*.05;
+		double leftY = windowY - 100;
+		float percentage = ((float)loading.getProgress()/(float)loading.getTotal());
+		float width = 100 * percentage;
+		int maxWidth = 100;
+		int height = 25;
+		gl.glPushMatrix();
+		gl.glMatrixMode(GL2.GL_PROJECTION);
+		gl.glLoadIdentity();
+		gl.glOrtho(0, windowX, windowY, 0, -10, 10);
+		gl.glBegin(GL2.GL_QUADS);
+			gl.glColor3f(1, 1, 0);
+			gl.glVertex2d(leftX, leftY);
+			gl.glVertex2d(leftX, leftY+height);
+			gl.glVertex2d(leftX+maxWidth, leftY+height);
+			gl.glVertex2d(leftX+maxWidth, leftY);
+		gl.glEnd();
+		
+		gl.glBegin(GL2.GL_QUADS);
+			gl.glColor3f(1, 1, 1);
+			gl.glVertex2d(leftX, leftY);
+			gl.glVertex2d(leftX, leftY+height);
+			gl.glVertex2d(leftX+width, leftY+height);
+			gl.glVertex2d(leftX+width, leftY);
+		gl.glEnd();
+
+		gl.glPopMatrix();
 	}
 
 	@Override
