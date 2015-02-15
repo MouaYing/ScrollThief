@@ -7,17 +7,23 @@ public class Button {
 	private int x;
 	private int y;
 	private String text;
+	private boolean selected;
 	
-	public Button(int x, int y, int width, int height, String text){
+	public Button(int x, int y, int width, int height, String text, boolean selected){
 		this.width = width;
 		this.x = x;
 		this.y = y;
 		this.height = height;
 		this.text = text;
+		this.selected = selected;
 	}
 	
 	public String getText() {
 		return text;
+	}
+	
+	public boolean IsSelected() {
+		return selected;
 	}
 
 	public boolean isHit(int x, int y){

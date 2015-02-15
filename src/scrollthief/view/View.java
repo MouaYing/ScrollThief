@@ -193,12 +193,12 @@ public class View extends GLCanvas implements GLEventListener{
 		gl.glDisable(GL2.GL_TEXTURE_2D);
 		double leftX = 200;
 		double leftY = 200;
-		double height = (windowY - leftY*2);
-		double maxWidth = (windowX - leftX*2);
+		double height = 300;
+		double maxWidth = 300;
 		gl.glPushMatrix();
 		gl.glMatrixMode(GL2.GL_PROJECTION);
 		gl.glLoadIdentity();
-		gl.glOrtho(0, windowX, windowY, 0, -10, 10);
+		gl.glOrtho(0, windowX, 0, windowY, -10, 10);
 		gl.glColor3f(1f, 1f, ((float)153/(float)255));
 		gl.glBegin(gl.GL_QUADS);
 			gl.glVertex2d(leftX, leftY);
@@ -206,13 +206,21 @@ public class View extends GLCanvas implements GLEventListener{
 			gl.glVertex2d(leftX+maxWidth, leftY+height);
 			gl.glVertex2d(leftX+maxWidth, leftY);
 		gl.glEnd();
-	    gl.glFlush();
 
 
 		String text = "GAME PAUSED";
 		overlayText(text, (int)(leftX + 100), (int)(leftY + height - 20), Color.black, "pause");
 		
 		for(Button b : gameModel.getPauseButtons()){
+			if(b.IsSelected()){
+				gl.glColor3f(1f, 1f, 1f);
+				gl.glBegin(gl.GL_QUADS);
+					gl.glVertex2d(b.getX()-2, b.getY()-2);
+					gl.glVertex2d(b.getX()-2, b.getY()+b.getHeight()+2);
+					gl.glVertex2d(b.getX()+b.getWidth()+2, b.getY()+b.getHeight()+2);
+					gl.glVertex2d(b.getX()+b.getWidth()+2, b.getY()-2);
+				gl.glEnd();
+			}
 			gl.glColor3f(1f, 1f, 0f);
 			gl.glBegin(gl.GL_QUADS);
 				gl.glVertex2d(b.getX(), b.getY());
@@ -220,10 +228,10 @@ public class View extends GLCanvas implements GLEventListener{
 				gl.glVertex2d(b.getX()+b.getWidth(), b.getY()+b.getHeight());
 				gl.glVertex2d(b.getX()+b.getWidth(), b.getY());
 			gl.glEnd();
-		    gl.glFlush();
-			overlayText(b.getText(), (int)(b.getX()), (int)(b.getY()), Color.black, "pause");
+			overlayText(b.getText(), (int)(b.getX()+b.getWidth()/4), (int)(b.getY() + b.getHeight()/4), Color.black, "pause");
 		}
-		
+
+	    gl.glFlush();
 
 		gl.glPopMatrix();
 		gl.glEnable(GL2.GL_TEXTURE_2D);
