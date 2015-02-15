@@ -12,7 +12,7 @@ public class GameControl {
 	double cameraDir = 0;
 	double cameraMag = 0;
 	private double speedIncrement = 0.7;
-	private double ninjaRotationIncrement = 0.2;
+	private double ninjaRotationIncrement = 0.1;
 	private double cameraRotationIncrement = 0.1;
 	private float cameraHeightIncrement = 0.1f;
 	
@@ -95,6 +95,10 @@ public class GameControl {
 			gameModel.setNinjaAngle(Math.toRadians(direction) +  view.getCamAngle());
 	}
 	
+	public double getNinjaAngle() {
+		return gameModel.getNinjaAngle();
+	}
+	
 	public void setNinjaSpeed(double magnitude){
 		double scale= 1;
 		if(canPlay())
@@ -150,19 +154,17 @@ public class GameControl {
 	}
 	
 	public void pause(){
-<<<<<<< HEAD
 		System.out.println(gameModel == null);
 		
-		if (gameModel.getState() == GameState.Spotted || gameModel.getState() == GameState.Killed && gameModel.getState() == GameState.Victory){ // game is over---reset
-			controller.reset();
-		}
-		else if (gameModel.getState() == GameState.Paused){
-			gameModel.changeState(GameState.Playing);
-		}
-		else {
-			gameModel.changeState(GameState.Paused);
-		}
-=======
+//		if (gameModel.getState() == GameState.Spotted || gameModel.getState() == GameState.Killed && gameModel.getState() == GameState.Victory){ // game is over---reset
+//			controller.reset();
+//		}
+//		else if (gameModel.getState() == GameState.Paused){
+//			gameModel.changeState(GameState.Playing);
+//		}
+//		else {
+//			gameModel.changeState(GameState.Paused);
+//		}
 		if(canPlay())
 			if (gameModel.getState() == GameState.Spotted || gameModel.getState() == GameState.Killed && gameModel.getState() == GameState.Victory){ // game is over---reset
 				controller.reset();
@@ -173,7 +175,6 @@ public class GameControl {
 			else {
 				gameModel.changeState(GameState.Paused);
 			}
->>>>>>> master
 	}
 	
 	private void updateCamera(){

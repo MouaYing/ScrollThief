@@ -175,10 +175,16 @@ public class Controller extends TimerTask{
 			gameControl.setNinjaSpeed(-1);
 		if(!gameModel.getWPressed() && !gameModel.getSPressed())
 			gameControl.setNinjaSpeed(0);
-		if(gameModel.getAPressed())
-			gameControl.rotateNinjaLeft();
-		if(gameModel.getDPressed())
-			gameControl.rotateNinjaRight();
+//		if(gameModel.getAPressed())
+//			gameControl.rotateNinjaLeft();
+//		if(gameModel.getDPressed())
+//			gameControl.rotateNinjaRight();
+		if(gameModel.getAPressed()) {
+			gameControl.setNinjaSpeed(1);
+		}
+		if(gameModel.getDPressed()) {
+			gameControl.setNinjaSpeed(1);
+		}
 		
 // ---------------------------------------------------------------------------------------------------	
 		

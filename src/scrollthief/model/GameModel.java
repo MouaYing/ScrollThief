@@ -23,12 +23,11 @@ public class GameModel {
 	private Level currentLevel;
 	private LevelFactory levelFactory;
 	
-<<<<<<< HEAD
 	private boolean aPressed;
 	private boolean sPressed;
 	private boolean dPressed;
 	private boolean wPressed;
-=======
+	
 	protected EventListenerList listenerList = new EventListenerList();
 
 	  public void addStateChangedListener(StateChangedListener listener) {
@@ -45,7 +44,6 @@ public class GameModel {
 	      }
 	    }
 	  }
->>>>>>> master
 	
 	public GameModel(){
 		changeState(GameState.Initialized);

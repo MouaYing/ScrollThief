@@ -24,7 +24,7 @@ public class Guard extends Character{
 	OBJ[] walking;
 
 	public Guard(GameModel gameModel, Model model, double boxLength, double boxWidth, Point3D[] wayPoints){
-		super(gameModel, model, boxLength, boxWidth);
+		super(gameModel, model, boxLength, boxWidth, "Guard");
 		turnRate= .05;
 		this.waypoints= wayPoints;
 		pointToCheck= wayPoints[0];

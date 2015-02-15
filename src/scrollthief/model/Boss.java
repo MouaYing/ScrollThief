@@ -13,7 +13,7 @@ public class Boss extends Character{
 	boolean inBattle= false;
 
 	public Boss(GameModel gameModel, Model model, double boxLength, double boxWidth) {
-		super(gameModel, model, boxLength, boxWidth);
+		super(gameModel, model, boxLength, boxWidth, "Boss");
 		turnRate= .02;
 		setSpeed(.2);
 		standing= new OBJ[] {model.getObj()};

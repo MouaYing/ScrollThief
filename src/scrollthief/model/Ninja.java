@@ -13,7 +13,7 @@ public class Ninja extends Character {
 	boolean wasJumping= false;
 
 	public Ninja(GameModel gameModel, Model model, double boxLength, double boxWidth) {
-		super(gameModel, model, boxLength, boxWidth);
+		super(gameModel, model, boxLength, boxWidth, "Ninja");
 		standing= new OBJ[] {defaultOBJ};
 		running= gameModel.getResource().getNinjaRun();
 		jumping= new OBJ[] {running[0]};
@@ -35,6 +35,14 @@ public class Ninja extends Character {
 			motion= running;
 			animFrame= 0;
 		}
+		
+		if(gameModel.getAPressed()) {
+			setNinjaDirection(getAngle() + Math.PI - Math.toRadians(90));
+		}
+		else if(gameModel.getDPressed())
+			setNinjaDirection(getAngle() + Math.PI + Math.toRadians(90));
+		else
+			setNinjaDirection(getAngle() + Math.PI);
 		
 		wasJumping= isJumping;
 		oldSpeed= speed;
