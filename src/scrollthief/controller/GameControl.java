@@ -1,5 +1,8 @@
 package scrollthief.controller;
 
+import java.util.List;
+
+import scrollthief.model.Button;
 import scrollthief.model.GameModel;
 import scrollthief.model.GameState;
 import scrollthief.view.View;
@@ -151,6 +154,70 @@ public class GameControl {
 		}
 	}
 	
+	public void pauseButtonClick(){
+		if(gameModel.getState() == GameState.Paused){
+			gameModel.doPauseButton();
+		}
+	}
+	
+	public void switchSelectedButton(int direction){
+		if(gameModel.getState() == GameState.Paused){
+			if(direction == 0){
+				List<Button> buttons = gameModel.getPauseButtons();
+				for(int i = 0; i < buttons.size();i++){
+					if( i == 0 && buttons.get(i).IsSelected()){
+						return;
+					}
+					else if(buttons.get(i).IsSelected()){
+						buttons.get(i-1).setSelected(true);
+						buttons.get(i).setSelected(false);
+						break;
+					}
+				}
+			}
+			else if(direction == 1){
+				List<Button> buttons = gameModel.getPauseButtons();
+				for(int i = 0; i < buttons.size();i++){
+					if( i == buttons.size()-1 && buttons.get(i).IsSelected()){
+						return;
+					}
+					else if(buttons.get(i).IsSelected()){
+						buttons.get(i+1).setSelected(true);
+						buttons.get(i).setSelected(false);
+						break;
+					}
+				}
+			}			
+		}
+	}
+	
+
+	public void clickButton(int x, int y) {
+		y = view.getHeight() - y;
+		if(gameModel.getState() == GameState.Paused){
+			for(Button b : gameModel.getPauseButtons()){
+				if(b.isHit(x, y)){
+					b.doAction();
+				}
+			}
+		}
+	}
+	
+
+	public void highlightButton(int x, int y) {
+		y = view.getHeight() - y;
+		if(gameModel.getState() == GameState.Paused){
+			for(Button b : gameModel.getPauseButtons()){
+				if(b.isHit(x, y)){
+					for(Button b2 : gameModel.getPauseButtons()){
+						b2.setSelected(false);
+					}
+					b.setSelected(true);
+				}
+			}
+		}
+	}
+	
 	private void updateCamera(){
 		double scale= .2;
 		
@@ -166,4 +233,6 @@ public class GameControl {
 	private void say(String message){
 		System.out.println(message);
 	}
+
+
 }

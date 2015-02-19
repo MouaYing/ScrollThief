@@ -6,16 +6,20 @@ public class Button {
 	private int height;
 	private int x;
 	private int y;
+	private GameModel game;
 	private String text;
 	private boolean selected;
+	private ButtonType type;
 	
-	public Button(int x, int y, int width, int height, String text, boolean selected){
+	public Button(int x, int y, int width, int height, ButtonType type, boolean selected, GameModel game){
 		this.width = width;
 		this.x = x;
 		this.y = y;
 		this.height = height;
-		this.text = text;
+		this.type = type;
+		this.text = type.toString();
 		this.selected = selected;
+		this.game = game;
 	}
 	
 	public String getText() {
@@ -27,10 +31,14 @@ public class Button {
 	}
 
 	public boolean isHit(int x, int y){
-		if((x >= x && x <= x+width) && (y >= y && y <= y+height)){
+		if((x >= this.x && x <= this.x+width) && (y >= this.y && y <= this.y+height)){
 			return true;
 		}
 		return false;
+	}
+	
+	public void setSelected(boolean sel){
+		selected = sel;
 	}
 
 	public int getWidth() {
@@ -48,7 +56,18 @@ public class Button {
 	public int getY() {
 		return y;
 	}
-	
-	
+
+	public void doAction() {
+		if(type == ButtonType.CLOSE){
+			game.changeState(GameState.Playing);
+		}
+		else if(type == ButtonType.QUIT){
+			System.exit(0);
+		}
+		else if(type == ButtonType.RESTART){
+			game.getNinja().reset();
+			game.getBoss().reset();
+		}
+	}
 
 }

@@ -59,9 +59,9 @@ public class GameModel {
 		phrases.add("Memorizing Floor Plan...");
 		loadingPhrases.put("level", phrases);
 		pauseButtons = new ArrayList<Button>();
-		pauseButtons.add(new Button(300,375,100,50, "CLOSE",true));
-		pauseButtons.add(new Button(300,300,100,50, "RESTART",false));
-		pauseButtons.add(new Button(300,225,100,50, "QUIT",false));
+		pauseButtons.add(new Button(300,375,100,50, ButtonType.CLOSE,true, this));
+		pauseButtons.add(new Button(300,300,100,50, ButtonType.RESTART,false, this));
+		pauseButtons.add(new Button(300,225,100,50, ButtonType.QUIT,false, this));
 		
 		resource = new Resource(this, loadingPhrases);
 
@@ -201,6 +201,14 @@ public class GameModel {
 	
 	public Resource getResource() {
 		return resource;
+	}
+	
+	public void doPauseButton() {
+		for(Button b : pauseButtons){
+			if(b.IsSelected()){
+				b.doAction();
+			}
+		}
 	}
 	
 	public double floorMod(double a, double n){

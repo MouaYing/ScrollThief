@@ -45,7 +45,8 @@ public class Controller extends TimerTask{
         keyboard = new KeyboardControl(this);
         view.addKeyListener(keyboard);
         mouse = new MouseControl(this);
-        view.addMouseMotionListener(mouse);;
+        view.addMouseMotionListener(mouse);
+        view.addMouseListener(mouse);
         if(!xbc.isConnected())
         {
         	System.out.println("Xbox controller not connected...");
