@@ -31,6 +31,8 @@ public class Resource {
 	private Texture[] textures;
 	private LoadingBar loadingBar;
 	private Texture[] images;
+	private Sound sound;
+	private Thread musicThread;
 	private Random rand;
 	private int mainSplashIndex;
 	private final int total = 5;
@@ -40,19 +42,32 @@ public class Resource {
 	private final int BOSS_STOMP_NUM = 24;
 	private final int TEXTURES_NUM = 12;
 	private final int IMAGES_NUM = 2;
+	private final int SOUNDS_NUM = 3;
 	
 	public Resource(GameModel gameModel) {
 		images = new Texture[IMAGES_NUM];
 		rand = new Random();
+		sound = new Sound();
 		mainSplashIndex = rand.nextInt(IMAGES_NUM);
 		objs = new OBJ[OBJS_NUM];
 		ninjaRun = new OBJ[NINJA_RUN_NUM];
 		guardWalk = new OBJ[GUARD_WALK_NUM];
 		bossStomp = new OBJ[BOSS_STOMP_NUM];
 		textures = new Texture[TEXTURES_NUM];
-		int total = OBJS_NUM + NINJA_RUN_NUM + GUARD_WALK_NUM + BOSS_STOMP_NUM + TEXTURES_NUM;
+		int total = SOUNDS_NUM + OBJS_NUM + NINJA_RUN_NUM + GUARD_WALK_NUM + BOSS_STOMP_NUM + TEXTURES_NUM;
 		loadingBar = new LoadingBar(total,gameModel,"resource");
 		
+	}
+	
+	private void loadSounds() {
+		say("Loading music...");
+		sound.loadMusic(SoundFile.TITLE, "music/ST_Title_1.mp3");
+		loadingBar.increaseProgress(1);
+		sound.playMusic(SoundFile.TITLE);
+		sound.loadMusic(SoundFile.SNEAK, "music/ST_Sneak.mp3");
+		loadingBar.increaseProgress(1);
+		sound.loadMusic(SoundFile.BOSS, "music/ST_Boss_1.mp3");
+		loadingBar.increaseProgress(1);
 	}
 	
 	// Loads the default OBJ files
@@ -203,6 +218,10 @@ public class Resource {
 		}
 	}
 	
+	public Sound getSound() {
+		return sound;
+	}
+	
 	public OBJ[] getOBJs(){
 		return objs;
 	}
@@ -231,7 +250,12 @@ public class Resource {
 		return images[mainSplashIndex];
 	}
 	
+	public Thread getMusicThread() {
+		return musicThread;
+	}
+	
 	public void init(){
+		loadSounds();
 		loadOBJs();
 		
 		long startTime = System.nanoTime();

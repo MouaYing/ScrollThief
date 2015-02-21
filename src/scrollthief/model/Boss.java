@@ -94,7 +94,7 @@ public class Boss extends Character{
 		return desired;
 	}
 	
-	private boolean isNear(){
+	public boolean isNear(){
 		Point3D loc= model.getLoc();
 		Point3D ninjaLoc= gameModel.getNinjaLoc();
 		

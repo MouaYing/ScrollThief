@@ -13,6 +13,8 @@ import scrollthief.model.GameState;
 import scrollthief.model.Guard;
 import scrollthief.model.Character;
 import scrollthief.model.Projectile;
+import scrollthief.model.Sound;
+import scrollthief.model.SoundFile;
 import scrollthief.model.StateChange;
 import scrollthief.model.StateChangedListener;
 import scrollthief.view.View;
@@ -127,6 +129,11 @@ public class Controller extends TimerTask{
 				}
 			}
 		}
+		
+// ------------------------------------------------Music--------------------------------------------
+		Sound sound = gameModel.getSound();
+		if (sound.getCurrentMusic() != SoundFile.BOSS && boss.isNear())
+			sound.playMusic(SoundFile.BOSS);
 		
 // ------------ Update Boss --------------------------------------------------------------------------
 		boss.update();

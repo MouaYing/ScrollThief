@@ -82,6 +82,7 @@ public class GameModel {
 			createObstacles();
 			say("--Game model loaded--\n\nStarting game. Good luck!\n");
 			changeState(GameState.Start);
+			resource.getSound().playMusic(SoundFile.SNEAK);
 		}
 	}
 	
@@ -98,6 +99,10 @@ public class GameModel {
 	
 	public GameState getState(){
 		return state;
+	}
+	
+	public Sound getSound() {
+		return resource.getSound();
 	}
 	
 	public Guard[] getGuards(){
