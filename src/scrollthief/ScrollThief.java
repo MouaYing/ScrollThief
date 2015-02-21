@@ -63,6 +63,8 @@ public class ScrollThief {
 	    Image i = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 		Cursor noCursor = t.createCustomCursor(i, new Point(0, 0), "none");
 		window.setCursor(noCursor);
+		// To get back to the normal cursor, use this on the window
+		// window.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		
 		//anim.start();
 		timer.scheduleAtFixedRate(controller, 3000, 1000/FPS); 

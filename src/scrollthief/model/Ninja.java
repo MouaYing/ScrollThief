@@ -36,11 +36,18 @@ public class Ninja extends Character {
 			animFrame= 0;
 		}
 		
-		if(gameModel.getAPressed()) {
+		if(gameModel.getAPressed() && !gameModel.getWPressed() && !gameModel.getSPressed())
 			setNinjaDirection(getAngle() + Math.PI - Math.toRadians(90));
-		}
-		else if(gameModel.getDPressed())
+		else if(gameModel.getDPressed() && !gameModel.getWPressed() && !gameModel.getSPressed())
 			setNinjaDirection(getAngle() + Math.PI + Math.toRadians(90));
+		else if(gameModel.getAPressed() && gameModel.getWPressed())
+			setNinjaDirection(getAngle() + Math.PI - Math.toRadians(45));
+		else if(gameModel.getDPressed() && gameModel.getWPressed())
+			setNinjaDirection(getAngle() + Math.PI + Math.toRadians(45));
+		else if(gameModel.getAPressed() && gameModel.getSPressed())
+			setNinjaDirection(getAngle() + Math.PI - Math.toRadians(135));
+		else if(gameModel.getDPressed() && gameModel.getSPressed())
+			setNinjaDirection(getAngle() + Math.PI + Math.toRadians(135));
 		else
 			setNinjaDirection(getAngle() + Math.PI);
 		

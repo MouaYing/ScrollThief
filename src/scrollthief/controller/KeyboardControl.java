@@ -39,6 +39,8 @@ public class KeyboardControl implements KeyListener {
 			case KeyEvent.VK_RIGHT:
 				gameControl.rotateCameraRight();
 				break;
+			case KeyEvent.VK_R:
+				gameControl.resetCamera();
 			default:
 				break;
 		}
