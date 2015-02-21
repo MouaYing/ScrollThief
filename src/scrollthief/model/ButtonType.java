@@ -1,7 +1,7 @@
 package scrollthief.model;
 
 public enum ButtonType {
-	CLOSE,
+	RESUME,
 	RESTART,
 	QUIT
 }

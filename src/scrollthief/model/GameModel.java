@@ -59,7 +59,7 @@ public class GameModel {
 		phrases.add("Memorizing Floor Plan...");
 		loadingPhrases.put("level", phrases);
 		pauseButtons = new ArrayList<Button>();
-		pauseButtons.add(new Button(300,375,100,50, ButtonType.CLOSE,true, this));
+		pauseButtons.add(new Button(300,375,100,50, ButtonType.RESUME,true, this));
 		pauseButtons.add(new Button(300,300,100,50, ButtonType.RESTART,false, this));
 		pauseButtons.add(new Button(300,225,100,50, ButtonType.QUIT,false, this));
 		

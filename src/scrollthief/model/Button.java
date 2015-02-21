@@ -58,7 +58,7 @@ public class Button {
 	}
 
 	public void doAction() {
-		if(type == ButtonType.CLOSE){
+		if(type == ButtonType.RESUME){
 			game.changeState(GameState.Playing);
 		}
 		else if(type == ButtonType.QUIT){
