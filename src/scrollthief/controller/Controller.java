@@ -36,8 +36,8 @@ public class Controller extends TimerTask{
 		this.view= view;
 		this.gameModel= gameModel;
 		
-		dllPath= System.getProperty("user.dir") + 
-				(ScrollThief.is64bit() ? "\\xboxcontroller64.dll" : "\\xboxcontroller.dll");
+		dllPath =(ScrollThief.is64bit() ? this.getClass().getResource("../../resources/xboxcontroller64.dll").getFile() :
+			this.getClass().getResource("../../resources/xboxcontroller.dll").getFile());
 		xbc= new XboxController(dllPath, 1, 50, 50);
         xbc.setLeftThumbDeadZone(.2);
         xbc.setRightThumbDeadZone(.2);
