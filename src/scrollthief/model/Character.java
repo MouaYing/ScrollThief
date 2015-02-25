@@ -20,6 +20,8 @@ public class Character {
 	double speed, oldSpeed, deltaY, angleDelta, goalAngle= 0;
 	double turnRate= .3;
 	public boolean isJumping= false;
+	public boolean isBeginAttacking = false;
+	public boolean isAttacking = false;
 	public boolean isMoving= false;
 	int hp = 3; // player dies after 3 projectile hits, or one boss hit.
 	int animFrame= 0; // The frame of animation currently being displayed

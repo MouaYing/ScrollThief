@@ -238,8 +238,6 @@ public class Resource {
 		loadAnimations();
 		long total = (System.nanoTime() - startTime) / 1000000000;
 		
-		//loadTextures(gl);
-		
 		say("time to load Animations: " + total);
 	}
 	

@@ -15,7 +15,6 @@ import com.jogamp.opengl.util.texture.Texture;
 import scrollthief.model.GameState;
 import scrollthief.model.LoadingBar;
 import scrollthief.model.Data;
-import scrollthief.model.DialogRenderer;
 import scrollthief.model.Point3D;
 import scrollthief.model.Model;
 import scrollthief.model.GameModel;
@@ -51,8 +50,8 @@ public class View extends GLCanvas implements GLEventListener{
 	@Override
 	public void init(GLAutoDrawable drawable) {
 		gl= drawable.getGL().getGL2();
-		gameModel.init(gl);
 		dialogRenderer = new DialogRenderer(gl);
+		gameModel.init(gl);		
 		
 		setupLighting(gl);
 		
@@ -114,8 +113,6 @@ public class View extends GLCanvas implements GLEventListener{
 				gl.glPopMatrix();
 				gl.glFlush();
 			}
-			
-			dialogRenderer.render(gameModel.getCurrentLevel().getDialog());
 		}
 		else if(gameModel.getState() == GameState.ResourceLoading){
 			
@@ -166,7 +163,12 @@ public class View extends GLCanvas implements GLEventListener{
 			dialogRenderer.overlayText(text,  Data.windowX/2 - (15 * text.length()/2), Data.windowY/2 + 50, Color.blue, "reg");
 		}
 		else if(gameModel.getState() == GameState.Dialog) {
-			dialogRenderer.render(gameModel.getCurrentLevel().getDialog());
+			if(getDialogRenderer().isFinished()) {
+				gameModel.changeState(GameState.Playing);
+				gameModel.getCurrentLevel().getCurrentDialogHotspot().setRepeatable(false);
+			}
+			else
+				dialogRenderer.render(gameModel.getCurrentLevel().getCurrentDialogHotspot().getText());
 		}
 	}
 	

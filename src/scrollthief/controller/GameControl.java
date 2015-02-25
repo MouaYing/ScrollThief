@@ -27,7 +27,8 @@ public class GameControl {
 				gameModel.getState() == GameState.Paused ||
 				gameModel.getState() == GameState.Spotted || 
 				gameModel.getState() == GameState.Killed || 
-				gameModel.getState() == GameState.Victory){
+				gameModel.getState() == GameState.Victory ||
+				gameModel.getState() == GameState.Dialog){
 			return true;
 		}
 		return false;
@@ -129,6 +130,24 @@ public class GameControl {
 			}
 	}
 	
+	public void startAttack() {
+		scrollthief.model.Character ninja= gameModel.getNinja();
+		if(canPlay()) {
+			ninja.isBeginAttacking = true;
+			
+			
+		}
+	}
+	
+	public void attack(float attackPower) {
+		scrollthief.model.Character ninja= gameModel.getNinja();
+		if(canPlay()) {
+			ninja.isBeginAttacking = false;
+			ninja.isAttacking = true;
+			
+		}
+	}
+	
 	public void reset(){
 		controller.reset();
 	}
@@ -138,11 +157,17 @@ public class GameControl {
 			if (gameModel.getState() == GameState.Spotted || gameModel.getState() == GameState.Killed && gameModel.getState() == GameState.Victory){ // game is over---reset
 				controller.reset();
 			}
+			else if (gameModel.getState() == GameState.Dialog) {
+				if(view.getDialogRenderer().isFinished() || view.getDialogRenderer().isNextScroll()) {
+					gameModel.getCurrentLevel().getCurrentDialogHotspot().setRepeatable(false);
+					gameModel.changeState(GameState.Playing);
+				}
+				else {
+					view.getDialogRenderer().setIsNextScroll(true);
+				}
+			}
 			else if (gameModel.getState() == GameState.Paused){
 				gameModel.changeState(GameState.Playing);
-			}
-			else if (gameModel.getState() == GameState.Dialog) {
-				view.getDialogRenderer().setIsNextScroll(true);
 			}
 			else {
 				gameModel.changeState(GameState.Paused);
