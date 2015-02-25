@@ -26,7 +26,7 @@ public class View extends GLCanvas implements GLEventListener{
 	GameModel gameModel;
 	GL2 gl;
 	public boolean init= true;
-	int windowX= 710;
+	int windowX= 947;
 	int windowY= 710;
 	GLUT glut= new GLUT();
 	float FOV= 45f;
@@ -200,7 +200,7 @@ public class View extends GLCanvas implements GLEventListener{
 		gl.glLoadIdentity();
 		gl.glOrtho(0, windowX, 0, windowY, -10, 10);
 		gl.glColor3f(1f, 1f, ((float)153/(float)255));
-		gl.glBegin(gl.GL_QUADS);
+		gl.glBegin(GL2.GL_QUADS);
 			gl.glVertex2d(leftX, leftY);
 			gl.glVertex2d(leftX, leftY+height);
 			gl.glVertex2d(leftX+maxWidth, leftY+height);
@@ -214,7 +214,7 @@ public class View extends GLCanvas implements GLEventListener{
 		for(Button b : gameModel.getPauseButtons()){
 			if(b.IsSelected()){
 				gl.glColor3f(1f, 1f, 1f);
-				gl.glBegin(gl.GL_QUADS);
+				gl.glBegin(GL2.GL_QUADS);
 					gl.glVertex2d(b.getX()-2, b.getY()-2);
 					gl.glVertex2d(b.getX()-2, b.getY()+b.getHeight()+2);
 					gl.glVertex2d(b.getX()+b.getWidth()+2, b.getY()+b.getHeight()+2);
@@ -222,7 +222,7 @@ public class View extends GLCanvas implements GLEventListener{
 				gl.glEnd();
 			}
 			gl.glColor3f(1f, 1f, 0f);
-			gl.glBegin(gl.GL_QUADS);
+			gl.glBegin(GL2.GL_QUADS);
 				gl.glVertex2d(b.getX(), b.getY());
 				gl.glVertex2d(b.getX(), b.getY()+b.getHeight());
 				gl.glVertex2d(b.getX()+b.getWidth(), b.getY()+b.getHeight());
@@ -274,7 +274,7 @@ public class View extends GLCanvas implements GLEventListener{
 		gl.glLoadIdentity();
 		gl.glOrtho(0, windowX, windowY, 0, -10, 10);
 		gl.glColor3f(((float)204/(float)255), 0f, 0f);
-		gl.glBegin(gl.GL_QUADS);
+		gl.glBegin(GL2.GL_QUADS);
 			gl.glVertex2d(leftX, leftY);
 			gl.glVertex2d(leftX, leftY+height);
 			gl.glVertex2d(leftX+maxWidth, leftY+height);
@@ -282,7 +282,7 @@ public class View extends GLCanvas implements GLEventListener{
 		gl.glEnd();
 
 		gl.glColor3f(1f, 1f, ((float)51/(float)255));
-		gl.glBegin(gl.GL_QUADS);
+		gl.glBegin(GL2.GL_QUADS);
 			gl.glVertex2d(leftX, leftY);
 			gl.glVertex2d(leftX, leftY+height);
 			gl.glVertex2d(leftX+width, leftY+height);
