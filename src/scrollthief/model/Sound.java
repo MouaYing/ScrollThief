@@ -4,12 +4,14 @@ import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.advanced.*;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.util.HashMap;
 
 public class Sound {
-	HashMap<SoundFile, AdvancedPlayer> players;
+	AdvancedPlayer currentPlayer;
+	HashMap<SoundFile, MusicPlayer> players;
 	SoundFile currentMusic;
-	Thread currentMusicThread;
+	MusicPlayer currentMusicThread;
 	boolean shouldRepeat;
 	
 	public boolean shouldRepeat() {
@@ -29,49 +31,27 @@ public class Sound {
 	}
 
 	public Sound() {
-		players = new HashMap<SoundFile, AdvancedPlayer>();
+		players = new HashMap<SoundFile, MusicPlayer>();
 		currentMusic = null;
+	}
+	
+	public void delayedPlayMusic(SoundFile soundFile, long delay) {
+		if (currentMusic != null && currentMusicThread != null)
+			currentMusicThread.interrupt();
+		currentMusic = soundFile;
+		MusicPlayer player = players.get(soundFile); 
+		player.setDelay(delay);
+		player.start();
+		currentMusicThread = player;
 	}
 	
 	public void playMusic(SoundFile soundFile) {
 		if (currentMusic != null && currentMusicThread != null)
 			currentMusicThread.interrupt();
 		currentMusic = soundFile;
-		Thread thread = new Thread() {
-			public void run() {
-				try {
-					players.get(soundFile).play();
-				} catch (JavaLayerException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			
-			public void interrupt() {
-				players.get(soundFile).stop();
-			}
-		};
-		thread.start();
-		currentMusicThread = thread;
-	}
-	
-	public void repeatMusic() {
-		Thread thread = new Thread() {
-			public void run() {
-				try {
-					players.get(currentMusic).play();
-				} catch (JavaLayerException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			
-			public void interrupt() {
-				players.get(currentMusic).stop();
-			}
-		};
-		thread.start();
-		currentMusicThread = thread;
+		MusicPlayer player = players.get(soundFile); 
+		player.start();
+		currentMusicThread = player;
 	}
 	
 	public void stopMusic(SoundFile soundFile) {
@@ -82,18 +62,13 @@ public class Sound {
 		String urlAsString = "";
 		try {
 			urlAsString = 
-	                "file:///" 
-	                + new java.io.File(".").getCanonicalPath()         + "/" 
-	                + path;
-			players.put(sf, new AdvancedPlayer
-			(
-					new java.net.URL(urlAsString).openStream(),
-					javazoom.jl.player.FactoryRegistry.systemRegistry().createAudioDevice()
-			));
-			players.get(sf).setPlayBackListener(new MusicListener(this));
-		} catch (JavaLayerException | IOException e) {
-			System.out.println(urlAsString);
+			        "file:///" 
+			        + new java.io.File(".").getCanonicalPath()         + "/" 
+			        + path;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		players.put(sf, new MusicPlayer(urlAsString));
 	}
 }

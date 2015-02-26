@@ -1,17 +1,20 @@
 package scrollthief.model;
+import java.io.IOException;
+
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.advanced.*;
 
 public class MusicListener extends PlaybackListener {
 	
-	private Sound sound;
-	public MusicListener(Sound sound) {
-		this.sound = sound;
+	private MusicPlayer player;
+	public MusicListener(MusicPlayer player) {
+		this.player = player;
 	}
 	
 	@Override
 	public void playbackFinished(PlaybackEvent arg0) {
-		sound.setShouldRepeat(true);
+		if (player.shouldRestart())
+			player.play();
 	}
 
 	@Override

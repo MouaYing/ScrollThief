@@ -133,7 +133,7 @@ public class Controller extends TimerTask{
 // ------------------------------------------------Music--------------------------------------------
 		Sound sound = gameModel.getSound();
 		if (sound.getCurrentMusic() != SoundFile.BOSS && boss.isNear())
-			sound.playMusic(SoundFile.BOSS);
+			sound.delayedPlayMusic(SoundFile.BOSS, 700);
 		
 // ------------ Update Boss --------------------------------------------------------------------------
 		boss.update();
