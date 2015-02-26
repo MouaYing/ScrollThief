@@ -1,6 +1,7 @@
 package scrollthief.view;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.util.ArrayList;
 
 import javax.media.opengl.GL2;
@@ -9,9 +10,11 @@ import javax.media.opengl.GLEventListener;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
 
+import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.gl2.GLUT;
 import com.jogamp.opengl.util.texture.Texture;
 
+import scrollthief.model.Button;
 import scrollthief.model.GameState;
 import scrollthief.model.LoadingBar;
 import scrollthief.model.Data;
@@ -37,7 +40,10 @@ public class View extends GLCanvas implements GLEventListener{
 	double cameraRotRate= 0;
 	double[] cameraDelta= {0,0};
 	DialogRenderer dialogRenderer;
-	
+	TextRenderer tRend;
+	TextRenderer tRend2;
+	TextRenderer tRendLoadingBar;
+
 	public View(GameModel model){
 		say("Loading view...");
 		this.gameModel= model;
@@ -51,7 +57,10 @@ public class View extends GLCanvas implements GLEventListener{
 	public void init(GLAutoDrawable drawable) {
 		gl= drawable.getGL().getGL2();
 		dialogRenderer = new DialogRenderer(gl);
-		gameModel.init(gl);		
+		gameModel.init(gl);
+		tRend= new TextRenderer(new Font("Helvetica", Font.BOLD, 30));
+		tRend2= new TextRenderer(new Font("Helvetica", Font.BOLD, 60));
+		tRendLoadingBar= new TextRenderer(new Font("Helvetica", Font.PLAIN, 10));
 		
 		setupLighting(gl);
 		
@@ -93,7 +102,8 @@ public class View extends GLCanvas implements GLEventListener{
 		gl.glColor3f(1f, 1f, 1f);
 		
 
-		if(gameModel.getState() != GameState.ResourceLoading && gameModel.getState() != GameState.LevelLoading){
+		if(gameModel.getState() != GameState.ResourceLoading && gameModel.getState() != GameState.LevelLoading 
+				&& gameModel.getState() != GameState.Start){
 
 			ArrayList<Model> models= gameModel.getModels();
 			Texture[] textures= gameModel.getResource().getTextures();
@@ -130,8 +140,22 @@ public class View extends GLCanvas implements GLEventListener{
 			
 			gl.glEnable(GL2.GL_TEXTURE_2D);
 		}
-		else if(gameModel.getState() == GameState.LevelLoading){
+		else if(gameModel.getState() == GameState.LevelLoading || gameModel.getState() == GameState.Start){
+			//Display the 
+			displaySplashImage(gameModel.getLevelSplashImage());
 			
+			//Display Loading Bar
+			LoadingBar loading = gameModel.getLevelLoadingBar();
+			drawLoadingBar(gl,loading);
+			
+			//Display Game Title
+			if(gameModel.getState() == GameState.Start){
+
+				String text = "Press Esc to Begin Mission";
+				dialogRenderer.overlayText(text, (int)(Data.windowX/2 - Data.windowX*.15), Data.windowY-100, Color.white, "reg");
+			}
+			
+			gl.glEnable(GL2.GL_TEXTURE_2D);
 		}
 		if (gameModel.getState() == GameState.Paused){
 			String text= "Steal the enemy battle plans (scroll)";
@@ -140,6 +164,14 @@ public class View extends GLCanvas implements GLEventListener{
 			dialogRenderer.overlayText(text,  Data.windowX/2 - (15 * text.length()/2), Data.windowY/2 + 100, Color.blue, "reg");
 			text= "Press start to begin";
 			dialogRenderer.overlayText(text,  Data.windowX/2 - (30 * text.length()/2), Data.windowY/2, Color.blue, "big");
+
+			drawPauseMenu(gl);
+//			String text= "Steal the enemy battle plans (scroll)";
+//			overlayText(text,  windowX/2 - (15 * text.length()/2), windowY/2 + 150, Color.blue, "reg");
+//			text= "without being detected";
+//			overlayText(text,  windowX/2 - (15 * text.length()/2), windowY/2 + 100, Color.blue, "reg");
+//			text= "Press start to continue";
+//			overlayText(text,  windowX/2 - (30 * text.length()/2), windowY/2, Color.blue, "big");
 		}
 		else if (gameModel.getState() == GameState.Spotted){
 			String text= "You've been spotted!";
@@ -170,6 +202,56 @@ public class View extends GLCanvas implements GLEventListener{
 			else
 				dialogRenderer.render(gameModel.getCurrentLevel().getCurrentDialogHotspot().getText());
 		}
+	}
+	
+	private void drawPauseMenu(GL2 gl){
+
+		gl.glDisable(GL2.GL_TEXTURE_2D);
+		double leftX = 200;
+		double leftY = 200;
+		double height = 300;
+		double maxWidth = 300;
+		gl.glPushMatrix();
+		gl.glMatrixMode(GL2.GL_PROJECTION);
+		gl.glLoadIdentity();
+		gl.glOrtho(0, Data.windowX, 0, Data.windowY, -10, 10);
+		gl.glColor3f(1f, 1f, ((float)153/(float)255));
+		gl.glBegin(gl.GL_QUADS);
+			gl.glVertex2d(leftX, leftY);
+			gl.glVertex2d(leftX, leftY+height);
+			gl.glVertex2d(leftX+maxWidth, leftY+height);
+			gl.glVertex2d(leftX+maxWidth, leftY);
+		gl.glEnd();
+
+
+		String text = "GAME PAUSED";
+		dialogRenderer.overlayText(text, (int)(leftX + 100), (int)(leftY + height - 20), Color.black, "pause");
+		
+		for(Button b : gameModel.getPauseButtons()){
+			if(b.IsSelected()){
+				gl.glColor3f(1f, 1f, 1f);
+				gl.glBegin(gl.GL_QUADS);
+					gl.glVertex2d(b.getX()-2, b.getY()-2);
+					gl.glVertex2d(b.getX()-2, b.getY()+b.getHeight()+2);
+					gl.glVertex2d(b.getX()+b.getWidth()+2, b.getY()+b.getHeight()+2);
+					gl.glVertex2d(b.getX()+b.getWidth()+2, b.getY()-2);
+				gl.glEnd();
+			}
+			gl.glColor3f(1f, 1f, 0f);
+			gl.glBegin(gl.GL_QUADS);
+				gl.glVertex2d(b.getX(), b.getY());
+				gl.glVertex2d(b.getX(), b.getY()+b.getHeight());
+				gl.glVertex2d(b.getX()+b.getWidth(), b.getY()+b.getHeight());
+				gl.glVertex2d(b.getX()+b.getWidth(), b.getY());
+			gl.glEnd();
+			dialogRenderer.overlayText(b.getText(), (int)(b.getX()+b.getWidth()/4), (int)(b.getY() + b.getHeight()/4), Color.black, "pause");
+		}
+
+	    gl.glFlush();
+
+		gl.glPopMatrix();
+		gl.glEnable(GL2.GL_TEXTURE_2D);
+		
 	}
 	
 	private void displaySplashImage(Texture t){
@@ -207,23 +289,27 @@ public class View extends GLCanvas implements GLEventListener{
 		gl.glMatrixMode(GL2.GL_PROJECTION);
 		gl.glLoadIdentity();
 		gl.glOrtho(0, Data.windowX, Data.windowY, 0, -10, 10);
-		gl.glBegin(GL2.GL_QUADS);
-			gl.glColor3f(1, 1, 0);
+		gl.glColor3f(((float)204/(float)255), 0f, 0f);
+		gl.glBegin(gl.GL_QUADS);
 			gl.glVertex2d(leftX, leftY);
 			gl.glVertex2d(leftX, leftY+height);
 			gl.glVertex2d(leftX+maxWidth, leftY+height);
 			gl.glVertex2d(leftX+maxWidth, leftY);
 		gl.glEnd();
-		
-		gl.glBegin(GL2.GL_QUADS);
-			gl.glColor3f(1, 1, 1);
+
+		gl.glColor3f(1f, 1f, ((float)51/(float)255));
+		gl.glBegin(gl.GL_QUADS);
 			gl.glVertex2d(leftX, leftY);
 			gl.glVertex2d(leftX, leftY+height);
 			gl.glVertex2d(leftX+width, leftY+height);
 			gl.glVertex2d(leftX+width, leftY);
 		gl.glEnd();
+	    gl.glFlush();
 
 		gl.glPopMatrix();
+		
+		String text = loading.getLoadingText();
+		dialogRenderer.overlayText(text, (int)(leftX), (int)Data.windowY/12, Color.white, "loading");
 	}
 
 	@Override
@@ -251,6 +337,22 @@ public class View extends GLCanvas implements GLEventListener{
 	@Override
 	public void dispose(GLAutoDrawable drawable) {
 		
+	}
+	
+	public void overlayText(String text, int x, int y, Color color, String type){
+		TextRenderer rend= tRend;
+		if (type == "big")
+			rend= tRend2;
+		else if(type == "loading")
+			rend = tRendLoadingBar;
+		else if(type == "pause")
+			rend = new TextRenderer(new Font("Helvetica", Font.PLAIN, 15));
+			
+		rend.setColor(color);
+		rend.beginRendering(Data.windowX, Data.windowY, true);
+		rend.draw(text, x, y);
+		rend.endRendering();
+		rend.flush();
 	}
 	
 	private void setupLighting(GL2 gl){

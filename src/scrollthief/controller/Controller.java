@@ -51,6 +51,7 @@ public class Controller extends TimerTask{
 //        {
 //        	System.out.println("Xbox controller not connected...");
 //        }
+        view.addMouseListener(mouse);
         
 
 		this.gameModel.addStateChangedListener(new StateChangedListener() {
@@ -228,7 +229,7 @@ public class Controller extends TimerTask{
 		view.setCamAngle(0);
 		view.setCamHeight(4);
 		view.setCamDistance(6);
-		gameModel.changeState(GameState.Start);
+		gameModel.changeState(GameState.Paused);
 	}
 	
 	private void gameOver(GameState reason){

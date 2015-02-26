@@ -18,4 +18,5 @@ public interface Level {
 	public List<DialogHotspot> getDialogHotspots();
 	public DialogHotspot getCurrentDialogHotspot();
 	public void setCurrentDialogHotspot(DialogHotspot curr);
+	public LoadingBar getLoadingBar();
 }
