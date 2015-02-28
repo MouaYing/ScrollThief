@@ -182,7 +182,8 @@ public class Controller extends TimerTask{
 	}
 	
 	public void vibrate(int leftVibrate, int rightVibrate){
-		xbc.vibrate(leftVibrate, rightVibrate);
+		if(xbc != null)
+			xbc.vibrate(leftVibrate, rightVibrate);
 	}
 	
 	public void reset(){
