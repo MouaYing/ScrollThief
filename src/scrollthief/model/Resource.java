@@ -1,6 +1,5 @@
 package scrollthief.model;
 
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +34,7 @@ public class Resource {
 	private Random rand;
 	private int mainSplashIndex;
 	private int levelSplashIndex;
-	private final int total = 5;
+	// private final int total = 5;
 	private final int OBJS_NUM = 9;
 	private final int NINJA_RUN_NUM = 21;
 	private final int GUARD_WALK_NUM = 30;
@@ -74,9 +73,9 @@ public class Resource {
 		loadingBar.increaseProgress(1);
 		objs[4]= new OBJ("/resources/obj/table.obj");
 		loadingBar.increaseProgress(1);
-		objs[5]= new OBJ("/resources/obj/wall2.obj");
+		objs[5]= new OBJ("/resources/obj/wall.obj");
 		loadingBar.increaseProgress(1);
-		objs[6]= new OBJ("/resources/obj/pillar2.obj");
+		objs[6]= new OBJ("/resources/obj/pillar.obj");
 		loadingBar.increaseProgress(1);
 		objs[7]= new OBJ("/resources/obj/boss_stand.obj");
 		loadingBar.increaseProgress(1);
