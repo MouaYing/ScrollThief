@@ -58,7 +58,7 @@ public class Sound {
 		currentMusicThread.interrupt();
 	}
 	
-	public void loadMusic(SoundFile sf, String path) {
+	public void loadMusic(SoundFile sf, String path, RepeatType repeatType) {
 		String urlAsString = "";
 		try {
 			urlAsString = 
@@ -69,6 +69,6 @@ public class Sound {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		players.put(sf, new MusicPlayer(urlAsString));
+		players.put(sf, new MusicPlayer(urlAsString, repeatType));
 	}
 }

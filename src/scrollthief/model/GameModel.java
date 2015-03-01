@@ -73,6 +73,10 @@ public class GameModel {
 		resource.loadTextures(gl);
 	}
 	
+	public void reloadMusic() {
+		resource.reloadMusic();
+	}
+	
 	public void finishedLoading(String type){
 		if(type.equals("resource")){
 			say("LevelLoading");
@@ -82,7 +86,6 @@ public class GameModel {
 			createObstacles();
 			say("--Game model loaded--\n\nStarting game. Good luck!\n");
 			changeState(GameState.Start);
-			resource.getSound().playMusic(SoundFile.SNEAK);
 		}
 	}
 	

@@ -13,7 +13,7 @@ public class MusicListener extends PlaybackListener {
 	
 	@Override
 	public void playbackFinished(PlaybackEvent arg0) {
-		if (player.shouldRestart())
+		if (player.getRepeatType() == RepeatType.REPEAT && player.shouldRestart())
 			player.play();
 	}
 
@@ -22,5 +22,4 @@ public class MusicListener extends PlaybackListener {
 		// TODO Auto-generated method stub
 		super.playbackStarted(arg0);
 	}
-
 }

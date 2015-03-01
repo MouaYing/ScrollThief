@@ -72,6 +72,7 @@ public class Controller extends TimerTask{
 		if (gameModel.getState() == GameState.Uninitialized || gameModel.getState() == GameState.Initialized)
 			return;
 		if (gameModel.getState() == GameState.Start){
+			gameModel.getSound().playMusic(SoundFile.SNEAK);
 			gameModel.changeState(GameState.Paused);
 			view.display();
 			return;
@@ -132,7 +133,7 @@ public class Controller extends TimerTask{
 		
 // ------------------------------------------------Music--------------------------------------------
 		Sound sound = gameModel.getSound();
-		if (sound.getCurrentMusic() != SoundFile.BOSS && boss.isNear())
+		if ((sound.getCurrentMusic() == SoundFile.SNEAK) && boss.isNear())
 			sound.delayedPlayMusic(SoundFile.BOSS, 700);
 		
 // ------------ Update Boss --------------------------------------------------------------------------
@@ -225,6 +226,8 @@ public class Controller extends TimerTask{
 		gameModel.changeState(reason);
 		vibrate(0,0);
 		hitTimer= 0;
+		gameModel.reloadMusic();
+		gameModel.getSound().playMusic(SoundFile.GAMEOVER);
 	}
 	
 	private void say(String message){

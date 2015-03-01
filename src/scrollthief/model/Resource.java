@@ -42,7 +42,7 @@ public class Resource {
 	private final int BOSS_STOMP_NUM = 24;
 	private final int TEXTURES_NUM = 12;
 	private final int IMAGES_NUM = 2;
-	private final int SOUNDS_NUM = 3;
+	private final int SOUNDS_NUM = 4;
 	
 	public Resource(GameModel gameModel) {
 		images = new Texture[IMAGES_NUM];
@@ -59,14 +59,23 @@ public class Resource {
 		
 	}
 	
+	public void reloadMusic() {
+		sound.loadMusic(SoundFile.TITLE, "music/ST_Title_1.mp3", RepeatType.REPEAT);
+		sound.loadMusic(SoundFile.SNEAK, "music/ST_Sneak.mp3", RepeatType.REPEAT);
+		sound.loadMusic(SoundFile.GAMEOVER, "music/Game_Over.mp3", RepeatType.NOREPEAT);
+		sound.loadMusic(SoundFile.BOSS, "music/ST_Boss_1.mp3", RepeatType.REPEAT);
+	}
+	
 	private void loadSounds() {
 		say("Loading music...");
-		sound.loadMusic(SoundFile.TITLE, "music/ST_Title_1.mp3");
+		sound.loadMusic(SoundFile.TITLE, "music/ST_Title_1.mp3", RepeatType.REPEAT);
 		loadingBar.increaseProgress(1);
 		sound.playMusic(SoundFile.TITLE);
-		sound.loadMusic(SoundFile.SNEAK, "music/ST_Sneak.mp3");
+		sound.loadMusic(SoundFile.SNEAK, "music/ST_Sneak.mp3", RepeatType.REPEAT);
 		loadingBar.increaseProgress(1);
-		sound.loadMusic(SoundFile.BOSS, "music/ST_Boss_1.mp3");
+		sound.loadMusic(SoundFile.GAMEOVER, "music/Game_Over.mp3", RepeatType.NOREPEAT);
+		loadingBar.increaseProgress(1);
+		sound.loadMusic(SoundFile.BOSS, "music/ST_Boss_1.mp3", RepeatType.REPEAT);
 		loadingBar.increaseProgress(1);
 	}
 	

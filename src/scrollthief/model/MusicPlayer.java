@@ -11,13 +11,21 @@ public class MusicPlayer extends Thread {
 	private String file;
 	private long delay;
 	private boolean restart;
+	private boolean interruptable;
+	private RepeatType repeatType;
 	
-	public MusicPlayer(String file) {
+	public MusicPlayer(String file, RepeatType repeatType) {
 		this.file = file;
 		delay = 0;
 		restart = true;
+		this.repeatType = repeatType;
+		this.interruptable = interruptable;
 	}
-	
+
+	public RepeatType getRepeatType() {
+		return repeatType;
+	}
+
 	public boolean shouldRestart() {
 		return restart;
 	}
@@ -53,6 +61,7 @@ public class MusicPlayer extends Thread {
 	
 	public void interrupt() {
 		restart = false;
-		player.stop();
+		if (repeatType == RepeatType.REPEAT)
+			player.stop();
 	}
 }
