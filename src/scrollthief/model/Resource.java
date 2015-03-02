@@ -42,7 +42,7 @@ public class Resource {
 	private final int BOSS_STOMP_NUM = 24;
 	private final int TEXTURES_NUM = 12;
 	private final int IMAGES_NUM = 2;
-	private final int SOUNDS_NUM = 4;
+	private final int SOUNDS_NUM = 5;
 	
 	public Resource(GameModel gameModel) {
 		images = new Texture[IMAGES_NUM];
@@ -64,6 +64,12 @@ public class Resource {
 		sound.loadMusic(SoundFile.SNEAK, "music/ST_Sneak.mp3", RepeatType.REPEAT);
 		sound.loadMusic(SoundFile.GAMEOVER, "music/Game_Over.mp3", RepeatType.NOREPEAT);
 		sound.loadMusic(SoundFile.BOSS, "music/ST_Boss_1.mp3", RepeatType.REPEAT);
+	}
+	
+	private void loadEffects() {
+		say("Loading effects...");
+		sound.loadEffect(SoundFile.JUMP, "sound/jump.mp3");
+		loadingBar.increaseProgress(1);
 	}
 	
 	private void loadSounds() {
@@ -265,6 +271,7 @@ public class Resource {
 	
 	public void init(){
 		loadSounds();
+		loadEffects();
 		loadOBJs();
 		
 		long startTime = System.nanoTime();

@@ -10,6 +10,7 @@ import java.util.HashMap;
 public class Sound {
 	AdvancedPlayer currentPlayer;
 	HashMap<SoundFile, MusicPlayer> players;
+	HashMap<SoundFile, EffectPlayer> effects;
 	SoundFile currentMusic;
 	MusicPlayer currentMusicThread;
 	boolean shouldRepeat;
@@ -32,6 +33,7 @@ public class Sound {
 
 	public Sound() {
 		players = new HashMap<SoundFile, MusicPlayer>();
+		effects = new HashMap<SoundFile, EffectPlayer>();
 		currentMusic = null;
 	}
 	
@@ -54,8 +56,27 @@ public class Sound {
 		currentMusicThread = player;
 	}
 	
+	public void playEffect(SoundFile soundFile) {
+		EffectPlayer player = effects.get(soundFile);
+		player.play();
+	}
+	
 	public void stopMusic(SoundFile soundFile) {
 		currentMusicThread.interrupt();
+	}
+	
+	public void loadEffect(SoundFile sf, String path) {
+		String urlAsString = "";
+		try {
+			urlAsString = 
+			        "file:///" 
+			        + new java.io.File(".").getCanonicalPath()         + "/" 
+			        + path;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		effects.put(sf, new EffectPlayer(urlAsString));
 	}
 	
 	public void loadMusic(SoundFile sf, String path, RepeatType repeatType) {
