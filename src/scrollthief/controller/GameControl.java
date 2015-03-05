@@ -3,6 +3,7 @@ package scrollthief.controller;
 import java.util.List;
 
 import scrollthief.model.Button;
+import scrollthief.model.Data;
 import scrollthief.model.GameModel;
 import scrollthief.model.GameState;
 import scrollthief.view.View;
@@ -19,7 +20,7 @@ public class GameControl {
 	private double cameraRotationIncrement = 0.1;
 	private float cameraHeightIncrement = 0.1f;
 	
-	public GameControl(Controller controller){
+	public GameControl(Controller controller) {
 		this.controller= controller;
 		this.view= controller.view;
 		this.gameModel= controller.gameModel;
@@ -68,13 +69,13 @@ public class GameControl {
 	}
 	
 	public void increaseSpeed(){
-		if(canPlay())
+		if(canPlay() && !isAttacking())
 			if (gameModel.getNinjaSpeed() < 1)
 				gameModel.setNinjaSpeed(gameModel.getNinjaSpeed() + speedIncrement);
 	}
 	
 	public void stop(){
-		if(canPlay())
+		if(canPlay() && !isAttacking())
 			gameModel.setNinjaSpeed(0);
 	}
 	
@@ -125,30 +126,30 @@ public class GameControl {
 	
 	public void jump(){
 		scrollthief.model.Character ninja= gameModel.getNinja();
-		if(canPlay())
+		if(canPlay() && !isAttacking())
 			if (ninja != null && !ninja.isJumping){
 				ninja.isJumping= true;
 				gameModel.getNinja().setDeltaY(.2);
-				// say("Jump!");
 			}
 	}
 	
-	public void startAttack() {
+	public void attack() {
 		scrollthief.model.Character ninja= gameModel.getNinja();
 		if(canPlay()) {
-			ninja.isBeginAttacking = true;
-			
-			
+			if(ninja.attacking < 1)
+				ninja.attacking = 1;
+			else {
+				ninja.nextAttack = ninja.attacking + 1; 
+				if(ninja.nextAttack > ninja.attackingStateMax) {
+					ninja.nextAttack = 1;
+				}
+			}
 		}
 	}
 	
-	public void attack(float attackPower) {
+	public boolean isAttacking() {
 		scrollthief.model.Character ninja= gameModel.getNinja();
-		if(canPlay()) {
-			ninja.isBeginAttacking = false;
-			ninja.isAttacking = true;
-			
-		}
+		return ninja.attacking > -1;
 	}
 	
 	public void reset(){

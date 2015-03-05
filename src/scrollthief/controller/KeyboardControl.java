@@ -6,6 +6,7 @@ import java.awt.event.KeyListener;
 import com.sun.corba.se.impl.oa.poa.ActiveObjectMap.Key;
 
 import javafx.scene.input.KeyCode;
+import scrollthief.model.Data;
 import scrollthief.model.GameModel;
 import scrollthief.view.View;
 
@@ -55,6 +56,9 @@ public class KeyboardControl implements KeyListener {
 				break;
 			case KeyEvent.VK_O:
 				gameControl.toggleDevMode();
+				break;
+			case KeyEvent.VK_R:
+				gameControl.attack();
 				break;
 			case KeyEvent.VK_SPACE:
 				gameControl.jump();
