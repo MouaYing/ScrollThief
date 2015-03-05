@@ -1,6 +1,5 @@
 package scrollthief.model;
 
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +34,7 @@ public class Resource {
 	private Random rand;
 	private int mainSplashIndex;
 	private int levelSplashIndex;
-	private final int total = 5;
+	// private final int total = 5;
 	private final int OBJS_NUM = 9;
 	private final int NINJA_RUN_NUM = 21;
 	private final int GUARD_WALK_NUM = 30;
@@ -64,23 +63,23 @@ public class Resource {
 	// Loads the default OBJ files
 	private void loadOBJs(){
 		say("Loading OBJ files...");
-		objs[0]= new OBJ("obj/floor.obj");
+		objs[0]= new OBJ("/resources/obj/floor.obj");
 		loadingBar.increaseProgress(1);
-		objs[1]= new OBJ("obj/ninja_stand.obj");
+		objs[1]= new OBJ("/resources/obj/ninja_stand.obj");
 		loadingBar.increaseProgress(1);
-		objs[2]= new OBJ("obj/guard_stand.obj");
+		objs[2]= new OBJ("/resources/obj/guard_stand.obj");
 		loadingBar.increaseProgress(1);
-		objs[3]= new OBJ("obj/Scroll.obj");
+		objs[3]= new OBJ("/resources/obj/Scroll.obj");
 		loadingBar.increaseProgress(1);
-		objs[4]= new OBJ("obj/table.obj");
+		objs[4]= new OBJ("/resources/obj/table.obj");
 		loadingBar.increaseProgress(1);
-		objs[5]= new OBJ("obj/wall2.obj");
+		objs[5]= new OBJ("/resources/obj/wall.obj");
 		loadingBar.increaseProgress(1);
-		objs[6]= new OBJ("obj/pillar2.obj");
+		objs[6]= new OBJ("/resources/obj/pillar.obj");
 		loadingBar.increaseProgress(1);
-		objs[7]= new OBJ("obj/boss_stand.obj");
+		objs[7]= new OBJ("/resources/obj/boss_stand.obj");
 		loadingBar.increaseProgress(1);
-		objs[8]= new OBJ("obj/AcidBlob.obj");
+		objs[8]= new OBJ("/resources/obj/AcidBlob.obj");
 		loadingBar.increaseProgress(1);
 	}
 	
@@ -129,7 +128,7 @@ public class Resource {
 		say("\nLoading Ninja animation frames...");
 		for (int i= 0; i < NINJA_RUN_NUM; i++){
 			say("Loading run cycle frame " + (i+1));
-			String fileName= "obj/anim/ninja/run." + (i+1) + ".obj";
+			String fileName= "/resources/obj/anim/ninja/run." + (i+1) + ".obj";
 			ninjaRun[i]= new OBJ(fileName);
 			loadingBar.increaseProgress(1);
 		}
@@ -141,7 +140,7 @@ public class Resource {
 		say("\nLoading Guard animation frames...");
 		for (int i= 0; i < GUARD_WALK_NUM; i++){
 			say("Loading walk cycle frame " + (i+1));
-			String fileName= "obj/anim/guard/walk." + (i+1) + ".obj";
+			String fileName= "/resources/obj/anim/guard/walk." + (i+1) + ".obj";
 			guardWalk[i]= new OBJ(fileName);
 			loadingBar.increaseProgress(1);
 		}
@@ -153,7 +152,7 @@ public class Resource {
 		say("\nLoading Boss animation frames...");
 		for (int i= 0; i < BOSS_STOMP_NUM; i++){
 			say("Loading stomp cycle frame " + (i+1));
-			String fileName= "obj/anim/boss/stomp." + (i+1) + ".obj";
+			String fileName="/resources/obj/anim/boss/stomp." + (i+1) + ".obj";
 			bossStomp[i]= new OBJ(fileName);
 			loadingBar.increaseProgress(1);
 		}
@@ -180,7 +179,7 @@ public class Resource {
 		
 		for (int i= 0; i < imgPaths.length; i++){
 			try {
-				BufferedImage image= ImageIO.read(new File(imgPaths[i]));
+				BufferedImage image= ImageIO.read(this.getClass().getResourceAsStream ("/resources/"+imgPaths[i]));
 				ImageUtil.flipImageVertically(image);
 				
 				textures[i]= AWTTextureIO.newTexture(profile, image, false);
@@ -200,7 +199,7 @@ public class Resource {
 		imgPaths[1]= "images/ninja_slice.jpg";
 		for(int i = 0; i < imgPaths.length; i++){
 			try{
-			BufferedImage image= ImageIO.read(new File(imgPaths[i]));
+			BufferedImage image= ImageIO.read(this.getClass().getResourceAsStream("/resources/"+imgPaths[i]));
 			ImageUtil.flipImageVertically(image);
 			images[i] = AWTTextureIO.newTexture(profile, image, false);
 			}catch(IOException e){

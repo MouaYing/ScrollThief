@@ -36,24 +36,26 @@ public class Controller extends TimerTask{
 		this.window= window;
 		this.view= view;
 		this.gameModel= gameModel;
-		
-		dllPath= System.getProperty("user.dir") + 
-				(ScrollThief.is64bit() ? "/xboxcontroller64.dll" : "\\xboxcontroller.dll");
-//		xbc= new XboxController(dllPath, 1, 50, 50);
-//        xbc.setLeftThumbDeadZone(.2);
-//        xbc.setRightThumbDeadZone(.2);
-//        xbc.addXboxControllerListener(new XboxAdapter(this));
+		try{
+			dllPath =(ScrollThief.is64bit() ? this.getClass().getResource("/resources/xboxcontroller64.dll").getFile() :
+				this.getClass().getResource("/resources/xboxcontroller.dll").getFile());
+			xbc= new XboxController(dllPath, 1, 50, 50);
+	        xbc.setLeftThumbDeadZone(.2);
+	        xbc.setRightThumbDeadZone(.2);
+	        xbc.addXboxControllerListener(new XboxAdapter(this));
+		}catch(Exception e){
+			System.out.println("Unable to load xbox controller dlls");
+		}
         keyboard = new KeyboardControl(this);
         view.addKeyListener(keyboard);
         mouse = new MouseControl(this);
         view.addMouseMotionListener(mouse);
-//        if(!xbc.isConnected())
-//        {
-//        	System.out.println("Xbox controller not connected...");
-//        }
         view.addMouseListener(mouse);
+        if(xbc != null && !xbc.isConnected())
+        {
+        	System.out.println("Xbox controller not connected...");
+        }
         
-
 		this.gameModel.addStateChangedListener(new StateChangedListener() {
 	      public void stateChanged(StateChange evt) {
 	        redisplay();
@@ -201,7 +203,8 @@ public class Controller extends TimerTask{
 	}
 	
 	public void vibrate(int leftVibrate, int rightVibrate){
-		xbc.vibrate(leftVibrate, rightVibrate);
+		if(xbc != null)
+			xbc.vibrate(leftVibrate, rightVibrate);
 	}
 	
 	public void reset(){
