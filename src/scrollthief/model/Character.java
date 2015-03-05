@@ -257,6 +257,7 @@ public class Character {
 	
 	public void takeDamage(int damage){
 		hp -= damage;
+		this.model.setFlash(true);
 	}
 	
 	public void advanceFrame(){

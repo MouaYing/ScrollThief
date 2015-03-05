@@ -12,6 +12,8 @@ public class Model {
 	double[] rotation;
 	double scale;
 	public double scaleX;
+	private boolean flashRed = false;
+	private int flashCount = 0;
 	
 	public Model(OBJ obj, int textureIndex, Point3D location, double[] rotation, double scale, double scaleX){
 		this.obj= obj;
@@ -20,6 +22,23 @@ public class Model {
 		this.rotation= rotation;
 		this.scale= scale;
 		this.scaleX= scaleX;
+	}
+	
+	public void setFlash(boolean flash) {
+		flashRed = flash;
+		if(flashRed){
+			flashCount  = 5;
+		}
+	}
+	
+	public boolean isHurt(){
+		if(flashCount == 0){
+			flashRed = false;
+		}
+		if(flashRed && flashCount > 0){
+			flashCount--;
+		}
+		return flashRed;
 	}
 	
 	// getters

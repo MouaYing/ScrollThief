@@ -113,6 +113,12 @@ public class View extends GLCanvas implements GLEventListener{
 				
 				// assign texture
 				textures[model.getTxtr()].bind(gl);
+				if(model.isHurt()){
+					gl.glColor3f(1,0,0);
+				}
+				else {
+					gl.glColor3f(1,1,1);
+				}
 				
 				//apply object to window transform
 				obj2world(gl, model);
