@@ -1,5 +1,8 @@
 package scrollthief.model;
 
+import java.awt.geom.Point2D;
+import java.util.ArrayList;
+
 /**
  * @author Jon "Neo" Pimentel
  *
@@ -19,20 +22,20 @@ public class Ninja extends Character {
 	int attack1Speed = 10;  //how many ticks it takes to perform each attack
 	int attack2Speed = 15;
 	int attack3Speed = 30;
-	float maxAttackDamage = 50f;
-	float attack1Power = .3f;  //what percentage of the maxAttackDamage to use
-	float attack2Power = .4f;
-	float attack3Power = 1f;
+	float maxAttackDamage = 10f;
+	float[] attackPowers;  //what percentage of the maxAttackDamage to use
 	
 	public Ninja(GameModel gameModel, Model model, double boxLength, double boxWidth) {
 		super(gameModel, model, boxLength, boxWidth);
 		standing= new OBJ[] {defaultOBJ};
+		attackPowers = new float[] {0f, .3f, .4f, 1f};
 		running= gameModel.getResource().getNinjaRun();
 		attacking1 = running.clone(); //gameModel.getResource().getNinjaAttack1();
 		attacking2 = running.clone(); //gameModel.getResource().getNinjaAttack2();
 		attacking3 = running.clone(); //gameModel.getResource().getNinjaAttack3();
 		jumping= new OBJ[] {running[0]};
 		motion= standing;
+		hp = 3;
 	}
 	
 	// Determine what OBJ to use this tick, and set it as model.obj
@@ -91,8 +94,29 @@ public class Ninja extends Character {
 	}
 	
 	public void detectAttackCollision() {
+		double threshold2 = 2;
+		Point3D loc = getLoc();
+		ArrayList<Point2D[]> edges= new ArrayList<Point2D[]>();
+		Point2D[] edge2 = null;
+		Character boss = gameModel.getBoss();
+		
 		//area of attacking collision area
-//		Point3D atkLoc= new Point3D(getLoc().x + deltaX, newY, getLoc().z);
+		double deltaX = 0;
+		double deltaZ = 1;
+		Point3D atkLoc= new Point3D(getLoc().x + deltaX, getLoc().y, getLoc().z = deltaZ);
+		Point2D[][] atkHitBox= GameModel.boxToWorld(getModel().getAngle(), atkLoc, getHitBox());
+		//show atk box, check deltas
+		
+		//check if boss is close enough to even check for collision
+		double dist = loc.minus(boss.getLoc()).length();
+		if(dist < threshold2) {
+			Point2D[][] bossBox = GameModel.boxToWorld(boss.getModel(), boss.getHitBox());
+			edges = gameModel.collision(atkHitBox, bossBox, edges);
+			if(!edges.isEmpty()) {
+				if(attacking >= 0 && attacking < attackPowers.length)
+					boss.takeDamage((int) (attackPowers[attacking] * maxAttackDamage));
+			}
+		}
 	}
 	
 	public void reset(){

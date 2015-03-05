@@ -28,6 +28,7 @@ public class Character {
 	int hp = 3; // player dies after 3 projectile hits, or one boss hit.
 	int animFrame= 0; // The frame of animation currently being displayed
 	OBJ[] motion= null; // The current animation loop
+	boolean alive = true;
 
 	public Character(GameModel gameModel, Model model, double boxLength, double boxWidth){
 		this.gameModel= gameModel;

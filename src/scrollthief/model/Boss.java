@@ -19,6 +19,7 @@ public class Boss extends Character{
 		standing= new OBJ[] {model.getObj()};
 		stomping= gameModel.getResource().getBossStomp();
 		motion= standing;
+		hp=100;
 	}
 	
 	public void update(){
@@ -33,6 +34,9 @@ public class Boss extends Character{
 	}
 	
 	public void animate(int tick){
+		if(!alive)
+			return;
+		
 		if (isNear() && !inBattle){
 			inBattle= true;
 			motion= stomping;
@@ -80,6 +84,15 @@ public class Boss extends Character{
 		gameModel.getProjectiles().add(new Projectile(gameModel, projModel, targetVector));
 		gameModel.getModels().add(projModel);
 	}
+	
+	@Override
+	public void takeDamage(int damage){
+		hp -= damage;
+		if(hp <= 0) {
+			Data.say("Boss killed!!!");
+			alive = false;
+		}
+	}
 
 	public Point3D calcDelta(double deltaX, double deltaZ){
 		Point3D scrollLoc= gameModel.getScroll().getLoc();
@@ -94,7 +107,7 @@ public class Boss extends Character{
 		return desired;
 	}
 	
-	private boolean isNear(){
+	public boolean isNear(){
 		Point3D loc= model.getLoc();
 		Point3D ninjaLoc= gameModel.getNinjaLoc();
 		
