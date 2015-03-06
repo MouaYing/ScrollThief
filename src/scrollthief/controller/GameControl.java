@@ -154,16 +154,30 @@ public class GameControl {
 		}
 	}
 	
-	public void pauseButtonClick(){
+	private List<Button> getButtons() {
+		List<Button> buttons = null;
+		if(gameModel.getState() == GameState.Paused){
+			buttons = gameModel.getPauseButtons();
+		}
+		else if(gameModel.getState() == GameState.MainMenu){
+			buttons = gameModel.getMainMenuButtons();
+		}
+		return buttons;
+	}
+	
+	public void buttonClick(){
 		if(gameModel.getState() == GameState.Paused){
 			gameModel.doPauseButton();
+		}
+		else if(gameModel.getState() == GameState.MainMenu){
+			gameModel.doMainMenuButton();
 		}
 	}
 	
 	public void switchSelectedButton(int direction){
-		if(gameModel.getState() == GameState.Paused){
+		List<Button> buttons = getButtons();
+		if(buttons != null){
 			if(direction == 0){
-				List<Button> buttons = gameModel.getPauseButtons();
 				for(int i = 0; i < buttons.size();i++){
 					if( i == 0 && buttons.get(i).IsSelected()){
 						return;
@@ -176,7 +190,6 @@ public class GameControl {
 				}
 			}
 			else if(direction == 1){
-				List<Button> buttons = gameModel.getPauseButtons();
 				for(int i = 0; i < buttons.size();i++){
 					if( i == buttons.size()-1 && buttons.get(i).IsSelected()){
 						return;
@@ -190,26 +203,27 @@ public class GameControl {
 			}			
 		}
 	}
-	
 
 	public void clickButton(int x, int y) {
 		y = view.getHeight() - y;
-		if(gameModel.getState() == GameState.Paused){
-			for(Button b : gameModel.getPauseButtons()){
+		List<Button> buttons = getButtons();
+		if(buttons != null){
+			for(Button b : buttons){
 				if(b.isHit(x, y)){
 					b.doAction();
 				}
 			}
 		}
 	}
-	
 
 	public void highlightButton(int x, int y) {
 		y = view.getHeight() - y;
-		if(gameModel.getState() == GameState.Paused){
-			for(Button b : gameModel.getPauseButtons()){
+
+		List<Button> buttons = getButtons();
+		if(buttons!= null){
+			for(Button b : buttons){
 				if(b.isHit(x, y)){
-					for(Button b2 : gameModel.getPauseButtons()){
+					for(Button b2 : buttons){
 						b2.setSelected(false);
 					}
 					b.setSelected(true);

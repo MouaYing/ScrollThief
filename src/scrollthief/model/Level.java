@@ -14,4 +14,5 @@ public interface Level {
 	public Obstacle getScroll();
 	public ArrayList<Model> getModels();
 	public LoadingBar getLoadingBar();
+	public void reset();
 }

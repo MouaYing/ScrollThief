@@ -58,7 +58,7 @@ public class KeyboardControl implements KeyListener {
 				break;
 			case KeyEvent.VK_SPACE:
 				gameControl.jump();
-				gameControl.pauseButtonClick();
+				gameControl.buttonClick();
 				break;
 			case KeyEvent.VK_UP:
 				gameControl.switchSelectedButton(0);

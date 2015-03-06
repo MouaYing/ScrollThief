@@ -22,6 +22,7 @@ import com.jogamp.opengl.util.texture.Texture;
 public class GameModel {
 	Resource resource;
 	private HashMap<String, ArrayList<String>> loadingPhrases;
+	private ArrayList<Button> mainMenuButtons;
 	private ArrayList<Button> pauseButtons;
 	
 	private GameState state = GameState.Uninitialized;
@@ -59,9 +60,16 @@ public class GameModel {
 		phrases.add("Memorizing Floor Plan...");
 		loadingPhrases.put("level", phrases);
 		pauseButtons = new ArrayList<Button>();
-		pauseButtons.add(new Button(300,375,100,50, ButtonType.RESUME,true, this));
-		pauseButtons.add(new Button(300,300,100,50, ButtonType.RESTART,false, this));
-		pauseButtons.add(new Button(300,225,100,50, ButtonType.QUIT,false, this));
+		pauseButtons.add(new Button(100,175,100,25, ButtonType.RESUME,true, this));
+		pauseButtons.add(new Button(100,125,100,25, ButtonType.RESTART,false, this));
+		pauseButtons.add(new Button(100,75,100,25, ButtonType.MAINMENU,false, this));
+		pauseButtons.add(new Button(100,25,100,25, ButtonType.QUIT,false, this));
+		
+
+		mainMenuButtons = new ArrayList<Button>();
+		mainMenuButtons.add(new Button(100,175,100,50, ButtonType.START,true, this));
+		mainMenuButtons.add(new Button(100,100,100,50, ButtonType.CONTINUE,false, this));
+		mainMenuButtons.add(new Button(100,25,100,50, ButtonType.QUIT,false, this));
 		
 		resource = new Resource(this, loadingPhrases);
 
@@ -96,13 +104,16 @@ public class GameModel {
 		resource.loadTextures(gl);
 	}
 	
+	public void loadLevel(){
+		createModels();
+		createCharacters();
+		createObstacles();
+	}
+	
 	public void finishedLoading(String type){
 		if(type.equals("resource")){
-			say("LevelLoading");
-			changeState(GameState.LevelLoading);
-			createModels();
-			createCharacters();
-			createObstacles();
+			say("MainMenu");
+			changeState(GameState.MainMenu);
 		}
 		else if(type.equals("level")){
 			say("Waiting to start");
@@ -115,6 +126,18 @@ public class GameModel {
 		say("Game State moving from " + state + " to " + newState);
 		state = newState;
 		fireStateChanged(new StateChange(newState));
+		if(newState == GameState.LevelLoading){
+			loadLevel();
+		}
+	}
+	
+	public void resetLevel() {
+		getNinja().reset();
+		getBoss().reset();
+	}
+	
+	public void resetLevelLoading() {
+		currentLevel.reset();
 	}
 	
 	public Texture getSplashImage(){
@@ -203,12 +226,29 @@ public class GameModel {
 		return resource;
 	}
 	
+	//Button Code
 	public void doPauseButton() {
 		for(Button b : pauseButtons){
 			if(b.IsSelected()){
 				b.doAction();
 			}
 		}
+	}
+	
+	public void doMainMenuButton() {
+		for(Button b : mainMenuButtons){
+			if(b.IsSelected()){
+				b.doAction();
+			}
+		}
+	}
+
+	public ArrayList<Button> getPauseButtons() {
+		return pauseButtons;
+	}
+	public ArrayList<Button> getMainMenuButtons() {
+		// TODO Auto-generated method stub
+		return mainMenuButtons;
 	}
 	
 	public double floorMod(double a, double n){
@@ -341,9 +381,6 @@ public class GameModel {
 	
 	private void say(String message){
 		System.out.println(message);
-	}
-	public ArrayList<Button> getPauseButtons() {
-		return pauseButtons;
 	}
 }
 

@@ -20,7 +20,7 @@ public class Level1 implements Level {
 	Boss boss;
 	Obstacle scroll;
 	GameModel gameModel;
-
+	Map<String,ArrayList<String>> phrases;
 	public Level1(Resource resource, GameModel gameModel, Map<String,ArrayList<String>> phrases) {
 		numGuards = 5;
 		numWalls = 34;
@@ -31,6 +31,18 @@ public class Level1 implements Level {
 		this.gameModel = gameModel;
 		
 		numModels= numGuards + numObs + 3; //56
+		models= new ArrayList<Model>();
+		guards= new Guard[numGuards];
+		obstacles= new Obstacle[numObs];
+		projectiles= new ArrayList<Projectile>();
+		this.phrases = phrases;
+		loadingBar = new LoadingBar(numModels,gameModel, "level", phrases);
+	}
+	
+
+
+	@Override
+	public void reset() {
 		models= new ArrayList<Model>();
 		guards= new Guard[numGuards];
 		obstacles= new Obstacle[numObs];
