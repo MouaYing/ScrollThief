@@ -1,5 +1,5 @@
 package scrollthief.model;
 
 public enum SoundFile {
-	TITLE, SNEAK, BOSS, GAMEOVER, JUMP
+	TITLE, SNEAK, BOSS, GAMEOVER, JUMP, GUARD
 }
