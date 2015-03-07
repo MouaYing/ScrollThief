@@ -96,6 +96,10 @@ public class GameModel {
 		resource.loadTextures(gl);
 	}
 	
+	public void reloadMusic() {
+		resource.reloadMusic();
+	}
+	
 	public void finishedLoading(String type){
 		if(type.equals("resource")){
 			say("LevelLoading");
@@ -127,6 +131,10 @@ public class GameModel {
 	
 	public GameState getState(){
 		return state;
+	}
+	
+	public Sound getSound() {
+		return resource.getSound();
 	}
 	
 	public Guard[] getGuards(){
