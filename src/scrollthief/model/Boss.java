@@ -84,15 +84,6 @@ public class Boss extends Character{
 		gameModel.getProjectiles().add(new Projectile(gameModel, projModel, targetVector));
 		gameModel.getModels().add(projModel);
 	}
-	
-	@Override
-	public void takeDamage(int damage){
-		hp -= damage;
-		if(hp <= 0) {
-			Data.say("Boss killed!!!");
-			alive = false;
-		}
-	}
 
 	public Point3D calcDelta(double deltaX, double deltaZ){
 		Point3D scrollLoc= gameModel.getScroll().getLoc();

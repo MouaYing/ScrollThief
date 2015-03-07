@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import ch.aplu.xboxcontroller.XboxController;
 import scrollthief.ScrollThief;
 import scrollthief.model.Boss;
+import scrollthief.model.Data;
 import scrollthief.model.GameModel;
 import scrollthief.model.GameState;
 import scrollthief.model.Guard;
@@ -157,7 +158,7 @@ public class Controller extends TimerTask{
 			if (proj.ninjaCollision()){
 				ninja.takeDamage(1);
 				collided.add(proj);
-				say("You've been hit! Current HP: "+ ninja.getHP());
+//				say("You've been hit! Current HP: "+ ninja.getHP());
 				hitTimer= 30;
 				continue;
 			}

@@ -6,6 +6,7 @@ import scrollthief.model.Button;
 import scrollthief.model.Data;
 import scrollthief.model.GameModel;
 import scrollthief.model.GameState;
+import scrollthief.model.Point3D;
 import scrollthief.view.View;
 
 public class GameControl {
@@ -118,9 +119,14 @@ public class GameControl {
 	}
 	
 	public void toggleDevMode(){
-		if (controller.devmode)
-			controller.devmode= false;
-		else controller.devmode= true;
+		//for putting the ninja next to the boss for testing
+		scrollthief.model.Character ninja= gameModel.getNinja();
+		ninja.setLoc(new Point3D(10, 0, 70));
+		
+//		if (controller.devmode)
+//			controller.devmode= false;
+//		else 
+			controller.devmode= true;
 		say("Developer mode = " + controller.devmode);
 	}
 	

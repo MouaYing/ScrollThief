@@ -262,6 +262,16 @@ public class Character {
 	
 	public void takeDamage(int damage){
 		hp -= damage;
+		if(this instanceof Boss) {
+			Data.say("################## Hit the boss! ");
+			if(hp <= 0) {
+				Data.say("Boss killed!!!");
+				alive = false;
+			}
+		}
+		else if(this instanceof Ninja) {
+//			Data.say("You got hit! ");
+		}
 	}
 	
 	public void advanceFrame(){
@@ -273,7 +283,6 @@ public class Character {
 	public void advanceAttackFrame(Ninja ninja){
 		animFrame++;
 		if (animFrame >= motion.length) {
-			Data.say("finished attack: " + attacking);
 			animFrame= 0;
 			attacking = nextAttack;
 			nextAttack = -1;

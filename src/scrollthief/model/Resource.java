@@ -199,9 +199,9 @@ public class Resource {
 		imgPaths[1]= "images/ninja_slice.jpg";
 		for(int i = 0; i < imgPaths.length; i++){
 			try{
-			BufferedImage image= ImageIO.read(this.getClass().getResourceAsStream("/resources/"+imgPaths[i]));
-			ImageUtil.flipImageVertically(image);
-			images[i] = AWTTextureIO.newTexture(profile, image, false);
+				BufferedImage image= ImageIO.read(this.getClass().getResourceAsStream("/resources/"+imgPaths[i]));
+				ImageUtil.flipImageVertically(image);
+				images[i] = AWTTextureIO.newTexture(profile, image, false);
 			}catch(IOException e){
 				System.out.println("Error Loading Splash Images");
 			}
