@@ -43,7 +43,7 @@ public class Resource {
 	private final int BOSS_STOMP_NUM = 24;
 	private final int TEXTURES_NUM = 12;
 	private final int IMAGES_NUM = 2;
-	private final int SOUNDS_NUM = 5;
+	private final int SOUNDS_NUM = 6;
 	
 	public Resource(GameModel gameModel, Map<String,ArrayList<String>> phrases) {
 		images = new Texture[IMAGES_NUM];
@@ -64,17 +64,18 @@ public class Resource {
 	}
 	
 	public void reloadMusic() {
-		sound.loadMusic(SoundFile.TITLE, "music/ST_Title_1.mp3", RepeatType.REPEAT);
-		sound.loadMusic(SoundFile.SNEAK, "music/ST_Sneak.mp3", RepeatType.REPEAT);
-		sound.loadMusic(SoundFile.GAMEOVER, "music/Game_Over.mp3", RepeatType.NOREPEAT);
-		sound.loadMusic(SoundFile.BOSS, "music/ST_Boss_1.mp3", RepeatType.REPEAT);
+		sound.loadMusic(SoundFile.TITLE, "/resources/music/ST_Title_1.mp3", RepeatType.REPEAT);
+		sound.loadMusic(SoundFile.SNEAK, "/resources/music/ST_Sneak.mp3", RepeatType.REPEAT);
+		sound.loadMusic(SoundFile.GAMEOVER, "/resources/music/Game_Over.mp3", RepeatType.NOREPEAT);
+		sound.loadMusic(SoundFile.BOSS, "/resources/music/ST_Boss_1.mp3", RepeatType.REPEAT);
 	}
 	
 	private void loadEffects() {
 		say("Loading effects...");
 		sound.loadEffect(SoundFile.JUMP, "/resources/sounds/jump.mp3");
 		loadingBar.increaseProgress(1);
-		sound.loadEffect(SoundFile.GUARD, "/resources/sound/guardHey.mp3");
+		sound.loadEffect(SoundFile.GUARD, "/resources/sounds/guardHey.mp3");
+		loadingBar.increaseProgress(1);
 	}
 	
 	private void loadSounds() {

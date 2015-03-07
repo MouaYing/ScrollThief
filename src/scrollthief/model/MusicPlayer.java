@@ -48,12 +48,12 @@ public class MusicPlayer extends Thread {
 		try {
 			player = new AdvancedPlayer
 					(
-							new java.net.URL(file).openStream(),
+							this.getClass().getResourceAsStream(file),
 							javazoom.jl.player.FactoryRegistry.systemRegistry().createAudioDevice()
 					);
 			player.setPlayBackListener(new MusicListener(this));
 			player.play();
-		} catch (JavaLayerException | IOException e) {
+		} catch (JavaLayerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

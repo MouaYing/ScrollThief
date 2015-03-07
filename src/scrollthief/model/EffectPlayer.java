@@ -25,11 +25,11 @@ public class EffectPlayer {
 				try {
 					player = new AdvancedPlayer
 							(
-									new java.net.URL(file).openStream(),
+									this.getClass().getResourceAsStream(file),
 									javazoom.jl.player.FactoryRegistry.systemRegistry().createAudioDevice()
 							);
 					player.play();
-				} catch (JavaLayerException | IOException e) {
+				} catch (JavaLayerException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}	

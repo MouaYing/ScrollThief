@@ -225,14 +225,17 @@ public class Controller extends TimerTask{
 		view.setCamHeight(4);
 		view.setCamDistance(6);
 		gameModel.changeState(GameState.Paused);
+		
+		gameModel.reloadMusic();
+		gameModel.getSound().playMusic(SoundFile.SNEAK);
 	}
 	
 	private void gameOver(GameState reason){
-		gameModel.getSound().playEffect(SoundFile.GUARD);
+		if (reason == GameState.Spotted)
+			gameModel.getSound().playEffect(SoundFile.GUARD);
 		gameModel.changeState(reason);
 		vibrate(0,0);
 		hitTimer= 0;
-		gameModel.reloadMusic();
 		gameModel.getSound().playMusic(SoundFile.GAMEOVER);
 	}
 	

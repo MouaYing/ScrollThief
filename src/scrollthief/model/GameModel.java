@@ -25,6 +25,7 @@ public class GameModel {
 	private ArrayList<Button> pauseButtons;
 	
 	private GameState state = GameState.Uninitialized;
+	private GameState lastState;
 	private Level currentLevel;
 	private LevelFactory levelFactory;
 	
@@ -117,6 +118,7 @@ public class GameModel {
 	//This makes 
 	public void changeState(GameState newState) {
 		say("Game State moving from " + state + " to " + newState);
+		lastState = state;
 		state = newState;
 		fireStateChanged(new StateChange(newState));
 	}
@@ -131,6 +133,10 @@ public class GameModel {
 	
 	public GameState getState(){
 		return state;
+	}
+	
+	public GameState getLastState(){
+		return lastState;
 	}
 	
 	public Sound getSound() {

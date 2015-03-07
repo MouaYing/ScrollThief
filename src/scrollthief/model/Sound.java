@@ -67,29 +67,13 @@ public class Sound {
 	
 	public void loadEffect(SoundFile sf, String path) {
 		String urlAsString = "";
-		try {
-			urlAsString = 
-			        "file:///" 
-			        + new java.io.File(".").getCanonicalPath()         + "/" 
-			        + path;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		urlAsString = path;
 		effects.put(sf, new EffectPlayer(urlAsString));
 	}
 	
 	public void loadMusic(SoundFile sf, String path, RepeatType repeatType) {
 		String urlAsString = "";
-		try {
-			urlAsString = 
-			        "file:///" 
-			        + new java.io.File(".").getCanonicalPath()         + "/" 
-			        + path;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		urlAsString = path;
 		players.put(sf, new MusicPlayer(urlAsString, repeatType));
 	}
 }
