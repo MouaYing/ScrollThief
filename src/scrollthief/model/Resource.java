@@ -70,6 +70,7 @@ public class Resource {
 		say("Loading effects...");
 		sound.loadEffect(SoundFile.JUMP, "sound/jump.mp3");
 		loadingBar.increaseProgress(1);
+		sound.loadEffect(SoundFile.GUARD, "sound/guardHey.mp3");
 	}
 	
 	private void loadSounds() {

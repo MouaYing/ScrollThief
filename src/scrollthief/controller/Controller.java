@@ -223,6 +223,7 @@ public class Controller extends TimerTask{
 	}
 	
 	private void gameOver(GameState reason){
+		gameModel.getSound().playEffect(SoundFile.GUARD);
 		gameModel.changeState(reason);
 		vibrate(0,0);
 		hitTimer= 0;
