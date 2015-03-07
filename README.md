@@ -26,6 +26,7 @@ by Jon Pimentel, Taft Sandbakken, TJ Besendorfer, Ryan Palmer, Kevin Hinton and 
         jogamp-all-platforms/jar/gluegen-rt-natives-*.jar (mainly linux, macosx, windows)
         jogamp-all-platforms/jar/jogl-all.jar
         jogamp-all-platforms/jar/jogl-all-natives-*.jar (mainly linux, macosx, windows)
+        jlayer/jl1.0.1.jar
     * Next you right click on the "Project" and select Export
     * Click "Java" folder, Then "Runnable JAR file"
     * Select project from "Launch Configuration" dropdown, choose export destination, and click "Package required libraries into generated JAR"
