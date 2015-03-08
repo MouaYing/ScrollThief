@@ -3,6 +3,7 @@ package scrollthief.view;
 import java.awt.Color;
 import java.awt.Font;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
@@ -206,49 +207,10 @@ public class View extends GLCanvas implements GLEventListener{
 
 	private void drawMainMenu(GL2 gl){
 		gl.glDisable(GL2.GL_TEXTURE_2D);
-		double height = 300;
-		double maxWidth = 300;
-		double leftX = (windowX - maxWidth)/2;
-		double leftY = (windowY - height)/2;
-		gl.glPushMatrix();
-		gl.glMatrixMode(GL2.GL_PROJECTION);
-		gl.glLoadIdentity();
-		gl.glOrtho(0, windowX, 0, windowY, -10, 10);
-		gl.glColor3f(1f, 1f, ((float)153/(float)255));
-		gl.glBegin(GL2.GL_QUADS);
-			gl.glVertex2d(leftX, leftY);
-			gl.glVertex2d(leftX, leftY+height);
-			gl.glVertex2d(leftX+maxWidth, leftY+height);
-			gl.glVertex2d(leftX+maxWidth, leftY);
-		gl.glEnd();
-
-
+				
 		String text = "MAIN MENU";
-		overlayText(text, (int)(leftX + 100), (int)(leftY + height - 20), Color.black, "pause");
-		for(Button b : gameModel.getMainMenuButtons()){
-			b.setOffset((int)leftX, (int)leftY);
-		}
+		drawButtonMenu(gl,gameModel.getMainMenuButtons(), text);
 		
-		for(Button b : gameModel.getMainMenuButtons()){
-			if(b.IsSelected()){
-				gl.glColor3f(1f, 1f, 1f);
-				gl.glBegin(GL2.GL_QUADS);
-					gl.glVertex2d(b.getX()-2, b.getY()-2);
-					gl.glVertex2d(b.getX()-2, b.getY()+b.getHeight()+2);
-					gl.glVertex2d(b.getX()+b.getWidth()+2, b.getY()+b.getHeight()+2);
-					gl.glVertex2d(b.getX()+b.getWidth()+2, b.getY()-2);
-				gl.glEnd();
-			}
-			gl.glColor3f(1f, 1f, 0f);
-			gl.glBegin(GL2.GL_QUADS);
-				gl.glVertex2d(b.getX(), b.getY());
-				gl.glVertex2d(b.getX(), b.getY()+b.getHeight());
-				gl.glVertex2d(b.getX()+b.getWidth(), b.getY()+b.getHeight());
-				gl.glVertex2d(b.getX()+b.getWidth(), b.getY());
-			gl.glEnd();
-			overlayText(b.getText(), (int)(b.getX()+b.getWidth()/4), (int)(b.getY() + b.getHeight()/4), Color.black, "pause");
-		}
-
 	    gl.glFlush();
 
 		gl.glPopMatrix();
@@ -259,6 +221,18 @@ public class View extends GLCanvas implements GLEventListener{
 	private void drawPauseMenu(GL2 gl){
 
 		gl.glDisable(GL2.GL_TEXTURE_2D);
+
+		String text = "GAME PAUSED";
+		drawButtonMenu(gl, gameModel.getPauseButtons(), text);
+
+	    gl.glFlush();
+
+		gl.glPopMatrix();
+		gl.glEnable(GL2.GL_TEXTURE_2D);
+		
+	}
+	
+	private void drawButtonMenu(GL2 gl, List<Button> buttons, String text){
 		double height = 300;
 		double maxWidth = 300;
 		double leftX = (windowX - maxWidth)/2;
@@ -274,15 +248,11 @@ public class View extends GLCanvas implements GLEventListener{
 			gl.glVertex2d(leftX+maxWidth, leftY+height);
 			gl.glVertex2d(leftX+maxWidth, leftY);
 		gl.glEnd();
-
-
-		String text = "GAME PAUSED";
 		overlayText(text, (int)(leftX + 100), (int)(leftY + height - 20), Color.black, "pause");
-		for(Button b : gameModel.getPauseButtons()){
+		for(Button b : buttons){
 			b.setOffset((int)leftX, (int)leftY);
 		}
-		
-		for(Button b : gameModel.getPauseButtons()){
+		for(Button b : buttons){
 			if(b.IsSelected()){
 				gl.glColor3f(1f, 1f, 1f);
 				gl.glBegin(GL2.GL_QUADS);
@@ -299,14 +269,14 @@ public class View extends GLCanvas implements GLEventListener{
 				gl.glVertex2d(b.getX()+b.getWidth(), b.getY()+b.getHeight());
 				gl.glVertex2d(b.getX()+b.getWidth(), b.getY());
 			gl.glEnd();
-			overlayText(b.getText(), (int)(b.getX()+b.getWidth()/4), (int)(b.getY() + b.getHeight()/4), Color.black, "pause");
+			text = b.getText();
+			int x = (int)(b.getX()+b.getWidth()/5);
+			if(text.length() > 7){
+				x -= 5*(text.length()-7);
+			}
+			int y = (int)(b.getY() + b.getHeight()/3);
+			overlayText(b.getText(),x ,y , Color.black, "pause");
 		}
-
-	    gl.glFlush();
-
-		gl.glPopMatrix();
-		gl.glEnable(GL2.GL_TEXTURE_2D);
-		
 	}
 	
 	private void displaySplashImage(Texture t){

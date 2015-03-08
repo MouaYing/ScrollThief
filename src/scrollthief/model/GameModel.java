@@ -24,7 +24,8 @@ public class GameModel {
 	private HashMap<String, ArrayList<String>> loadingPhrases;
 	private ArrayList<Button> mainMenuButtons;
 	private ArrayList<Button> pauseButtons;
-	
+	private GameRestore restore;
+	private GameData data;
 	private GameState state = GameState.Uninitialized;
 	private Level currentLevel;
 	private LevelFactory levelFactory;
@@ -47,7 +48,8 @@ public class GameModel {
 	  }
 	
 	public GameModel(){
-
+		restore = new GameRestore();
+		data = restore.getData();
 		loadingPhrases = new HashMap<String, ArrayList<String>>();
 		ArrayList<String> phrases = new ArrayList<String>();
 		phrases.add("Training with Sensai...");
@@ -60,10 +62,11 @@ public class GameModel {
 		phrases.add("Memorizing Floor Plan...");
 		loadingPhrases.put("level", phrases);
 		pauseButtons = new ArrayList<Button>();
-		pauseButtons.add(new Button(100,175,100,25, ButtonType.RESUME,true, this));
-		pauseButtons.add(new Button(100,125,100,25, ButtonType.RESTART,false, this));
-		pauseButtons.add(new Button(100,75,100,25, ButtonType.MAINMENU,false, this));
-		pauseButtons.add(new Button(100,25,100,25, ButtonType.QUIT,false, this));
+		pauseButtons.add(new Button(25,100,100,50, ButtonType.RESUME,true, this));
+		pauseButtons.add(new Button(25,25,100,50, ButtonType.RESTART,false, this));
+		pauseButtons.add(new Button(175,175,100,50, ButtonType.SAVE,false, this));
+		pauseButtons.add(new Button(175,100,100,50, ButtonType.MAINMENU,false, this));
+		pauseButtons.add(new Button(175,25,100,50, ButtonType.QUIT,false, this));
 		
 
 		mainMenuButtons = new ArrayList<Button>();
@@ -77,7 +80,34 @@ public class GameModel {
 		
 		currentLevel = levelFactory.getNextLevel(resource, this, loadingPhrases);
 		changeState(GameState.Initialized);
-		
+	}
+	
+	public void saveGame() {
+		ArrayList<Point3D> locations = new ArrayList<Point3D>();
+		locations.add(getNinja().getLoc());
+		locations.add(getBoss().getLoc());
+		data = new GameData(locations, state, levelFactory.getCurrentState());
+		restore = new GameRestore(data);
+		if(restore.Save()){
+			resetLevel();
+			resetLevelLoading();
+			changeState(GameState.MainMenu);
+		}
+		else {
+			say("Error Saving Game Data");
+		}
+	}
+	
+	public void continueGame() {
+		if(restore.Load()){
+			data = restore.getData();
+		}
+		else{
+			data = new GameData();
+		}
+		levelFactory = new LevelFactory(data.getLevel());
+		currentLevel = levelFactory.getNextLevel(resource, this, loadingPhrases);
+		changeState(GameState.LevelLoading);
 	}
 	
 	private void createModels(){
@@ -124,6 +154,11 @@ public class GameModel {
 	//This makes 
 	public void changeState(GameState newState) {
 		say("Game State moving from " + state + " to " + newState);
+		if(state == GameState.Start){
+			newState = data.getState();
+			getNinja().setLoc(data.getLocations().get(0));
+			getBoss().setLoc(data.getLocations().get(1));
+		}
 		state = newState;
 		fireStateChanged(new StateChange(newState));
 		if(newState == GameState.LevelLoading){

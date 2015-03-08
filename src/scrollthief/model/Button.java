@@ -85,10 +85,10 @@ public class Button {
 			game.changeState(GameState.LevelLoading);
 		}
 		else if(type == ButtonType.CONTINUE){
-			game.changeState(GameState.LevelLoading);
+			game.continueGame();
 		}
 		else if(type == ButtonType.SAVE){
-			
+			game.saveGame();
 		}
 		else if(type == ButtonType.MAINMENU){
 			game.resetLevel();
