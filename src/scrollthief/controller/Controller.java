@@ -13,6 +13,8 @@ import scrollthief.model.GameState;
 import scrollthief.model.Guard;
 import scrollthief.model.Character;
 import scrollthief.model.Projectile;
+import scrollthief.model.Sound;
+import scrollthief.model.SoundFile;
 import scrollthief.model.StateChange;
 import scrollthief.model.StateChangedListener;
 import scrollthief.view.View;
@@ -73,6 +75,12 @@ public class Controller extends TimerTask{
 	public void run() {
 		if (gameModel.getState() == GameState.Uninitialized || gameModel.getState() == GameState.Initialized)
 			return;
+		if (gameModel.getState() == GameState.Start){
+			gameModel.getSound().playMusic(SoundFile.SNEAK);
+			gameModel.changeState(GameState.Paused);
+			view.display();
+			return;
+		}
 		if(gameModel.getState() != GameState.Playing){
 			view.display();
 			return;
@@ -126,6 +134,11 @@ public class Controller extends TimerTask{
 				}
 			}
 		}
+		
+// ------------------------------------------------Music--------------------------------------------
+		Sound sound = gameModel.getSound();
+		if ((sound.getCurrentMusic() == SoundFile.SNEAK) && boss.isNear())
+			sound.delayedPlayMusic(SoundFile.BOSS, 700);
 		
 // ------------ Update Boss --------------------------------------------------------------------------
 		boss.update();
@@ -212,12 +225,18 @@ public class Controller extends TimerTask{
 		view.setCamHeight(4);
 		view.setCamDistance(6);
 		gameModel.changeState(GameState.Paused);
+		
+		gameModel.reloadMusic();
+		gameModel.getSound().playMusic(SoundFile.SNEAK);
 	}
 	
 	private void gameOver(GameState reason){
+		if (reason == GameState.Spotted)
+			gameModel.getSound().playEffect(SoundFile.GUARD);
 		gameModel.changeState(reason);
 		vibrate(0,0);
 		hitTimer= 0;
+		gameModel.getSound().playMusic(SoundFile.GAMEOVER);
 	}
 	
 	private void say(String message){

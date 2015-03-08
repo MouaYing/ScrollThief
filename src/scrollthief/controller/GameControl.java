@@ -5,6 +5,7 @@ import java.util.List;
 import scrollthief.model.Button;
 import scrollthief.model.GameModel;
 import scrollthief.model.GameState;
+import scrollthief.model.SoundFile;
 import scrollthief.view.View;
 
 public class GameControl {
@@ -128,6 +129,7 @@ public class GameControl {
 			if (ninja != null && !ninja.isJumping){
 				ninja.isJumping= true;
 				gameModel.getNinja().setDeltaY(.2);
+				gameModel.getSound().playEffect(SoundFile.JUMP);
 				// say("Jump!");
 			}
 	}
