@@ -263,7 +263,6 @@ public class Character {
 	public void takeDamage(int damage){
 		hp -= damage;
 		if(this instanceof Boss) {
-			Data.say("################## Hit the boss! ");
 			if(hp <= 0) {
 				Data.say("Boss killed!!!");
 				alive = false;
@@ -283,10 +282,10 @@ public class Character {
 	public void advanceAttackFrame(Ninja ninja){
 		animFrame++;
 		if (animFrame >= motion.length) {
+			ninja.detectAttackCollision();
 			animFrame= 0;
 			attacking = nextAttack;
 			nextAttack = -1;
-			ninja.detectAttackCollision();
 		}
 	}
 	

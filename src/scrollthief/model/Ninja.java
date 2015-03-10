@@ -94,7 +94,7 @@ public class Ninja extends Character {
 	}
 	
 	public void detectAttackCollision() {
-		double threshold2 = 5;  //should be 1 or 2 probably, but it's longer for testing
+		double threshold2 = 5;
 		Point3D loc = getLoc();
 		ArrayList<Point2D[]> edges= new ArrayList<Point2D[]>();
 		Character boss = gameModel.getBoss();
@@ -102,9 +102,9 @@ public class Ninja extends Character {
 		//area of attacking collision area
 		double direction= getAngle() + Math.PI;
 		float scale= .125f;
-		double swordLength = 5;  //should be 1 or 2 probably, but it's longer for testing
-		double deltaX= Math.sin(direction) * scale + swordLength;
-		double deltaZ= -Math.cos(direction) * scale + swordLength;
+		double swordLength = 1.5;  //should be 1 or 2 probably, but it's longer for testing
+		double deltaX= Math.sin(direction) * (scale * swordLength);
+		double deltaZ= -Math.cos(direction) * (scale * swordLength);
 		Point3D atkLoc= new Point3D(getLoc().x + deltaX, getLoc().y, getLoc().z + deltaZ);
 		Point2D[][] atkHitBox= GameModel.boxToWorld(getModel().getAngle(), atkLoc, getHitBox());
 		
