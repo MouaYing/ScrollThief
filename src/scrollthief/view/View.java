@@ -50,7 +50,7 @@ public class View extends GLCanvas implements GLEventListener{
 	public View(GameModel model){
 		say("Loading view...");
 		this.gameModel= model;
-		setPreferredSize(new java.awt.Dimension(Data.windowX, Data.windowY));
+		setPreferredSize(new java.awt.Dimension(this.windowX, this.windowY));
         addGLEventListener(this);
         init= false;
 		say("--View loaded--\n");
@@ -166,12 +166,12 @@ public class View extends GLCanvas implements GLEventListener{
 			gl.glEnable(GL2.GL_TEXTURE_2D);
 		}
 		if (gameModel.getState() == GameState.Paused){
-			String text= "Steal the enemy battle plans (scroll)";
-			dialogRenderer.overlayText(text,  Data.windowX/2 - (15 * text.length()/2), Data.windowY/2 + 150, Color.blue, "reg");
-			text= "without being detected";
-			dialogRenderer.overlayText(text,  Data.windowX/2 - (15 * text.length()/2), Data.windowY/2 + 100, Color.blue, "reg");
-			text= "Press start to begin";
-			dialogRenderer.overlayText(text,  Data.windowX/2 - (30 * text.length()/2), Data.windowY/2, Color.blue, "big");
+//			String text= "Steal the enemy battle plans (scroll)";
+//			dialogRenderer.overlayText(text,  Data.windowX/2 - (15 * text.length()/2), Data.windowY/2 + 150, Color.blue, "reg");
+//			text= "without being detected";
+//			dialogRenderer.overlayText(text,  Data.windowX/2 - (15 * text.length()/2), Data.windowY/2 + 100, Color.blue, "reg");
+//			text= "Press start to begin";
+//			dialogRenderer.overlayText(text,  Data.windowX/2 - (30 * text.length()/2), Data.windowY/2, Color.blue, "big");
 
 			drawPauseMenu(gl);
 //			String text= "Steal the enemy battle plans (scroll)";
@@ -215,7 +215,7 @@ public class View extends GLCanvas implements GLEventListener{
 
 			//Display Game Title
 			String text = "THE SCROLL THIEF";
-			overlayText(text, (int)(windowX/2 - windowX*.15), windowY-100, Color.white, "reg");
+			overlayText(text, (int)(Data.windowX/2 - Data.windowX*.15), Data.windowY-100, Color.white, "reg");
 			
 			
 			drawMainMenu(gl);
@@ -253,12 +253,12 @@ public class View extends GLCanvas implements GLEventListener{
 	private void drawButtonMenu(GL2 gl, List<Button> buttons, String text){
 		double height = 300;
 		double maxWidth = 300;
-		double leftX = (windowX - maxWidth)/2;
-		double leftY = (windowY - height)/2;
+		double leftX = (Data.windowX - maxWidth)/2;
+		double leftY = (Data.windowY - height)/2;
 		gl.glPushMatrix();
 		gl.glMatrixMode(GL2.GL_PROJECTION);
 		gl.glLoadIdentity();
-		gl.glOrtho(0, Data.windowX, 0, Data.windowY, -10, 10);
+		gl.glOrtho(0, this.windowX, 0, this.windowY, -10, 10);
 		gl.glColor3f(1f, 1f, ((float)153/(float)255));
 		gl.glBegin(GL2.GL_QUADS);
 			gl.glVertex2d(leftX, leftY);
@@ -267,10 +267,10 @@ public class View extends GLCanvas implements GLEventListener{
 			gl.glVertex2d(leftX+maxWidth, leftY);
 		gl.glEnd();
 		overlayText(text, (int)(leftX + 100), (int)(leftY + height - 20), Color.black, "pause");
+		//dialogRenderer.overlayText(text, (int)(leftX + 100), (int)(leftY + height - 20), Color.black, "pause");
 		for(Button b : buttons){
 			b.setOffset((int)leftX, (int)leftY);
 		}
-		dialogRenderer.overlayText(text, (int)(leftX + 100), (int)(leftY + height - 20), Color.black, "pause");
 		for(Button b : buttons){
 			if(b.IsSelected()){
 				gl.glColor3f(1f, 1f, 1f);
@@ -294,7 +294,8 @@ public class View extends GLCanvas implements GLEventListener{
 				x -= 5*(text.length()-7);
 			}
 			int y = (int)(b.getY() + b.getHeight()/3);
-			dialogRenderer.overlayText(b.getText(), (int)(b.getX()+b.getWidth()/4), (int)(b.getY() + b.getHeight()/4), Color.black, "pause");
+			overlayText(b.getText(),x ,y , Color.black, "pause");
+			//dialogRenderer.overlayText(b.getText(), (int)(b.getX()+b.getWidth()/4), (int)(b.getY() + b.getHeight()/4), Color.black, "pause");
 		}
 	}
 	

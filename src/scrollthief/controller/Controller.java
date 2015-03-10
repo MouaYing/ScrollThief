@@ -76,12 +76,6 @@ public class Controller extends TimerTask{
 	public void run() {
 		if (gameModel.getState() == GameState.Uninitialized || gameModel.getState() == GameState.Initialized)
 			return;
-		if (gameModel.getState() == GameState.Start){
-			gameModel.getSound().playMusic(SoundFile.SNEAK);
-			gameModel.changeState(GameState.Paused);
-			view.display();
-			return;
-		}
 		if(gameModel.getState() == GameState.Dialog){
 			view.display();
 			return;
