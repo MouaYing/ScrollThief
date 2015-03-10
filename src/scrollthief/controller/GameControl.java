@@ -7,6 +7,7 @@ import scrollthief.model.Data;
 import scrollthief.model.GameModel;
 import scrollthief.model.GameState;
 import scrollthief.model.Point3D;
+import scrollthief.model.SoundFile;
 import scrollthief.view.View;
 
 public class GameControl {
@@ -121,11 +122,12 @@ public class GameControl {
 	public void toggleDevMode(){
 		//for putting the ninja next to the boss for testing
 		scrollthief.model.Character ninja= gameModel.getNinja();
-		ninja.setLoc(new Point3D(10, 0, 70));
 		
-//		if (controller.devmode)
-//			controller.devmode= false;
-//		else 
+//		ninja.setLoc(new Point3D(10, 0, 70));  //for if you want quick teleport to boss
+		
+		if (controller.devmode)
+			controller.devmode= false;
+		else 
 			controller.devmode= true;
 		say("Developer mode = " + controller.devmode);
 	}
@@ -136,6 +138,7 @@ public class GameControl {
 			if (ninja != null && !ninja.isJumping){
 				ninja.isJumping= true;
 				gameModel.getNinja().setDeltaY(.2);
+				gameModel.getSound().playEffect(SoundFile.JUMP);
 			}
 	}
 	

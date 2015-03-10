@@ -31,6 +31,8 @@ public class Resource {
 	private Texture[] textures;
 	private LoadingBar loadingBar;
 	private Texture[] images;
+	private Sound sound;
+	private Thread musicThread;
 	private Random rand;
 	private int mainSplashIndex;
 	private int levelSplashIndex;
@@ -41,23 +43,52 @@ public class Resource {
 	private final int BOSS_STOMP_NUM = 24;
 	private final int TEXTURES_NUM = 12;
 	private final int IMAGES_NUM = 2;
+	private final int SOUNDS_NUM = 6;
 	
 	public Resource(GameModel gameModel, Map<String,ArrayList<String>> phrases) {
 		images = new Texture[IMAGES_NUM];
 		rand = new Random();
+		sound = new Sound();
 		mainSplashIndex = rand.nextInt(IMAGES_NUM);
 		objs = new OBJ[OBJS_NUM];
 		ninjaRun = new OBJ[NINJA_RUN_NUM];
 		guardWalk = new OBJ[GUARD_WALK_NUM];
 		bossStomp = new OBJ[BOSS_STOMP_NUM];
 		textures = new Texture[TEXTURES_NUM];
-		int total = OBJS_NUM + NINJA_RUN_NUM + GUARD_WALK_NUM + BOSS_STOMP_NUM + TEXTURES_NUM;
+		int total = SOUNDS_NUM + OBJS_NUM + NINJA_RUN_NUM + GUARD_WALK_NUM + BOSS_STOMP_NUM + TEXTURES_NUM;
 		loadingBar = new LoadingBar(total,gameModel,"resource", phrases);
 		levelSplashIndex = rand.nextInt(IMAGES_NUM);
 		while(levelSplashIndex == mainSplashIndex){
 			levelSplashIndex = rand.nextInt(IMAGES_NUM);
 		}
-		
+	}
+	
+	public void reloadMusic() {
+		sound.loadMusic(SoundFile.TITLE, "/resources/music/ST_Title_1.mp3", RepeatType.REPEAT);
+		sound.loadMusic(SoundFile.SNEAK, "/resources/music/ST_Sneak.mp3", RepeatType.REPEAT);
+		sound.loadMusic(SoundFile.GAMEOVER, "/resources/music/Game_Over.mp3", RepeatType.NOREPEAT);
+		sound.loadMusic(SoundFile.BOSS, "/resources/music/ST_Boss_1.mp3", RepeatType.REPEAT);
+	}
+	
+	private void loadEffects() {
+		say("Loading effects...");
+		sound.loadEffect(SoundFile.JUMP, "/resources/sounds/jump.mp3");
+		loadingBar.increaseProgress(1);
+		sound.loadEffect(SoundFile.GUARD, "/resources/sounds/guardHey.mp3");
+		loadingBar.increaseProgress(1);
+	}
+	
+	private void loadSounds() {
+		say("Loading music...");
+		sound.loadMusic(SoundFile.TITLE, "/resources/music/ST_Title_1.mp3", RepeatType.REPEAT);
+		loadingBar.increaseProgress(1);
+		sound.playMusic(SoundFile.TITLE);
+		sound.loadMusic(SoundFile.SNEAK, "/resources/music/ST_Sneak.mp3", RepeatType.REPEAT);
+		loadingBar.increaseProgress(1);
+		sound.loadMusic(SoundFile.GAMEOVER, "/resources/music/Game_Over.mp3", RepeatType.NOREPEAT);
+		loadingBar.increaseProgress(1);
+		sound.loadMusic(SoundFile.BOSS, "/resources/music/ST_Boss_1.mp3", RepeatType.REPEAT);
+		loadingBar.increaseProgress(1);
 	}
 	
 	// Loads the default OBJ files
@@ -208,6 +239,10 @@ public class Resource {
 		}
 	}
 	
+	public Sound getSound() {
+		return sound;
+	}
+	
 	public OBJ[] getOBJs(){
 		return objs;
 	}
@@ -240,7 +275,13 @@ public class Resource {
 		return images[levelSplashIndex];
 	}
 	
+	public Thread getMusicThread() {
+		return musicThread;
+	}
+	
 	public void init(){
+		loadSounds();
+		loadEffects();
 		loadOBJs();
 		
 		long startTime = System.nanoTime();

@@ -25,6 +25,7 @@ public class GameModel {
 	private ArrayList<Button> pauseButtons;
 	
 	private GameState state = GameState.Uninitialized;
+	private GameState lastState;
 	private Level currentLevel;
 	private LevelFactory levelFactory;
 	
@@ -96,6 +97,10 @@ public class GameModel {
 		resource.loadTextures(gl);
 	}
 	
+	public void reloadMusic() {
+		resource.reloadMusic();
+	}
+	
 	public void finishedLoading(String type){
 		if(type.equals("resource")){
 			say("LevelLoading");
@@ -113,6 +118,7 @@ public class GameModel {
 	//This makes 
 	public void changeState(GameState newState) {
 		say("Game State moving from " + state + " to " + newState);
+		lastState = state;
 		state = newState;
 		fireStateChanged(new StateChange(newState));
 	}
@@ -127,6 +133,14 @@ public class GameModel {
 	
 	public GameState getState(){
 		return state;
+	}
+	
+	public GameState getLastState(){
+		return lastState;
+	}
+	
+	public Sound getSound() {
+		return resource.getSound();
 	}
 	
 	public Guard[] getGuards(){
