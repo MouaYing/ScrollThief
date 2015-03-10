@@ -23,8 +23,8 @@ public class LevelFactory {
 		
 		return null;
 	}
-
-	public LevelState getCurrentState() {
+	
+	public LevelState getLevelState() {
 		return levelState;
 	}
 }

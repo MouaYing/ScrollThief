@@ -8,10 +8,12 @@ import javax.swing.JFrame;
 import ch.aplu.xboxcontroller.XboxController;
 import scrollthief.ScrollThief;
 import scrollthief.model.Boss;
+import scrollthief.model.Data;
 import scrollthief.model.GameModel;
 import scrollthief.model.GameState;
 import scrollthief.model.Guard;
 import scrollthief.model.Character;
+import scrollthief.model.Point3D;
 import scrollthief.model.Projectile;
 import scrollthief.model.Sound;
 import scrollthief.model.SoundFile;
@@ -57,7 +59,6 @@ public class Controller extends TimerTask{
         	System.out.println("Xbox controller not connected...");
         }
         
-
 		this.gameModel.addStateChangedListener(new StateChangedListener() {
 	      public void stateChanged(StateChange evt) {
 	        redisplay();
@@ -81,10 +82,15 @@ public class Controller extends TimerTask{
 			view.display();
 			return;
 		}
+		if(gameModel.getState() == GameState.Dialog){
+			view.display();
+			return;
+		}
 		if(gameModel.getState() != GameState.Playing){
 			view.display();
 			return;
 		}
+		
 		Guard[] guards= gameModel.getGuards();
 		Character ninja= gameModel.getNinja();
 		Boss boss= (Boss) gameModel.getBoss();
@@ -160,7 +166,7 @@ public class Controller extends TimerTask{
 			if (proj.ninjaCollision()){
 				ninja.takeDamage(1);
 				collided.add(proj);
-				say("You've been hit! Current HP: "+ ninja.getHP());
+//				say("You've been hit! Current HP: "+ ninja.getHP());
 				hitTimer= 30;
 				continue;
 			}
@@ -176,6 +182,17 @@ public class Controller extends TimerTask{
 			gameModel.getModels().remove(proj.getModel());
 			gameModel.getProjectiles().remove(proj);
 		}
+
+// ----------------Check level dialog hotspots--------------------------------------------------------
+		
+		for(int i = 0; i < gameModel.getCurrentLevel().getDialogHotspots().size(); i++) {
+			if(gameModel.getCurrentLevel().getDialogHotspots().get(i).checkForActivate(ninja.getLoc())) {
+				gameModel.getCurrentLevel().setCurrentDialogHotspot(gameModel.getCurrentLevel().getDialogHotspots().get(i));
+				gameModel.changeState(GameState.Dialog);
+				break;
+			}
+		}
+		
 // ---------------------------------------------------------------------------------------------------	
 		
 		view.display();

@@ -19,6 +19,7 @@ public class Boss extends Character{
 		standing= new OBJ[] {model.getObj()};
 		stomping= gameModel.getResource().getBossStomp();
 		motion= standing;
+		hp=100;
 	}
 	
 	public void update(){
@@ -33,6 +34,9 @@ public class Boss extends Character{
 	}
 	
 	public void animate(int tick){
+		if(!alive)
+			return;
+		
 		if (isNear() && !inBattle){
 			inBattle= true;
 			motion= stomping;

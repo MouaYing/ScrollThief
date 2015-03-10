@@ -1,6 +1,7 @@
 package scrollthief.model;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class Level1 implements Level {
@@ -21,6 +22,8 @@ public class Level1 implements Level {
 	Obstacle scroll;
 	GameModel gameModel;
 	Map<String,ArrayList<String>> phrases;
+	List<DialogHotspot> dialogHotspots;
+	DialogHotspot currentDialogHotspot;
 	public Level1(Resource resource, GameModel gameModel, Map<String,ArrayList<String>> phrases) {
 		numGuards = 5;
 		numWalls = 34;
@@ -36,6 +39,7 @@ public class Level1 implements Level {
 		obstacles= new Obstacle[numObs];
 		projectiles= new ArrayList<Projectile>();
 		this.phrases = phrases;
+		setDialogHotspots();
 		loadingBar = new LoadingBar(numModels,gameModel, "level", phrases);
 	}
 	
@@ -209,6 +213,24 @@ public class Level1 implements Level {
 	
 	public ArrayList<Model> getModels(){
 		return models;
+	}
+	
+	public DialogHotspot getCurrentDialogHotspot() {
+		return currentDialogHotspot;
+	}
+	
+	public void setCurrentDialogHotspot(DialogHotspot curr) {
+		currentDialogHotspot = curr;
+	}
+	
+	public void setDialogHotspots() {
+		dialogHotspots = new ArrayList<DialogHotspot>();
+		String startDialog = "Sensei: Young one, be careful, there are many guards patrolling the area. Avoid them and obtain the scroll!";
+		dialogHotspots.add(new DialogHotspot(0, 0, startDialog, 10, true));
+	}
+	
+	public List<DialogHotspot> getDialogHotspots() {
+		return dialogHotspots;
 	}
 	
 	public LoadingBar getLoadingBar() {

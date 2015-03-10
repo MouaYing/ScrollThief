@@ -87,7 +87,7 @@ public class GameModel {
 		ArrayList<Point3D> locations = new ArrayList<Point3D>();
 		locations.add(getNinja().getLoc());
 		locations.add(getBoss().getLoc());
-		data = new GameData(locations, state, levelFactory.getCurrentState());
+		data = new GameData(locations, state, levelFactory.getLevelState());
 		restore = new GameRestore(data);
 		if(restore.Save()){
 			resetLevel();
@@ -248,6 +248,10 @@ public class GameModel {
 		return getNinja().getSpeed();
 	}
 	
+	public Level getCurrentLevel() {
+		return currentLevel;
+	}
+	
 	public Point3D getNinjaLoc(){
 		if(getNinja() == null){
 			return new Point3D(0,0,0);
@@ -275,7 +279,11 @@ public class GameModel {
 		return resource;
 	}
 	
-	//Button Code
+	public LevelFactory getLevelFactory() {
+		return levelFactory;
+	}
+	
+//Button Code
 	public void doPauseButton() {
 		for(Button b : pauseButtons){
 			if(b.IsSelected()){
@@ -305,18 +313,25 @@ public class GameModel {
 	}
 	
 	public static Point2D[][] boxToWorld(Model model, Point2D[][] oldBox){
+		return boxToWorld(model.getAngle(), model.getLoc(), oldBox);
+	}
+	
+	public static Point2D[][] boxToWorld(double angle, Point3D loc, Point2D[][] oldBox){
 		Point2D[] points= new Point2D[4];
 		points[0]= oldBox[0][0];
 		points[1]= oldBox[1][0];
 		points[2]= oldBox[2][0];
 		points[3]= oldBox[3][0];
 		
-		return boxToWorld(model, points);
+		return boxToWorld(angle, loc, points);
 	}
 	
 	public static Point2D[][] boxToWorld(Model model, Point2D[] points){
-		double angle= model.getAngle();
-		Point2D center= model.getLoc().to2D();
+		return boxToWorld(model.getAngle(), model.getLoc(), points);
+	}
+	
+	public static Point2D[][] boxToWorld(double angle, Point3D loc, Point2D[] points){
+		Point2D center= loc.to2D();
 		//Point2D.Double[] points= new Point2D.Double[4];
 		
 		Point2D.Double newP1= new Point2D.Double();
