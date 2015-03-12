@@ -23,6 +23,7 @@ public class Level1 implements Level {
 	GameModel gameModel;
 	List<DialogHotspot> dialogHotspots;
 	DialogHotspot currentDialogHotspot;
+	List<Point3D> bossPouncePoints;
 
 	public Level1(Resource resource, GameModel gameModel, Map<String,ArrayList<String>> phrases) {
 		numGuards = 5;
@@ -39,6 +40,7 @@ public class Level1 implements Level {
 		obstacles= new Obstacle[numObs];
 		projectiles= new ArrayList<Projectile>();
 		setDialogHotspots();
+		setBossPouncePoints();
 		loadingBar = new LoadingBar(numModels,gameModel, "level", phrases);
 	}
 	
@@ -219,6 +221,19 @@ public class Level1 implements Level {
 	
 	public List<DialogHotspot> getDialogHotspots() {
 		return dialogHotspots;
+	}
+	
+	public void setBossPouncePoints() {
+		bossPouncePoints = new ArrayList<Point3D>();
+		
+		bossPouncePoints.add(new Point3D(6.4, 0, 76)); //by table with scroll (left)
+		bossPouncePoints.add(new Point3D(-4.4, 0, 77)); //by table with scroll (right)
+		bossPouncePoints.add(new Point3D(-1, 0, 70)); //between entrance and table to the side
+		bossPouncePoints.add(new Point3D(10.5, 0, 70)); //by door
+	}
+	
+	public List<Point3D> getBossPouncePoints() {
+		return bossPouncePoints;
 	}
 	
 	public LoadingBar getLoadingBar() {

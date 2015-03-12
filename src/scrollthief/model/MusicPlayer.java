@@ -52,7 +52,7 @@ public class MusicPlayer extends Thread {
 							javazoom.jl.player.FactoryRegistry.systemRegistry().createAudioDevice()
 					);
 			player.setPlayBackListener(new MusicListener(this));
-			player.play();
+//			player.play();
 		} catch (JavaLayerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

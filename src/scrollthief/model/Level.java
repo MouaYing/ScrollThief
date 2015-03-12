@@ -19,4 +19,5 @@ public interface Level {
 	public DialogHotspot getCurrentDialogHotspot();
 	public void setCurrentDialogHotspot(DialogHotspot curr);
 	public LoadingBar getLoadingBar();
+	public List<Point3D> getBossPouncePoints();
 }

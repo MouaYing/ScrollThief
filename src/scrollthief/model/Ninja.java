@@ -46,6 +46,7 @@ public class Ninja extends Character {
 			animFrame= 0;
 		}
 		else if (attacking == 1 && prevAttack != 1) {
+			Data.say(getLoc().toString());
 			speed = 0;
 			motion= attacking1;
 			animFrame= 0;

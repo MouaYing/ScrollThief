@@ -1,6 +1,7 @@
 package scrollthief.model;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import scrollthief.model.Point3D;
 
@@ -11,32 +12,50 @@ public class Boss extends Character{
 	OBJ[] standing;
 	OBJ[] stomping;
 	boolean inBattle= false;
-
+	Random randomGenerator;
+	int difficultLevel = 5; //between 0 and 5 (5 is hardest)
+	Point3D lastPouncePoint;
+	boolean readyForAttack;
+	int cooldown = 0;
+//	enum State {STANDING, POUNCING, READY_FOR_ATTACK, SMALLATTACK, BIGATTACK, COOLDOWN};
+//	State state;
+	final int ATTACK_SIZE_SMALL = 1;
+	final int ATTACK_SIZE_BIG = 2;
+	final int TICKS_BETWEEN_POUNCES = 1000;
+	final int TICKS_BETWEEN_ATTACKS = 75;
+	final int TICKS_FOR_COOLDOWN = 200;
+	final int PROBABILITY_OF_BIG_ATTACK = 30; //out of 100
+	final int PROBABILITY_OF_SMALL_ATTACK = 60; //out of 100
+	
 	public Boss(GameModel gameModel, Model model, double boxLength, double boxWidth) {
 		super(gameModel, model, boxLength, boxWidth);
+		lastPouncePoint = gameModel.getCurrentLevel().getBossPouncePoints().get(0);
 		turnRate= .02;
 		setSpeed(.2);
 		standing= new OBJ[] {model.getObj()};
 		stomping= gameModel.getResource().getBossStomp();
 		motion= standing;
 		hp=100;
+		randomGenerator = new Random();
+//		state = State.STANDING;
 	}
 	
 	public void update(){
-		if (!isNear())
+		if (!isNear() || !alive)
 			return;
 		
 		tickCount++;
-		navigate();
-		move();
-		if (tickCount >= 30 && isFacingNinja()) // determine whether to shoot or not
-			shoot();
+		if(tickCount > TICKS_BETWEEN_POUNCES) {
+			pounce();
+		}
+		else {
+			navigate();
+			handleAttack();
+			move();
+		}
 	}
 	
-	public void animate(int tick){
-		if(!alive)
-			return;
-		
+	public void animate(int tick){		
 		if (isNear() && !inBattle){
 			inBattle= true;
 			motion= stomping;
@@ -60,8 +79,53 @@ public class Boss extends Character{
 		faceToward(ninjaLoc);
 	}
 	
-	private void shoot(){
+	private void pounce() {
 		tickCount= 0;
+		if(gameModel.getCurrentLevel().getBossPouncePoints().size() <= 1)
+			return;
+		setNextPouncePoint();
+		
+		Data.say("pouncing to " + lastPouncePoint);
+	}
+	
+	private void handleAttack() {
+		if(cooldown > 0) {
+			cooldown--;
+			return;
+		}
+		if(tickCount % TICKS_BETWEEN_ATTACKS == 0)
+			readyForAttack = true;
+		if(!isFacingNinja() || !readyForAttack)
+			return;
+		
+		int rand = getRand(TICKS_BETWEEN_POUNCES);
+		
+		if((rand -= PROBABILITY_OF_BIG_ATTACK) < 0) {
+			shoot(ATTACK_SIZE_BIG);
+		}
+		else if((rand -= PROBABILITY_OF_SMALL_ATTACK) < 0) {
+			shoot(ATTACK_SIZE_SMALL);
+		}
+	}
+	
+	private void setNextPouncePoint() {
+		int rand = getRand(gameModel.getCurrentLevel().getBossPouncePoints().size());
+		while(gameModel.getCurrentLevel().getBossPouncePoints().get(rand) == lastPouncePoint)
+			rand = getRand(gameModel.getCurrentLevel().getBossPouncePoints().size());
+		lastPouncePoint = gameModel.getCurrentLevel().getBossPouncePoints().get(rand);
+	}
+	
+	private int getRand(int max) {
+		return randomGenerator.nextInt(max);
+	}
+	
+	//attackSize: 1 = small, 2 = large
+	private void shoot(int attackSize) {
+		if(attackSize == ATTACK_SIZE_BIG) {
+			cooldown = TICKS_FOR_COOLDOWN;
+		}
+		readyForAttack = false;
+		Data.say("Attack!!  " + attackSize);
 		double scale= 3;
 		double direction= getAngle() - Math.PI;
 		OBJ[] objs= gameModel.getResource().getOBJs();
