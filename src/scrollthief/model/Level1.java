@@ -24,7 +24,9 @@ public class Level1 implements Level {
 	Map<String,ArrayList<String>> phrases;
 	List<DialogHotspot> dialogHotspots;
 	DialogHotspot currentDialogHotspot;
+	RoomCreator creator;
 	public Level1(Resource resource, GameModel gameModel, Map<String,ArrayList<String>> phrases) {
+		creator = new RoomCreator(resource,gameModel);
 		numGuards = 5;
 		numWalls = 34;
 		numPillars = 8;
@@ -70,12 +72,15 @@ public class Level1 implements Level {
 		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(11, 0, 50), gameModel.zero(), .11, 1) ); // guard model 6
 // ---------------Obstacle models ----------------------------------------------------------------------
 		models.add( new Model(resource.getOBJs()[3], 9, new Point3D(0, 1.2, 83), new double[]{Math.PI/2,0,0}, .25, 1)); //scroll
+		addFoyer(models);
+		addEasyRoom1(models);
+		addEasyRoom2(models);
 		// foyer
-		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(-3.6, 0, 4.4), gameModel.zero(), 1, 2)); // wall
-		models.add( new Model(resource.getOBJs()[5], 5, new Point3D(7.8, 0, -10.7), gameModel.zero(), 1, 1)); // wall
-		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(-12, 0, -3.1), gameModel.rtAngle(), 1, 2)); // wall
-		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(12.4, 0, -3.3), gameModel.rtAngle(), 1, 2)); // wall
-		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(-4.2, 0, -10.7), gameModel.zero(), 1, 2)); // wall
+//		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(-3.6, 0, 4.4), gameModel.zero(), 1, 2)); // wall
+//		models.add( new Model(resource.getOBJs()[5], 5, new Point3D(7.8, 0, -10.7), gameModel.zero(), 1, 1)); // wall
+//		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(-12, 0, -3.1), gameModel.rtAngle(), 1, 2)); // wall
+//		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(12.4, 0, -3.3), gameModel.rtAngle(), 1, 2)); // wall
+//		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(-4.2, 0, -10.7), gameModel.zero(), 1, 2)); // wall
 		// room 1
 		models.add( new Model(resource.getOBJs()[5], 5, new Point3D(4, 0, 9), gameModel.rtAngle(), 1, 1)); // wall
 		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(20.8, 0, 4.2), gameModel.zero(), 1, 2)); // wall
@@ -134,6 +139,45 @@ public class Level1 implements Level {
 		// --- Boss model ---
 		models.add( new Model(resource.getOBJs()[7], 10, new Point3D(0, 0, 76), gameModel.zero(), .2, 1)); // Boss
 		loadingBar.increaseProgress(1);
+	}
+	
+	private void addFoyer(List<Model> models){
+		Room room = new Room(new Point3D(0,0,-3.5));
+		double[] north = {-1,1,-1};
+		double[] south = {1,2};
+		double[] east = {2};
+		double[] west = {2};
+		room.setWallLengths(WallLocation.North, north);
+		room.setWallLengths(WallLocation.South, south);
+		room.setWallLengths(WallLocation.East, east);
+		room.setWallLengths(WallLocation.West, west);
+		creator.createRoom(models, room);
+	}
+	
+	private void addEasyRoom1(List<Model> models){
+		Room room = new Room(new Point3D(-3.9,0,17.5));
+		double[] north = {2};
+		double[] south = {-2};
+		double[] east = {2,-2};
+		double[] west = {-2, -2};
+		room.setWallLengths(WallLocation.North, north);
+		room.setWallLengths(WallLocation.South, south);
+		room.setWallLengths(WallLocation.East, east);
+		room.setWallLengths(WallLocation.West, west);
+		creator.createRoom(models, room);
+	}
+	
+	private void addEasyRoom2(List<Model> models){
+		Room room = new Room(new Point3D(-20.3,0,33.9));
+		double[] north = {2};
+		double[] south = {2};
+		double[] east = {2,2};
+		double[] west = {-2, 1, -1};
+		room.setWallLengths(WallLocation.North, north);
+		room.setWallLengths(WallLocation.South, south);
+		room.setWallLengths(WallLocation.East, east);
+		room.setWallLengths(WallLocation.West, west);
+		creator.createRoom(models, room);
 	}
 	
 	private Point3D[][] createGuardOrders() {
