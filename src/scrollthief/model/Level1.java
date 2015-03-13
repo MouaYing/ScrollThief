@@ -75,6 +75,7 @@ public class Level1 implements Level {
 		addFoyer(models);
 		addEasyRoom1(models);
 		addEasyRoom2(models);
+		addEasyRoom3(models);
 		// foyer
 //		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(-3.6, 0, 4.4), gameModel.zero(), 1, 2)); // wall
 //		models.add( new Model(resource.getOBJs()[5], 5, new Point3D(7.8, 0, -10.7), gameModel.zero(), 1, 1)); // wall
@@ -165,6 +166,7 @@ public class Level1 implements Level {
 		room.setWallLengths(WallLocation.East, east);
 		room.setWallLengths(WallLocation.West, west);
 		creator.createRoom(models, room);
+		creator.createPillar(models, new Point3D(-5.3,0,12.6));
 	}
 	
 	private void addEasyRoom2(List<Model> models){
@@ -173,6 +175,24 @@ public class Level1 implements Level {
 		double[] south = {2};
 		double[] east = {2,2};
 		double[] west = {-2, 1, -1};
+		room.setWallLengths(WallLocation.North, north);
+		room.setWallLengths(WallLocation.South, south);
+		room.setWallLengths(WallLocation.East, east);
+		room.setWallLengths(WallLocation.West, west);
+		creator.createRoom(models, room);
+		creator.createPillar(models, new Point3D(-19.1,0,23.9));
+		creator.createTable(models, new Point3D(-25.1,0,27.6),true);
+		creator.createPillar(models, new Point3D(-22.1,0,33.6));
+		creator.createTable(models, new Point3D(-25.1,0,38.6),true);
+		creator.createPillar(models, new Point3D(-22.1,0,44.6));
+	}
+	
+	private void addEasyRoom3(List<Model> models){
+		Room room = new Room(new Point3D(-7.5,0, 51.3));
+		double[] north = {-1};
+		double[] south = {1};
+		double[] east = {-1,1,.5};
+		double[] west = {2,.5};
 		room.setWallLengths(WallLocation.North, north);
 		room.setWallLengths(WallLocation.South, south);
 		room.setWallLengths(WallLocation.East, east);

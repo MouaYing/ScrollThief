@@ -92,5 +92,18 @@ public class RoomCreator {
 		return (((wallLength*previousWallLength)/2) + ((wallLength*curWallLength)/2));
 	}
 	
+	public void createPillar(List<Model> models, Point3D location){
+		models.add( new Model(resource.getOBJs()[6], 3, location, game.zero(), 1, 1));
+	}
+	
+	public void createTable(List<Model> models, Point3D location, boolean horizontal){
+		if(horizontal){
+			models.add( new Model(resource.getOBJs()[4], 4, location, game.zero(), .4, 1));
+		}
+		else {
+			models.add( new Model(resource.getOBJs()[4], 4, location, game.rtAngle(), .4, 1));
+		}
+	}
+	
 	
 }
