@@ -1,5 +1,10 @@
 package scrollthief.controller;
 
+import java.awt.Cursor;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.TimerTask;
 
@@ -29,6 +34,7 @@ public class Controller extends TimerTask{
 	int tick= 0;
 	int hitTimer= 0;
 	boolean devmode= false;
+	boolean isCursorInvisible = true;
 	
 	public Controller(JFrame window, View view, GameModel gameModel){
 		say("Loading main controller...");
@@ -48,7 +54,8 @@ public class Controller extends TimerTask{
         keyboard = new KeyboardControl(this);
         view.addKeyListener(keyboard);
         mouse = new MouseControl(this);
-        view.addMouseMotionListener(mouse);;
+        view.addMouseMotionListener(mouse);
+        view.addMouseListener(mouse);
         if(!xbc.isConnected())
         {
         	System.out.println("Xbox controller not connected...");
@@ -70,13 +77,20 @@ public class Controller extends TimerTask{
 
 	@Override
 	public void run() {
+		if(gameModel.getState() == GameState.Paused && isCursorInvisible) {
+			 window.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			 isCursorInvisible = false;
+		}
+		else if(gameModel.getState() != GameState.Paused && !isCursorInvisible) {
+			Toolkit t = Toolkit.getDefaultToolkit();
+		    Image i = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+			Cursor noCursor = t.createCustomCursor(i, new Point(0, 0), "none");
+			window.setCursor(noCursor);
+			isCursorInvisible = true;
+		}
+		
 		if (gameModel.getState() == GameState.Uninitialized || gameModel.getState() == GameState.Initialized)
 			return;
-		if (gameModel.getState() == GameState.Start){
-			gameModel.changeState(GameState.Paused);
-			view.display();
-			return;
-		}
 		if(gameModel.getState() != GameState.Playing){
 			view.display();
 			return;
@@ -241,7 +255,7 @@ public class Controller extends TimerTask{
 		view.setCamAngle(0);
 		view.setCamHeight(4);
 		view.setCamDistance(6);
-		gameModel.changeState(GameState.Start);
+		gameModel.changeState(GameState.Paused);
 	}
 	
 	private void gameOver(GameState reason){

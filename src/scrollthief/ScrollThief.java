@@ -10,6 +10,8 @@ import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 import java.util.Timer;
 
@@ -58,13 +60,27 @@ public class ScrollThief {
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setVisible(true);
 		
+		window.addMouseWheelListener(new MouseWheelListener() {
+			@Override
+			public void mouseWheelMoved(MouseWheelEvent arg0) {
+				if(arg0.getWheelRotation() < 0) {
+					for(int i = 0; i < 3; i++) {
+						gameControl.decreaseCameraHeight();	
+					}
+				}
+				else if(arg0.getWheelRotation() > 0) {
+					for(int i = 0; i < 3; i++) {
+						gameControl.increaseCameraHeight();	
+					}
+				}
+			}
+		});
+		
 		// Make cursor invisible
 		Toolkit t = Toolkit.getDefaultToolkit();
 	    Image i = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 		Cursor noCursor = t.createCustomCursor(i, new Point(0, 0), "none");
 		window.setCursor(noCursor);
-		// To get back to the normal cursor, use this on the window
-		// window.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		
 		//anim.start();
 		timer.scheduleAtFixedRate(controller, 3000, 1000/FPS); 

@@ -1,5 +1,8 @@
 package scrollthief.controller;
 
+import java.util.List;
+
+import scrollthief.model.Button;
 import scrollthief.model.GameModel;
 import scrollthief.model.GameState;
 import scrollthief.view.View;
@@ -12,14 +15,27 @@ public class GameControl {
 	double cameraDir = 0;
 	double cameraMag = 0;
 	private double speedIncrement = 0.7;
-	private double ninjaRotationIncrement = 0.1;
-	private double cameraRotationIncrement = 0.1;
+	private double ninjaRotationIncrement = 0.075;
+	private double cameraRotationIncrement = 0.075;
 	private float cameraHeightIncrement = 0.1f;
+	
+	private boolean usingMouse;
 	
 	public GameControl(Controller controller){
 		this.controller= controller;
 		this.view= controller.view;
 		this.gameModel= controller.gameModel;
+		
+		this.usingMouse = false;
+	}
+	
+	public boolean getUsingMouse() {
+		return usingMouse;
+	}
+	
+	public void setUsingMouse(boolean usingMouse) {
+		this.usingMouse = usingMouse;
+		gameModel.setUsingMouse(usingMouse);
 	}
 	
 	public boolean canPlay(){
@@ -165,8 +181,12 @@ public class GameControl {
 //		else {
 //			gameModel.changeState(GameState.Paused);
 //		}
-		if(canPlay())
-			if (gameModel.getState() == GameState.Spotted || gameModel.getState() == GameState.Killed && gameModel.getState() == GameState.Victory){ // game is over---reset
+		if(canPlay() || gameModel.getState() == GameState.Start){
+			if(gameModel.getState() == GameState.Start){
+				gameModel.changeState(GameState.Playing);
+				return;
+			}
+			if (gameModel.getState() == GameState.Spotted || gameModel.getState() == GameState.Killed || gameModel.getState() == GameState.Victory){ // game is over---reset
 				controller.reset();
 			}
 			else if (gameModel.getState() == GameState.Paused){
@@ -175,6 +195,71 @@ public class GameControl {
 			else {
 				gameModel.changeState(GameState.Paused);
 			}
+		}
+	}
+	
+	public void pauseButtonClick(){
+		if(gameModel.getState() == GameState.Paused){
+			gameModel.doPauseButton();
+		}
+	}
+	
+	public void switchSelectedButton(int direction){
+		if(gameModel.getState() == GameState.Paused){
+			if(direction == 0){
+				List<Button> buttons = gameModel.getPauseButtons();
+				for(int i = 0; i < buttons.size();i++){
+					if( i == 0 && buttons.get(i).IsSelected()){
+						return;
+					}
+					else if(buttons.get(i).IsSelected()){
+						buttons.get(i-1).setSelected(true);
+						buttons.get(i).setSelected(false);
+						break;
+					}
+				}
+			}
+			else if(direction == 1){
+				List<Button> buttons = gameModel.getPauseButtons();
+				for(int i = 0; i < buttons.size();i++){
+					if( i == buttons.size()-1 && buttons.get(i).IsSelected()){
+						return;
+					}
+					else if(buttons.get(i).IsSelected()){
+						buttons.get(i+1).setSelected(true);
+						buttons.get(i).setSelected(false);
+						break;
+					}
+				}
+			}			
+		}
+	}
+	
+
+	public void clickButton(int x, int y) {
+		y = view.getHeight() - y;
+		if(gameModel.getState() == GameState.Paused){
+			for(Button b : gameModel.getPauseButtons()){
+				if(b.isHit(x, y)){
+					b.doAction();
+				}
+			}
+		}
+	}
+	
+
+	public void highlightButton(int x, int y) {
+		y = view.getHeight() - y;
+		if(gameModel.getState() == GameState.Paused){
+			for(Button b : gameModel.getPauseButtons()){
+				if(b.isHit(x, y)){
+					for(Button b2 : gameModel.getPauseButtons()){
+						b2.setSelected(false);
+					}
+					b.setSelected(true);
+				}
+			}
+		}
 	}
 	
 	private void updateCamera(){
@@ -192,4 +277,6 @@ public class GameControl {
 	private void say(String message){
 		System.out.println(message);
 	}
+
+
 }

@@ -1,10 +1,10 @@
 package scrollthief.model;
 
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
@@ -33,7 +33,8 @@ public class Resource {
 	private Texture[] images;
 	private Random rand;
 	private int mainSplashIndex;
-	private final int total = 5;
+	private int levelSplashIndex;
+	// private final int total = 5;
 	private final int OBJS_NUM = 9;
 	private final int NINJA_RUN_NUM = 21;
 	private final int GUARD_WALK_NUM = 30;
@@ -41,7 +42,7 @@ public class Resource {
 	private final int TEXTURES_NUM = 12;
 	private final int IMAGES_NUM = 2;
 	
-	public Resource(GameModel gameModel) {
+	public Resource(GameModel gameModel, Map<String,ArrayList<String>> phrases) {
 		images = new Texture[IMAGES_NUM];
 		rand = new Random();
 		mainSplashIndex = rand.nextInt(IMAGES_NUM);
@@ -51,7 +52,11 @@ public class Resource {
 		bossStomp = new OBJ[BOSS_STOMP_NUM];
 		textures = new Texture[TEXTURES_NUM];
 		int total = OBJS_NUM + NINJA_RUN_NUM + GUARD_WALK_NUM + BOSS_STOMP_NUM + TEXTURES_NUM;
-		loadingBar = new LoadingBar(total,gameModel,"resource");
+		loadingBar = new LoadingBar(total,gameModel,"resource", phrases);
+		levelSplashIndex = rand.nextInt(IMAGES_NUM);
+		while(levelSplashIndex == mainSplashIndex){
+			levelSplashIndex = rand.nextInt(IMAGES_NUM);
+		}
 		
 	}
 	
@@ -68,9 +73,9 @@ public class Resource {
 		loadingBar.increaseProgress(1);
 		objs[4]= new OBJ("obj/table.obj");
 		loadingBar.increaseProgress(1);
-		objs[5]= new OBJ("obj/wall2.obj");
+		objs[5]= new OBJ("obj/wall.obj");
 		loadingBar.increaseProgress(1);
-		objs[6]= new OBJ("obj/pillar2.obj");
+		objs[6]= new OBJ("obj/pillar.obj");
 		loadingBar.increaseProgress(1);
 		objs[7]= new OBJ("obj/boss_stand.obj");
 		loadingBar.increaseProgress(1);
@@ -229,6 +234,10 @@ public class Resource {
 	
 	public Texture getSplashImage() {
 		return images[mainSplashIndex];
+	}
+	
+	public Texture getLevelSplash() {
+		return images[levelSplashIndex];
 	}
 	
 	public void init(){

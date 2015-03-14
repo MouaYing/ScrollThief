@@ -1,6 +1,7 @@
 package scrollthief.model;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class Level1 implements Level {
 	int numGuards;
@@ -14,12 +15,13 @@ public class Level1 implements Level {
 	Obstacle[] obstacles;
 	ArrayList<Model> models;
 	ArrayList<Projectile> projectiles;
+	private LoadingBar loadingBar;
 	Ninja ninja;
 	Boss boss;
 	Obstacle scroll;
 	GameModel gameModel;
 
-	public Level1(Resource resource, GameModel gameModel) {
+	public Level1(Resource resource, GameModel gameModel, Map<String,ArrayList<String>> phrases) {
 		numGuards = 5;
 		numWalls = 34;
 		numPillars = 8;
@@ -28,11 +30,12 @@ public class Level1 implements Level {
 		this.resource = resource;
 		this.gameModel = gameModel;
 		
-		numModels= numGuards + numObs + 3;
+		numModels= numGuards + numObs + 3; //56
 		models= new ArrayList<Model>();
 		guards= new Guard[numGuards];
 		obstacles= new Obstacle[numObs];
 		projectiles= new ArrayList<Projectile>();
+		loadingBar = new LoadingBar(numModels,gameModel, "level", phrases);
 	}
 	
 	@Override
@@ -114,6 +117,7 @@ public class Level1 implements Level {
 		models.add( new Model(resource.getOBJs()[0], 0, new Point3D(0, 5, 0), new double[] {Math.PI,0,0}, 1, 1) ); // ceiling model
 		// --- Boss model ---
 		models.add( new Model(resource.getOBJs()[7], 10, new Point3D(0, 0, 76), gameModel.zero(), .2, 1)); // Boss
+		loadingBar.increaseProgress(1);
 	}
 	
 	private Point3D[][] createGuardOrders() {
@@ -132,12 +136,15 @@ public class Level1 implements Level {
 	public void createCharacters() {
 		say("Creating characters...");
 		ninja= new Ninja(gameModel, models.get(1), .35, .5);
+		loadingBar.increaseProgress(1);
 		
 		Point3D[][] orders= createGuardOrders();
 		for (int i= 0; i < numGuards; i++){
 			guards[i]= new Guard(gameModel, models.get(i + 2), .35, .5, orders[i]); 
+			loadingBar.increaseProgress(1);
 		}
 		boss= new Boss(gameModel, models.get(models.size()-1), 1.5, 1.5);
+		loadingBar.increaseProgress(1);
 	}
 	
 	@Override
@@ -146,17 +153,21 @@ public class Level1 implements Level {
 		// scroll
 		obstacles[0]= new Obstacle(models.get(7), true, .2, .2, 1.3); 
 		scroll= obstacles[0];
+		loadingBar.increaseProgress(1);
 		// walls
 		for (int i= 1; i < numWalls+1; i++){
 			obstacles[i]= new Obstacle(models.get(i + 7), false, .6, 4, 5); 
+			loadingBar.increaseProgress(1);
 		}
 		// pillars
 		for (int i= numWalls+1; i < numPillars+numWalls+1; i++){
 			obstacles[i]= new Obstacle(models.get(i + 7), false, 1.5, 1.5, 5); 
+			loadingBar.increaseProgress(1);
 		}
 		// tables
 		for (int i= numWalls+numPillars+1; i < numObs; i++){
 			obstacles[i]= new Obstacle(models.get(i + 7), true, 2.25, 3, .95); 
+			loadingBar.increaseProgress(1);
 		}
 	}
 	
@@ -188,7 +199,12 @@ public class Level1 implements Level {
 		return models;
 	}
 	
+	public LoadingBar getLoadingBar() {
+		return loadingBar;
+	}
+	
 	private void say(String message){
 		System.out.println(message);
 	}
+	
 }
