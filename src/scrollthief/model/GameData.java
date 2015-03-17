@@ -22,7 +22,7 @@ public class GameData implements Serializable  {
 		locations.add(new GamePoint(new Point3D(0, 0, -5)));
 		//boss starting location for level 1
 		locations.add(new GamePoint(new Point3D(0,0,76)));
-		state = GameState.Paused;
+		state = GameState.Playing;
 		//start at level 1
 		level = LevelState.Level0;
 	}
