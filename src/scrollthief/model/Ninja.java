@@ -30,9 +30,9 @@ public class Ninja extends Character {
 		standing= new OBJ[] {defaultOBJ};
 		attackPowers = new float[] {0f, .3f, .4f, 1f};
 		running= gameModel.getResource().getNinjaRun();
-		attacking1 = running.clone(); //gameModel.getResource().getNinjaAttack1();
-		attacking2 = running.clone(); //gameModel.getResource().getNinjaAttack2();
-		attacking3 = running.clone(); //gameModel.getResource().getNinjaAttack3();
+		attacking1 = gameModel.getResource().getNinjaStrike1();
+		attacking2 = gameModel.getResource().getNinjaStrike2();
+		attacking3 = gameModel.getResource().getNinjaStrike3();
 		jumping= new OBJ[] {running[0]};
 		motion= standing;
 		hp = 3;																																																																											;

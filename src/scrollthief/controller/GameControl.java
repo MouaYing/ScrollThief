@@ -123,11 +123,11 @@ public class GameControl {
 		//for putting the ninja next to the boss for testing
 		scrollthief.model.Character ninja= gameModel.getNinja();
 		
-//		ninja.setLoc(new Point3D(10, 0, 70));  //for if you want quick teleport to boss
+		ninja.setLoc(new Point3D(10, 0, 70));  //for if you want quick teleport to boss
 		
-		if (controller.devmode)
-			controller.devmode= false;
-		else 
+//		if (controller.devmode)
+//			controller.devmode= false;
+//		else 
 			controller.devmode= true;
 		say("Developer mode = " + controller.devmode);
 	}

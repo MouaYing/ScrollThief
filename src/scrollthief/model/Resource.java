@@ -26,8 +26,11 @@ public class Resource {
 	//Arrays of frames for each type of animation
 	private OBJ[] objs;
 	private OBJ[] ninjaRun;
+	private OBJ[] ninjaStrike1;
+	private OBJ[] ninjaStrike2;
+	private OBJ[] ninjaStrike3;
 	private OBJ[] guardWalk;
-	private OBJ[] bossStomp;
+	private OBJ[] bossPounce;
 	private Texture[] textures;
 	private LoadingBar loadingBar;
 	private Texture[] images;
@@ -39,8 +42,11 @@ public class Resource {
 	// private final int total = 5;
 	private final int OBJS_NUM = 9;
 	private final int NINJA_RUN_NUM = 21;
+	private final int NINJA_STRIKE1_NUM = 12;
+	private final int NINJA_STRIKE2_NUM = 8;
+	private final int NINJA_STRIKE3_NUM = 20;
 	private final int GUARD_WALK_NUM = 30;
-	private final int BOSS_STOMP_NUM = 24;
+	private final int BOSS_POUNCE_NUM = 45;
 	private final int TEXTURES_NUM = 12;
 	private final int IMAGES_NUM = 2;
 	private final int SOUNDS_NUM = 6;
@@ -52,10 +58,14 @@ public class Resource {
 		mainSplashIndex = rand.nextInt(IMAGES_NUM);
 		objs = new OBJ[OBJS_NUM];
 		ninjaRun = new OBJ[NINJA_RUN_NUM];
+		ninjaStrike1 = new OBJ[NINJA_STRIKE1_NUM];
+		ninjaStrike2 = new OBJ[NINJA_STRIKE2_NUM];
+		ninjaStrike3 = new OBJ[NINJA_STRIKE3_NUM];
 		guardWalk = new OBJ[GUARD_WALK_NUM];
-		bossStomp = new OBJ[BOSS_STOMP_NUM];
+		bossPounce = new OBJ[BOSS_POUNCE_NUM];
 		textures = new Texture[TEXTURES_NUM];
-		int total = SOUNDS_NUM + OBJS_NUM + NINJA_RUN_NUM + GUARD_WALK_NUM + BOSS_STOMP_NUM + TEXTURES_NUM;
+		int total = SOUNDS_NUM + OBJS_NUM + NINJA_RUN_NUM + NINJA_STRIKE1_NUM + NINJA_STRIKE2_NUM + NINJA_STRIKE3_NUM + 
+				GUARD_WALK_NUM + BOSS_POUNCE_NUM + TEXTURES_NUM;
 		loadingBar = new LoadingBar(total,gameModel,"resource", phrases);
 		levelSplashIndex = rand.nextInt(IMAGES_NUM);
 		while(levelSplashIndex == mainSplashIndex){
@@ -163,7 +173,26 @@ public class Resource {
 			ninjaRun[i]= new OBJ(fileName);
 			loadingBar.increaseProgress(1);
 		}
-		say("done with ninja ");
+		for (int i= 0; i < NINJA_STRIKE1_NUM; i++){
+			say("Loading strike 1 cycle frame " + (i+1));
+			String fileName= "/resources/obj/anim/ninja/attack/strike1." + (i+1) + ".obj";
+			Data.say(ninjaStrike1.length + " " +fileName);
+			ninjaStrike1[i]= new OBJ(fileName);
+			loadingBar.increaseProgress(1);
+		}
+		for (int i= 0; i < NINJA_STRIKE2_NUM; i++){
+			say("Loading strike 2 cycle frame " + (i+1));
+			String fileName= "/resources/obj/anim/ninja/attack/strike2." + (i+1) + ".obj";
+			ninjaStrike2[i]= new OBJ(fileName);
+			loadingBar.increaseProgress(1);
+		}
+		for (int i= 0; i < NINJA_STRIKE3_NUM; i++){
+			say("Loading strike 3 cycle frame " + (i+1));
+			String fileName= "/resources/obj/anim/ninja/attack/strike3." + (i+1) + ".obj";
+			ninjaStrike3[i]= new OBJ(fileName);
+			loadingBar.increaseProgress(1);
+		}
+		say("done with ninja");
 	}
 	
 	private void loadGuardAnimations() {
@@ -179,12 +208,12 @@ public class Resource {
 	}
 	
 	private void loadBossAnimations() {
-		// Boss stomp cycle
+		// Boss pounce cycle
 		say("\nLoading Boss animation frames...");
-		for (int i= 0; i < BOSS_STOMP_NUM; i++){
-			say("Loading stomp cycle frame " + (i+1));
-			String fileName="/resources/obj/anim/boss/stomp." + (i+1) + ".obj";
-			bossStomp[i]= new OBJ(fileName);
+		for (int i= 0; i < BOSS_POUNCE_NUM; i++){
+			say("Loading pounce cycle frame " + (i+1));
+			String fileName="/resources/obj/anim/boss/pounce/boss_pounce." + (i+1) + ".obj";
+			bossPounce[i]= new OBJ(fileName);
 			loadingBar.increaseProgress(1);
 		}
 		say("done with boss ");
@@ -247,8 +276,8 @@ public class Resource {
 		return objs;
 	}
 	
-	public OBJ[] getBossStomp(){
-		return bossStomp;
+	public OBJ[] getBossPounce(){
+		return bossPounce;
 	}
 	
 	public OBJ[] getGuardWalk(){
@@ -259,6 +288,30 @@ public class Resource {
 		return ninjaRun;
 	}
 	
+	public OBJ[] getNinjaStrike1() {
+		return ninjaStrike1;
+	}
+
+	public void setNinjaStrike1(OBJ[] ninjaStrike1) {
+		this.ninjaStrike1 = ninjaStrike1;
+	}
+
+	public OBJ[] getNinjaStrike2() {
+		return ninjaStrike2;
+	}
+
+	public void setNinjaStrike2(OBJ[] ninjaStrike2) {
+		this.ninjaStrike2 = ninjaStrike2;
+	}
+
+	public OBJ[] getNinjaStrike3() {
+		return ninjaStrike3;
+	}
+
+	public void setNinjaStrike3(OBJ[] ninjaStrike3) {
+		this.ninjaStrike3 = ninjaStrike3;
+	}
+
 	public Texture[] getTextures(){
 		return textures;
 	}

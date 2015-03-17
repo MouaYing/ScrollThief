@@ -10,7 +10,7 @@ public class Boss extends Character{
 	double sightRange= 17;
 	int tickCount= 0;
 	OBJ[] standing;
-	OBJ[] stomping;
+	OBJ[] pouncing;
 	boolean inBattle= false;
 	Random randomGenerator;
 	int difficultLevel = 5; //between 0 and 5 (5 is hardest)
@@ -33,7 +33,7 @@ public class Boss extends Character{
 		turnRate= .02;
 		setSpeed(.2);
 		standing= new OBJ[] {model.getObj()};
-		stomping= gameModel.getResource().getBossStomp();
+		pouncing= gameModel.getResource().getBossPounce();
 		motion= standing;
 		hp=100;
 		randomGenerator = new Random();
@@ -58,7 +58,7 @@ public class Boss extends Character{
 	public void animate(int tick){		
 		if (isNear() && !inBattle){
 			inBattle= true;
-			motion= stomping;
+			motion= pouncing;
 			animFrame= 0;
 		}
 		
