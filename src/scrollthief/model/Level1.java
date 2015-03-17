@@ -27,7 +27,7 @@ public class Level1 implements Level {
 	RoomCreator creator;
 	public Level1(Resource resource, GameModel gameModel, Map<String,ArrayList<String>> phrases) {
 		creator = new RoomCreator(resource,gameModel);
-		numGuards = 5;
+		numGuards = 12;
 		numWalls = 34;
 		numPillars = 8;
 		numTables = 5;
@@ -70,6 +70,13 @@ public class Level1 implements Level {
 		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(32, 0, 39), gameModel.zero(), .11, 1) ); // guard model 4
 		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(20, 0, 54), gameModel.zero(), .11, 1) ); // guard model 5
 		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(11, 0, 50), gameModel.zero(), .11, 1) ); // guard model 6
+		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(-1,0,25.2), gameModel.zero(), .11, 1) ); // guard model 7
+		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(-16.4,0,32.9), gameModel.zero(), .11, 1) ); // guard model 8
+		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(-8.7,0,35.9), gameModel.zero(), .11, 1) ); // guard model 9
+		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(56,0, 34.1), gameModel.zero(), .11, 1) ); // guard model 10
+		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(56,0, 49.5), gameModel.zero(), .11, 1) ); // guard model 11
+		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(56,0, 41.8), gameModel.zero(), .11, 1) ); // guard model 12
+		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(56,0, 57.2), gameModel.zero(), .11, 1) ); // guard model 13
 // ---------------Obstacle models ----------------------------------------------------------------------
 		models.add( new Model(resource.getOBJs()[3], 9, new Point3D(0, 1.2, 83), new double[]{Math.PI/2,0,0}, .25, 1)); //scroll
 		addFoyer(models);
@@ -82,36 +89,7 @@ public class Level1 implements Level {
 		addHardRoom2(models);
 		addHardRoom3(models);
 		addHardRoom4(models);
-		// room 2 (hard)
-		models.add( new Model(resource.getOBJs()[5], 7, new Point3D(11, 0, 29.2), gameModel.zero(), 1, .5)); // wall
-		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(20.8, 0, 29.2), gameModel.zero(), 1, 2)); // wall
-		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(4, 0, 37), gameModel.rtAngle(), 1, 2)); // wall
-		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(12.2, 0, 45.4), gameModel.zero(), 1, 2)); // wall
-		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(28.2, 0, 45.4), gameModel.zero(), 1, 2)); // wall
-		models.add( new Model(resource.getOBJs()[5], 7, new Point3D(38.2, 0, 45.4), gameModel.zero(), 1, .5)); // wall
-		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(36.8, 0, 29.2), gameModel.zero(), 1, 2)); // wall
-		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(45.2, 0, 37.6), gameModel.rtAngle(), 1, 2)); // wall
-		// room 3 (hard)
-		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(45.2, 0, 53.6), gameModel.rtAngle(), 1, 2)); // wall
-		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(36.8, 0, 62), gameModel.zero(), 1, 2)); // wall
-		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(20.8, 0, 62), gameModel.zero(), 1, 2)); // wall
-		models.add( new Model(resource.getOBJs()[5], 7, new Point3D(11, 0, 62), gameModel.zero(), 1, .5)); // wall
-		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(4, 0, 53), gameModel.rtAngle(), 1, 2)); // wall
-		models.add( new Model(resource.getOBJs()[5], 5, new Point3D(26.6, 0, 61), gameModel.rtAngle(), 1, 1)); // wall
-		models.add( new Model(resource.getOBJs()[5], 5, new Point3D(26.6, 0, 49), gameModel.rtAngle(), 1, 1)); // wall
-		// room 2 (hard)
-		models.add( new Model(resource.getOBJs()[6], 3, new Point3D(14, 0, 34), gameModel.zero(), 1, 1)); // pillar
-		// room 3 (hard)
-		models.add( new Model(resource.getOBJs()[6], 3, new Point3D(38, 0, 51), gameModel.zero(), 1, 1)); // pillar
-		models.add( new Model(resource.getOBJs()[6], 3, new Point3D(20, 0, 51), gameModel.zero(), 1, 1)); // pillar
-		// --- Tables --- room 2 (hard)
-		models.add( new Model(resource.getOBJs()[4], 4, new Point3D(20, 0, 41.8), gameModel.rtAngle(), .4, 1)); // table
-		models.add( new Model(resource.getOBJs()[4], 4, new Point3D(28.5, 0, 41.8), gameModel.rtAngle(), .4, 1)); // table
-		models.add( new Model(resource.getOBJs()[4], 4, new Point3D(37, 0, 41.8), gameModel.rtAngle(), .4, 1)); // table
-		// room 3 (hard)
-		models.add( new Model(resource.getOBJs()[4], 4, new Point3D(15.5, 0, 58.4), gameModel.rtAngle(), .4, 1)); // table
-		// --- Ceiling ---
-		models.add( new Model(resource.getOBJs()[0], 0, new Point3D(0, 5, 0), new double[] {Math.PI,0,0}, 1, 1) ); // ceiling model
+		addOldRooms(models);
 		// --- Boss model ---
 		models.add( new Model(resource.getOBJs()[7], 10, new Point3D(0, 0, 76), gameModel.zero(), .2, 1)); // Boss
 		loadingBar.increaseProgress(1);
@@ -226,6 +204,11 @@ public class Level1 implements Level {
 		room.setWallLengths(WallLocation.East, east);
 		room.setWallLengths(WallLocation.West, west);
 		creator.createRoom(models, room);
+		creator.createTable(models, new Point3D(62.6,0, 34.1), true);
+		creator.createTable(models, new Point3D(62.6,0, 49.5), true);
+		creator.createTable(models, new Point3D(49.5,0, 41.8), true);
+		creator.createTable(models, new Point3D(49.5,0, 57.2), true);
+		creator.createPillar(models, new Point3D(56,0, 61.2));
 	}
 	
 	private void addHardRoom4(List<Model> models){
@@ -259,6 +242,39 @@ public class Level1 implements Level {
 		creator.createTable(models, new Point3D(0, 0, 83),true);
 	}
 	
+	public void addOldRooms(List<Model> models){
+		// room 2 (hard)
+		models.add( new Model(resource.getOBJs()[5], 7, new Point3D(11, 0, 29.2), gameModel.zero(), 1, .5)); // wall
+		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(20.8, 0, 29.2), gameModel.zero(), 1, 2)); // wall
+		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(4, 0, 37), gameModel.rtAngle(), 1, 2)); // wall
+		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(12.2, 0, 45.4), gameModel.zero(), 1, 2)); // wall
+		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(28.2, 0, 45.4), gameModel.zero(), 1, 2)); // wall
+		models.add( new Model(resource.getOBJs()[5], 7, new Point3D(38.2, 0, 45.4), gameModel.zero(), 1, .5)); // wall
+		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(36.8, 0, 29.2), gameModel.zero(), 1, 2)); // wall
+		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(45.2, 0, 37.6), gameModel.rtAngle(), 1, 2)); // wall
+		// room 3 (hard)
+		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(45.2, 0, 53.6), gameModel.rtAngle(), 1, 2)); // wall
+		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(36.8, 0, 62), gameModel.zero(), 1, 2)); // wall
+		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(20.8, 0, 62), gameModel.zero(), 1, 2)); // wall
+		models.add( new Model(resource.getOBJs()[5], 7, new Point3D(11, 0, 62), gameModel.zero(), 1, .5)); // wall
+		models.add( new Model(resource.getOBJs()[5], 6, new Point3D(4, 0, 53), gameModel.rtAngle(), 1, 2)); // wall
+		models.add( new Model(resource.getOBJs()[5], 5, new Point3D(26.6, 0, 61), gameModel.rtAngle(), 1, 1)); // wall
+		models.add( new Model(resource.getOBJs()[5], 5, new Point3D(26.6, 0, 49), gameModel.rtAngle(), 1, 1)); // wall
+		// room 2 (hard)
+		models.add( new Model(resource.getOBJs()[6], 3, new Point3D(14, 0, 34), gameModel.zero(), 1, 1)); // pillar
+		// room 3 (hard)
+		models.add( new Model(resource.getOBJs()[6], 3, new Point3D(38, 0, 51), gameModel.zero(), 1, 1)); // pillar
+		models.add( new Model(resource.getOBJs()[6], 3, new Point3D(20, 0, 51), gameModel.zero(), 1, 1)); // pillar
+		// --- Tables --- room 2 (hard)
+		models.add( new Model(resource.getOBJs()[4], 4, new Point3D(20, 0, 41.8), gameModel.rtAngle(), .4, 1)); // table
+		models.add( new Model(resource.getOBJs()[4], 4, new Point3D(28.5, 0, 41.8), gameModel.rtAngle(), .4, 1)); // table
+		models.add( new Model(resource.getOBJs()[4], 4, new Point3D(37, 0, 41.8), gameModel.rtAngle(), .4, 1)); // table
+		// room 3 (hard)
+		models.add( new Model(resource.getOBJs()[4], 4, new Point3D(15.5, 0, 58.4), gameModel.rtAngle(), .4, 1)); // table
+		// --- Ceiling ---
+		models.add( new Model(resource.getOBJs()[0], 0, new Point3D(0, 5, 0), new double[] {Math.PI,0,0}, 1, 1) ); // ceiling model
+	}
+	
 	private Point3D[][] createGuardOrders() {
 		Point3D[][] orders= new Point3D[][]{
 /*guard 0*/	new Point3D[]{new Point3D(6,0,26),new Point3D(16,0,26)}, 
@@ -266,6 +282,13 @@ public class Level1 implements Level {
 /*guard 2*/	new Point3D[]{new Point3D(32,0,31),new Point3D(32,0,41)},
 /*guard 3*/	new Point3D[]{new Point3D(37,0,54),new Point3D(14,0,54)},
 /*guard 4*/	new Point3D[]{new Point3D(11,0,60),new Point3D(11,0,47)},
+/*guard 5*/	new Point3D[]{new Point3D(-1,0,26.2),new Point3D(-1,0,12.6)}, 
+/*guard 6*/	new Point3D[]{new Point3D(-16.4,0,33.9),new Point3D(-16.4,0,18.9)},
+/*guard 7*/	new Point3D[]{new Point3D(-7.7,0,35.9),new Point3D(-16.4,0,35.9)},
+/*guard 8*/	new Point3D[]{new Point3D(57,0, 34.1),new Point3D(49.5,0, 34.1)},
+/*guard 9*/	new Point3D[]{new Point3D(57,0, 49.5),new Point3D(49.5,0, 49.5)},
+/*guard 10*/new Point3D[]{new Point3D(55,0, 41.8),new Point3D(62.6,0, 41.8)}, 
+/*guard 11*/new Point3D[]{new Point3D(55,0, 57.2),new Point3D(62.6,0, 57.2)}
 		};
 		
 		return orders;
