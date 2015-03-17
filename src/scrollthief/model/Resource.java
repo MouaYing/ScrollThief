@@ -64,7 +64,7 @@ public class Resource {
 		guardWalk = new OBJ[GUARD_WALK_NUM];
 		bossPounce = new OBJ[BOSS_POUNCE_NUM];
 		textures = new Texture[TEXTURES_NUM];
-		int total = SOUNDS_NUM + OBJS_NUM + NINJA_RUN_NUM + NINJA_STRIKE1_NUM + NINJA_STRIKE2_NUM + NINJA_STRIKE3_NUM + 
+		int total = SOUNDS_NUM + OBJS_NUM + NINJA_RUN_NUM + //NINJA_STRIKE1_NUM + NINJA_STRIKE2_NUM + NINJA_STRIKE3_NUM + 
 				GUARD_WALK_NUM + BOSS_POUNCE_NUM + TEXTURES_NUM;
 		loadingBar = new LoadingBar(total,gameModel,"resource", phrases);
 		levelSplashIndex = rand.nextInt(IMAGES_NUM);
@@ -173,25 +173,25 @@ public class Resource {
 			ninjaRun[i]= new OBJ(fileName);
 			loadingBar.increaseProgress(1);
 		}
-		for (int i= 0; i < NINJA_STRIKE1_NUM; i++){
-			say("Loading strike 1 cycle frame " + (i+1));
-			String fileName= "/resources/obj/anim/ninja/attack/strike1." + (i+1) + ".obj";
-			Data.say(ninjaStrike1.length + " " +fileName);
-			ninjaStrike1[i]= new OBJ(fileName);
-			loadingBar.increaseProgress(1);
-		}
-		for (int i= 0; i < NINJA_STRIKE2_NUM; i++){
-			say("Loading strike 2 cycle frame " + (i+1));
-			String fileName= "/resources/obj/anim/ninja/attack/strike2." + (i+1) + ".obj";
-			ninjaStrike2[i]= new OBJ(fileName);
-			loadingBar.increaseProgress(1);
-		}
-		for (int i= 0; i < NINJA_STRIKE3_NUM; i++){
-			say("Loading strike 3 cycle frame " + (i+1));
-			String fileName= "/resources/obj/anim/ninja/attack/strike3." + (i+1) + ".obj";
-			ninjaStrike3[i]= new OBJ(fileName);
-			loadingBar.increaseProgress(1);
-		}
+//		for (int i= 0; i < NINJA_STRIKE1_NUM; i++){
+//			say("Loading strike 1 cycle frame " + (i+1));
+//			String fileName= "/resources/obj/anim/ninja/attack/strike1." + (i+1) + ".obj";
+//			Data.say(ninjaStrike1.length + " " +fileName);
+//			ninjaStrike1[i]= new OBJ(fileName);
+//			loadingBar.increaseProgress(1);
+//		}
+//		for (int i= 0; i < NINJA_STRIKE2_NUM; i++){
+//			say("Loading strike 2 cycle frame " + (i+1));
+//			String fileName= "/resources/obj/anim/ninja/attack/strike2." + (i+1) + ".obj";
+//			ninjaStrike2[i]= new OBJ(fileName);
+//			loadingBar.increaseProgress(1);
+//		}
+//		for (int i= 0; i < NINJA_STRIKE3_NUM; i++){
+//			say("Loading strike 3 cycle frame " + (i+1));
+//			String fileName= "/resources/obj/anim/ninja/attack/strike3." + (i+1) + ".obj";
+//			ninjaStrike3[i]= new OBJ(fileName);
+//			loadingBar.increaseProgress(1);
+//		}
 		say("done with ninja");
 	}
 	
@@ -234,8 +234,8 @@ public class Resource {
 		imgPaths[7]= "textures/shortwall.jpg";
 		imgPaths[8]= "textures/guard.jpg";
 		imgPaths[9]= "textures/scroll.jpg";
-		imgPaths[10]= "textures/alienSkin.jpg";
-		imgPaths[11]= "textures/goo.jpg";
+		imgPaths[10]= "textures/goo.jpg";
+		imgPaths[11]= "textures/fireball.jpg";
 		
 		for (int i= 0; i < imgPaths.length; i++){
 			try {

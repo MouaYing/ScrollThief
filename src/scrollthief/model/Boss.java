@@ -58,7 +58,7 @@ public class Boss extends Character{
 	public void animate(int tick){		
 		if (isNear() && !inBattle){
 			inBattle= true;
-			motion= pouncing;
+			motion= standing;
 			animFrame= 0;
 		}
 		
@@ -125,7 +125,7 @@ public class Boss extends Character{
 			cooldown = TICKS_FOR_COOLDOWN;
 		}
 		readyForAttack = false;
-		Data.say("Attack!!  " + attackSize);
+		Data.say("Boss Attacking with power of " + attackSize);
 		double scale= 3;
 		double direction= getAngle() - Math.PI;
 		OBJ[] objs= gameModel.getResource().getOBJs();
