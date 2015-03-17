@@ -31,7 +31,7 @@ public class View extends GLCanvas implements GLEventListener{
 	int windowY= 710;
 	GLUT glut= new GLUT();
 	float FOV= 45f;
-	float ASPECT = 1f;
+	float ASPECT = 4f/3f;
 	float NEAR= .1f;
 	float FAR= 3000f;
 	public boolean resetting= false;
