@@ -111,16 +111,8 @@ public class GameModel {
 		changeState(GameState.LevelLoading);
 	}
 	
-	private void createModels(){
-		currentLevel.createModels();
-	}
-	
-	private void createCharacters(){
-		currentLevel.createCharacters();
-	}
-	
-	private void createObstacles(){
-		currentLevel.createObstacles();
+	private void initializeLevel(){
+		currentLevel.initialize();
 	}
 	
 	public void init(final GL2 gl){
@@ -136,9 +128,7 @@ public class GameModel {
 	}
 	
 	public void loadLevel(){
-		createModels();
-		createCharacters();
-		createObstacles();
+		initializeLevel();
 	}
 
 	public void reloadMusic() {

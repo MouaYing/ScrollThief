@@ -45,8 +45,13 @@ public class Level1 implements Level {
 		loadingBar = new LoadingBar(numModels,gameModel, "level", phrases);
 	}
 	
-
-
+	@Override
+	public void initialize() {
+		createModels();
+		createCharacters();
+		createObstacles();
+	}
+	
 	@Override
 	public void reset() {
 		models= new ArrayList<Model>();
@@ -56,27 +61,10 @@ public class Level1 implements Level {
 		loadingBar = new LoadingBar(numModels,gameModel, "level", phrases);
 	}
 	
-	@Override
-	public void createModels() {
+	private void createModels() {
 		say("\nCreating 3D models...");
-		
-// ---------------Environment model/s ------------------------------------------------------------------
-		models.add( new Model(resource.getOBJs()[0], 1, new Point3D(14, 0, 36), gameModel.zero(), .5, 1) ); // floor model (0)
-// ---------------Character models ---------------------------------------------------------------------
-		models.add( new Model(resource.getOBJs()[1], 2, new Point3D(0, 0, -5), gameModel.zero(), .075, 1) ); // ninja model 1
-		
-		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(15, 0, 23), gameModel.zero(), .11, 1) ); // guard model 2
-		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(24, 0, 33), gameModel.zero(), .11, 1) ); // guard model 3
-		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(32, 0, 39), gameModel.zero(), .11, 1) ); // guard model 4
-		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(20, 0, 54), gameModel.zero(), .11, 1) ); // guard model 5
-		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(11, 0, 50), gameModel.zero(), .11, 1) ); // guard model 6
-		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(-1,0,25.2), gameModel.zero(), .11, 1) ); // guard model 7
-		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(-16.4,0,32.9), gameModel.zero(), .11, 1) ); // guard model 8
-		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(-8.7,0,35.9), gameModel.zero(), .11, 1) ); // guard model 9
-		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(56,0, 34.1), gameModel.zero(), .11, 1) ); // guard model 10
-		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(56,0, 49.5), gameModel.zero(), .11, 1) ); // guard model 11
-		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(56,0, 41.8), gameModel.zero(), .11, 1) ); // guard model 12
-		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(56,0, 57.2), gameModel.zero(), .11, 1) ); // guard model 13
+		addEnvironmentModels();
+		addCharacterModels();
 // ---------------Obstacle models ----------------------------------------------------------------------
 		models.add( new Model(resource.getOBJs()[3], 9, new Point3D(0, 1.2, 83), new double[]{Math.PI/2,0,0}, .25, 1)); //scroll
 		addFoyer(models);
@@ -90,9 +78,68 @@ public class Level1 implements Level {
 		addHardRoom3(models);
 		addHardRoom4(models);
 		addOldRooms(models);
+		setArrayValues();
+		loadingBar = new LoadingBar(numModels,gameModel, "level", phrases);
+		loadingBar.increaseProgress(1);
+		
+	}
+	
+	private void setArrayValues() {
+		numGuards = 0;
+		numWalls = 0;
+		numPillars = 0;
+		numTables = 0;
+		for(int i = 0; i < models.size(); i++){
+			int type = models.get(i).getTxtr();
+			if( type == 8){
+				numGuards++;
+			}
+			else if(type == 3){
+				numPillars++;
+			}
+			else if(type == 4){
+				numTables++;
+			}
+			else if(type >= 5 && type <=7) {
+				numWalls++;
+			}
+		}
+		
+		numObs = numWalls + numPillars + numTables + 1;
+		
+		numModels= numGuards + numObs + 3; //56
+		guards= new Guard[numGuards];
+		obstacles= new Obstacle[numObs];
+	}
+	
+	private void addEnvironmentModels() {
+		// ---------------Environment model/s ------------------------------------------------------------------
+		models.add( new Model(resource.getOBJs()[0], 1, new Point3D(14, 0, 36), gameModel.zero(), .5, 1) ); // floor model (0)
+		// --- Ceiling ---
+		models.add( new Model(resource.getOBJs()[0], 0, new Point3D(0, 5, 0), new double[] {Math.PI,0,0}, 1, 1) ); // ceiling model
+		
+	}
+	
+	private void addCharacterModels(){
+
+		// ---------------Character models ---------------------------------------------------------------------
+		models.add( new Model(resource.getOBJs()[1], 2, new Point3D(0, 0, -5), gameModel.zero(), .075, 1) ); // ninja model 1
 		// --- Boss model ---
 		models.add( new Model(resource.getOBJs()[7], 10, new Point3D(0, 0, 76), gameModel.zero(), .2, 1)); // Boss
-		loadingBar.increaseProgress(1);
+
+		
+		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(15, 0, 23), gameModel.zero(), .11, 1) ); // guard model 2
+		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(24, 0, 33), gameModel.zero(), .11, 1) ); // guard model 3
+		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(32, 0, 39), gameModel.zero(), .11, 1) ); // guard model 4
+		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(20, 0, 54), gameModel.zero(), .11, 1) ); // guard model 5
+		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(11, 0, 50), gameModel.zero(), .11, 1) ); // guard model 6
+		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(-1,0,25.2), gameModel.zero(), .11, 1) ); // guard model 7
+		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(-16.4,0,34.9), gameModel.zero(), .11, 1) ); // guard model 8
+		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(-10.7,0,43.9), gameModel.zero(), .11, 1) ); // guard model 9
+		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(56,0, 34.1), gameModel.zero(), .11, 1) ); // guard model 10
+		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(56,0, 49.5), gameModel.zero(), .11, 1) ); // guard model 11
+		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(56,0, 41.8), gameModel.zero(), .11, 1) ); // guard model 12
+		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(56,0, 57.2), gameModel.zero(), .11, 1) ); // guard model 13
 	}
 	
 	private void addFoyer(List<Model> models){
@@ -271,8 +318,6 @@ public class Level1 implements Level {
 		models.add( new Model(resource.getOBJs()[4], 4, new Point3D(37, 0, 41.8), gameModel.rtAngle(), .4, 1)); // table
 		// room 3 (hard)
 		models.add( new Model(resource.getOBJs()[4], 4, new Point3D(15.5, 0, 58.4), gameModel.rtAngle(), .4, 1)); // table
-		// --- Ceiling ---
-		models.add( new Model(resource.getOBJs()[0], 0, new Point3D(0, 5, 0), new double[] {Math.PI,0,0}, 1, 1) ); // ceiling model
 	}
 	
 	private Point3D[][] createGuardOrders() {
@@ -283,8 +328,8 @@ public class Level1 implements Level {
 /*guard 3*/	new Point3D[]{new Point3D(37,0,54),new Point3D(14,0,54)},
 /*guard 4*/	new Point3D[]{new Point3D(11,0,60),new Point3D(11,0,47)},
 /*guard 5*/	new Point3D[]{new Point3D(-1,0,26.2),new Point3D(-1,0,12.6)}, 
-/*guard 6*/	new Point3D[]{new Point3D(-16.4,0,33.9),new Point3D(-16.4,0,18.9)},
-/*guard 7*/	new Point3D[]{new Point3D(-7.7,0,35.9),new Point3D(-16.4,0,35.9)},
+/*guard 6*/	new Point3D[]{new Point3D(-16.4,0,38.9),new Point3D(-16.4,0,22.9)},
+/*guard 7*/	new Point3D[]{new Point3D(-9.7,0,43.9),new Point3D(-19.4,0,43.9)},
 /*guard 8*/	new Point3D[]{new Point3D(57,0, 34.1),new Point3D(49.5,0, 34.1)},
 /*guard 9*/	new Point3D[]{new Point3D(57,0, 49.5),new Point3D(49.5,0, 49.5)},
 /*guard 10*/new Point3D[]{new Point3D(55,0, 41.8),new Point3D(62.6,0, 41.8)}, 
@@ -294,42 +339,45 @@ public class Level1 implements Level {
 		return orders;
 	}
 	
-	@Override
-	public void createCharacters() {
+	private void createCharacters() {
 		say("Creating characters...");
-		ninja= new Ninja(gameModel, models.get(1), .35, .5);
+		ninja= new Ninja(gameModel, models.get(2), .35, .5);
+		loadingBar.increaseProgress(1);
+		boss= new Boss(gameModel, models.get(3), 1.5, 1.5);
 		loadingBar.increaseProgress(1);
 		
 		Point3D[][] orders= createGuardOrders();
 		for (int i= 0; i < numGuards; i++){
-			guards[i]= new Guard(gameModel, models.get(i + 2), .35, .5, orders[i]); 
+			guards[i]= new Guard(gameModel, models.get(i + 4), .35, .5, orders[i]); 
 			loadingBar.increaseProgress(1);
 		}
-		boss= new Boss(gameModel, models.get(models.size()-1), 1.5, 1.5);
-		loadingBar.increaseProgress(1);
 	}
 	
-	@Override
-	public void createObstacles() {
+	private void createObstacles() {
 		say("Creating obstacles...");
 		// scroll
-		obstacles[0]= new Obstacle(models.get(7), true, .2, .2, 1.3); 
+		int start = 4 + numGuards;
+		obstacles[0]= new Obstacle(models.get(start++), true, .2, .2, 1.3); 
 		scroll= obstacles[0];
 		loadingBar.increaseProgress(1);
-		// walls
-		for (int i= 1; i < numWalls+1; i++){
-			obstacles[i]= new Obstacle(models.get(i + 7), false, .6, 4, 5); 
-			loadingBar.increaseProgress(1);
-		}
-		// pillars
-		for (int i= numWalls+1; i < numPillars+numWalls+1; i++){
-			obstacles[i]= new Obstacle(models.get(i + 7), false, 1.5, 1.5, 5); 
-			loadingBar.increaseProgress(1);
-		}
-		// tables
-		for (int i= numWalls+numPillars+1; i < numObs; i++){
-			obstacles[i]= new Obstacle(models.get(i + 7), true, 2.25, 3, .95); 
-			loadingBar.increaseProgress(1);
+		int obsLoc = 1;
+		for(int i = start; i < models.size();i++){
+			int type = models.get(i).getTxtr();
+			//pillar
+			if(type == 3){
+				obstacles[obsLoc++]= new Obstacle(models.get(i), false, 1.5, 1.5, 5); 
+				loadingBar.increaseProgress(1);				
+			}
+			//tables
+			else if(type == 4){
+				obstacles[obsLoc++]= new Obstacle(models.get(i), true, 2.25, 3, .95); 
+				loadingBar.increaseProgress(1);
+			}
+			//walls
+			else if(type >= 5 && type <=7){
+				obstacles[obsLoc++]= new Obstacle(models.get(i), false, .6, 4, 5); 
+				loadingBar.increaseProgress(1);
+			}
 		}
 	}
 	
