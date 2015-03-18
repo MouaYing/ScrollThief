@@ -16,22 +16,22 @@ public class Boss extends Character{
 	int difficultLevel = 5; //between 0 and 5 (5 is hardest)
 	Point3D lastPouncePoint;
 	boolean readyForAttack;
-	int cooldown = 0;
+	int charge = 0; //for charging up the big attack
 //	enum State {STANDING, POUNCING, READY_FOR_ATTACK, SMALLATTACK, BIGATTACK, COOLDOWN};
 //	State state;
 	final int ATTACK_SIZE_SMALL = 1;
 	final int ATTACK_SIZE_BIG = 2;
 	final int TICKS_BETWEEN_POUNCES = 1000;
 	final int TICKS_BETWEEN_ATTACKS = 75;
-	final int TICKS_FOR_COOLDOWN = 200;
+	final int TICKS_FOR_CHARGE = 200;
 	final int PROBABILITY_OF_BIG_ATTACK = 30; //out of 100
 	final int PROBABILITY_OF_SMALL_ATTACK = 60; //out of 100
 	
 	public Boss(GameModel gameModel, Model model, double boxLength, double boxWidth) {
 		super(gameModel, model, boxLength, boxWidth);
 		lastPouncePoint = gameModel.getCurrentLevel().getBossPouncePoints().get(0);
-		turnRate= .02;
-		setSpeed(.2);
+		turnRate= .05;
+//		setSpeed(.2);
 		standing= new OBJ[] {model.getObj()};
 		pouncing= gameModel.getResource().getBossPounce();
 		motion= standing;
@@ -89,8 +89,9 @@ public class Boss extends Character{
 	}
 	
 	private void handleAttack() {
-		if(cooldown > 0) {
-			cooldown--;
+		if(charge > 0) {
+			if(--charge <= 0)
+				shoot(ATTACK_SIZE_BIG);
 			return;
 		}
 		if(tickCount % TICKS_BETWEEN_ATTACKS == 0)
@@ -101,7 +102,7 @@ public class Boss extends Character{
 		int rand = getRand(TICKS_BETWEEN_POUNCES);
 		
 		if((rand -= PROBABILITY_OF_BIG_ATTACK) < 0) {
-			shoot(ATTACK_SIZE_BIG);
+			charge = TICKS_FOR_CHARGE;
 		}
 		else if((rand -= PROBABILITY_OF_SMALL_ATTACK) < 0) {
 			shoot(ATTACK_SIZE_SMALL);
@@ -121,17 +122,17 @@ public class Boss extends Character{
 	
 	//attackSize: 1 = small, 2 = large
 	private void shoot(int attackSize) {
-		if(attackSize == ATTACK_SIZE_BIG) {
-			cooldown = TICKS_FOR_COOLDOWN;
-		}
 		readyForAttack = false;
 		Data.say("Boss Attacking with power of " + attackSize);
-		double scale= 3;
+		double scale= 1;
+		double directionScale = 4;
 		double direction= getAngle() - Math.PI;
+		double deltaX= Math.sin(direction) * directionScale;
+		double deltaZ= -Math.cos(direction) * directionScale;
 		OBJ[] objs= gameModel.getResource().getOBJs();
 		Point3D ninjaLoc= gameModel.getNinjaLoc();
 		// calculate target vector
-		Point3D bossHead= new Point3D(getLoc().x, getLoc().y + 3.2, getLoc().z);
+		Point3D bossHead= new Point3D(getLoc().x + deltaX, getLoc().y + 2.4, getLoc().z + deltaZ);
 		double dist= ninjaLoc.minus(bossHead).length();
 		
 		double targetX= Math.sin(direction);
@@ -141,11 +142,12 @@ public class Boss extends Character{
 		Point3D targetVector= new Point3D(targetX, targetY, targetZ);
 		
 		// create projectile
-		scale= 2;
+		scale= 4;
+		double sizeScale = .3 * ATTACK_SIZE_BIG;
 		double[] rot = model.getRot().clone();
 		rot[0]= -targetY * scale;
-		Model projModel= new Model(objs[8], 11, bossHead, rot, .4, 1);
-		gameModel.getProjectiles().add(new Projectile(gameModel, projModel, targetVector));
+		Model projModel= new Model(objs[8], 11, bossHead, rot, sizeScale, 1);
+		gameModel.getProjectiles().add(new Projectile(gameModel, projModel, targetVector, attackSize));
 		gameModel.getModels().add(projModel);
 	}
 

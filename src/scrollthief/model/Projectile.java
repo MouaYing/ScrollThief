@@ -8,13 +8,15 @@ public class Projectile {
 	Model model;
 	Point3D targetVector;
 	Point2D[][] hitbox;
+	int attackSize;
 	
-	public Projectile(GameModel gameModel, Model model, Point3D targetVector) {
+	public Projectile(GameModel gameModel, Model model, Point3D targetVector, int attackSize) {
 		this.gameModel= gameModel;
 		this.model= model;
 		this.targetVector= targetVector;
 		Point2D[] boxPoints= GameModel.findPoints(.5, .5);
 		hitbox= GameModel.createHitBox(boxPoints);
+		this.attackSize = attackSize;
 	}
 	
 	public void move(){
@@ -71,6 +73,10 @@ public class Projectile {
 	
 	public Model getModel(){
 		return model;
+	}
+	
+	public int getAttackDamage() {
+		return attackSize;
 	}
 
 }

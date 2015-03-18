@@ -179,7 +179,7 @@ public class Controller extends TimerTask{
 			}
 			
 			if (proj.ninjaCollision()){
-				ninja.takeDamage(1);
+				ninja.takeDamage(proj.getAttackDamage());
 				collided.add(proj);
 //				say("You've been hit! Current HP: "+ ninja.getHP());
 				hitTimer= 30;
