@@ -24,6 +24,7 @@ public class OBJ {
     private int PolyCount = 0; // The Models Polygon Count
     private boolean init  = true;
     private int type;
+    private boolean isTransparent = false;
     
     public OBJ(String Modelpath) {
         OBJModelPath = Modelpath;
@@ -249,12 +250,17 @@ public class OBJ {
 //            cleanup();
 //            init = false;
 //        }
-        gl.glInterleavedArrays(type, 0, modeldata);
-        gl.glEnable(GL2.GL_CULL_FACE);
-        gl.glCullFace(GL2.GL_BACK);
-        gl.glPolygonMode(GL2.GL_FRONT, GL2.GL_FILL);
-        gl.glDrawArrays(FaceFormat, 0, PolyCount*FaceMultiplier);
-        gl.glDisable(GL2.GL_CULL_FACE);
+    	if(isTransparent) {
+    		
+    	}
+    	else {
+	        gl.glInterleavedArrays(type, 0, modeldata);
+	        gl.glEnable(GL2.GL_CULL_FACE);
+	        gl.glCullFace(GL2.GL_BACK);
+	        gl.glPolygonMode(GL2.GL_FRONT, GL2.GL_FILL);
+	        gl.glDrawArrays(FaceFormat, 0, PolyCount*FaceMultiplier);
+	        gl.glDisable(GL2.GL_CULL_FACE);
+    	}
     }
     
      public String Polycount() {
@@ -271,5 +277,13 @@ public class OBJ {
         fn.clear();
         //modeldata.clear();
         //System.gc();
+    }
+    
+    public void setIsTransparent(boolean isTransparent) {
+    	this.isTransparent = isTransparent;
+    }
+    
+    public boolean getIsTransparent() {
+    	return isTransparent;
     }
 }

@@ -67,6 +67,10 @@ public class Obstacle {
 		return model;
 	}
 	
+	public Point2D[][] getHitBox() {
+		return hitBox;
+	}
+	
 	@SuppressWarnings("unused")
 	private void say(String message){
 		System.out.println(message);

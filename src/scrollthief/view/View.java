@@ -44,6 +44,7 @@ public class View extends GLCanvas implements GLEventListener{
 	TextRenderer tRend;
 	TextRenderer tRend2;
 	TextRenderer tRendLoadingBar;
+	boolean startDetectingObstacles;
 
 	public View(GameModel model){
 		say("Loading view...");
@@ -52,6 +53,7 @@ public class View extends GLCanvas implements GLEventListener{
         addGLEventListener(this);
         init= false;
 		say("--View loaded--\n");
+		startDetectingObstacles = false;
 	}
 	
 	@Override
@@ -403,10 +405,21 @@ public class View extends GLCanvas implements GLEventListener{
 		        lookAt[0], lookAt[1], lookAt[2],
 		        0.0f, 1.0f, 0.0f);
 		
+		Point3D cameraLoc = new Point3D(lookFrom[0], lookFrom[1], lookFrom[2]);
+		ninjaLoc = gameModel.getNinjaLoc();
+		
+		if(gameModel.getState() == GameState.Start) {
+			startDetectingObstacles = true;
+		}
+	
 		// TODO: detect when an obstacle is between the viewer and the ninja and give it opacity
-//		for(Obstacle obstacle : gameModel.getObstacles()) {
-//			
-//		}
+		if(ninjaLoc != null && startDetectingObstacles) {
+			for(Obstacle obstacle : gameModel.getObstacles()) {
+				if(!gameModel.boxHit(cameraLoc,  ninjaLoc, obstacle.getHitBox()).isEmpty()) {
+					say("found an obstacle!");
+				}
+			}
+		}
 
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
 		//gl.glLoadIdentity();
