@@ -24,7 +24,25 @@ public class OBJ {
     private int PolyCount = 0; // The Models Polygon Count
     private boolean init  = true;
     private int type;
-    private boolean isTransparent = false;
+//    private boolean isTransparent;
+    
+    private byte halftone[] = {
+    	    (byte)0xAA, (byte)0xAA, (byte)0xAA, (byte)0xAA, (byte)0x55, (byte)0x55, (byte)0x55, (byte)0x55,
+    	    (byte)0xAA, (byte)0xAA, (byte)0xAA, (byte)0xAA, (byte)0x55, (byte)0x55, (byte)0x55, (byte)0x55,
+    	    (byte)0xAA, (byte)0xAA, (byte)0xAA, (byte)0xAA, (byte)0x55, (byte)0x55, (byte)0x55, (byte)0x55,
+    	    (byte)0xAA, (byte)0xAA, (byte)0xAA, (byte)0xAA, (byte)0x55, (byte)0x55, (byte)0x55, (byte)0x55,
+    	    (byte)0xAA, (byte)0xAA, (byte)0xAA, (byte)0xAA, (byte)0x55, (byte)0x55, (byte)0x55, (byte)0x55,
+    	    (byte)0xAA, (byte)0xAA, (byte)0xAA, (byte)0xAA, (byte)0x55, (byte)0x55, (byte)0x55, (byte)0x55,
+    	    (byte)0xAA, (byte)0xAA, (byte)0xAA, (byte)0xAA, (byte)0x55, (byte)0x55, (byte)0x55, (byte)0x55,
+    	    (byte)0xAA, (byte)0xAA, (byte)0xAA, (byte)0xAA, (byte)0x55, (byte)0x55, (byte)0x55, (byte)0x55,
+    	    (byte)0xAA, (byte)0xAA, (byte)0xAA, (byte)0xAA, (byte)0x55, (byte)0x55, (byte)0x55, (byte)0x55,
+    	    (byte)0xAA, (byte)0xAA, (byte)0xAA, (byte)0xAA, (byte)0x55, (byte)0x55, (byte)0x55, (byte)0x55,
+    	    (byte)0xAA, (byte)0xAA, (byte)0xAA, (byte)0xAA, (byte)0x55, (byte)0x55, (byte)0x55, (byte)0x55,
+    	    (byte)0xAA, (byte)0xAA, (byte)0xAA, (byte)0xAA, (byte)0x55, (byte)0x55, (byte)0x55, (byte)0x55,
+    	    (byte)0xAA, (byte)0xAA, (byte)0xAA, (byte)0xAA, (byte)0x55, (byte)0x55, (byte)0x55, (byte)0x55,
+    	    (byte)0xAA, (byte)0xAA, (byte)0xAA, (byte)0xAA, (byte)0x55, (byte)0x55, (byte)0x55, (byte)0x55,
+    	    (byte)0xAA, (byte)0xAA, (byte)0xAA, (byte)0xAA, (byte)0x55, (byte)0x55, (byte)0x55, (byte)0x55,
+    	    (byte)0xAA, (byte)0xAA, (byte)0xAA, (byte)0xAA, (byte)0x55, (byte)0x55, (byte)0x55, (byte)0x55,};
     
     public OBJ(String Modelpath) {
         OBJModelPath = Modelpath;
@@ -32,6 +50,8 @@ public class OBJ {
         SetFaceRenderType();
         ConstructInterleavedArray();
         cleanup();
+        
+//        isTransparent = false;
     }
     
     private void LoadOBJModel(String ModelPath) {
@@ -244,14 +264,23 @@ public class OBJ {
         modeldata.position(0);
     }
        
-    public void DrawModel(GL2 gl) {
+    public void DrawModel(GL2 gl, boolean isTransparent) {
 //        if (init) {
 //            ConstructInterleavedArray();
 //            cleanup();
 //            init = false;
 //        }
     	if(isTransparent) {
-    		
+    		System.out.println("is transparent");
+    		gl.glInterleavedArrays(type, 0, modeldata);
+	        gl.glEnable(GL2.GL_CULL_FACE);
+	        gl.glEnable(GL2.GL_POLYGON_STIPPLE);
+	        gl.glCullFace(GL2.GL_BACK);
+	        gl.glPolygonMode(GL2.GL_FRONT, GL2.GL_FILL);
+	        gl.glPolygonStipple(halftone, 0);
+	        gl.glDrawArrays(FaceFormat, 0, PolyCount*FaceMultiplier);
+	        gl.glDisable(GL2.GL_POLYGON_STIPPLE);
+	        gl.glDisable(GL2.GL_CULL_FACE);
     	}
     	else {
 	        gl.glInterleavedArrays(type, 0, modeldata);
@@ -279,11 +308,11 @@ public class OBJ {
         //System.gc();
     }
     
-    public void setIsTransparent(boolean isTransparent) {
-    	this.isTransparent = isTransparent;
-    }
-    
-    public boolean getIsTransparent() {
-    	return isTransparent;
-    }
+//    public void setIsTransparent(boolean isTransparent) {
+//    	this.isTransparent = isTransparent;
+//    }
+//    
+//    public boolean getIsTransparent() {
+//    	return isTransparent;
+//    }
 }

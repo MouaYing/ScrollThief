@@ -120,7 +120,7 @@ public class View extends GLCanvas implements GLEventListener{
 				//apply object to window transform
 				obj2world(gl, model);
 				
-				model.getObj().DrawModel(gl);
+				model.getObj().DrawModel(gl, model.getIsTransparent());
 				
 				gl.glPopMatrix();
 				gl.glFlush();
@@ -415,8 +415,12 @@ public class View extends GLCanvas implements GLEventListener{
 		// TODO: detect when an obstacle is between the viewer and the ninja and give it opacity
 		if(ninjaLoc != null && startDetectingObstacles) {
 			for(Obstacle obstacle : gameModel.getObstacles()) {
-				if(!gameModel.boxHit(cameraLoc,  ninjaLoc, obstacle.getHitBox()).isEmpty()) {
+				if(!gameModel.boxHit(cameraLoc,  ninjaLoc, obstacle.getHitBox()).isEmpty() && obstacle.getModel().getObj() != gameModel.getResource().getOBJs()[4]) {
 					say("found an obstacle!");
+					obstacle.getModel().setIsTransparent(true);
+				}
+				else {
+					obstacle.getModel().setIsTransparent(false);
 				}
 			}
 		}
