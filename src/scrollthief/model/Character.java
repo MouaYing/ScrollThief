@@ -29,6 +29,8 @@ public class Character {
 	int animFrame= 0; // The frame of animation currently being displayed
 	OBJ[] motion= null; // The current animation loop
 	boolean alive = true;
+	
+	private Point2D[] edgePrime;
 
 	public Character(GameModel gameModel, Model model, double boxLength, double boxWidth){
 		this.gameModel= gameModel;
@@ -38,30 +40,37 @@ public class Character {
 		hitBox= GameModel.createHitBox(boxPoints);
 	}
 	
+	private boolean characterCollision(Point3D loc, Character character, double threshold2, ArrayList<Point2D[]> edges, Point2D[][] hitBox){
+		double dist= loc.minus(character.getLoc()).length();
+		
+		if (dist < threshold2 && !character.equals(this)){
+			Point2D[][] otherBox= GameModel.boxToWorld(character.getModel(), character.getHitBox());
+			edges= gameModel.collision(hitBox, otherBox, edges);
+			if (!edges.isEmpty()){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public void move(){
 		adjustAngle();
 		//say("new angle: "+getAngle());
-		
-//		float scale= .25f;
-		float scale= .125f;
-		float gravity= .01f; // tune this
+		float gravity = .01f; // tune this
+		double movement = getSpeed() * .125f;
 		double direction= getAngle() + Math.PI;
-		double speed= getSpeed();
-		double deltaX;
-		double deltaZ;
+		// this is the movement vector for this tick
+		double deltaX = Math.sin(direction) * movement;
+		double deltaZ = -Math.cos(direction) * movement;
+		
 		Point3D loc= getLoc();
 		Obstacle[] obstacles= gameModel.getObstacles();
 		Character ninja= gameModel.getNinja();
-//		Character[] guards= gameModel.getGuards();
 		double threshold= 10; // needs tuning, or to be done away with
 		double threshold2= 2;
 		ArrayList<Point2D[]> edges= new ArrayList<Point2D[]>();
-		Obstacle inBox= null; // the obstacle the ninja is standing on
+		Obstacle[] inBox= new Obstacle[1]; // the obstacle the ninja is standing on
 		// say("Location: "+ loc.toString());
-		
-		// this is the movement vector for this tick
-		deltaX= Math.sin(direction) * speed * scale;
-		deltaZ= -Math.cos(direction) * speed * scale;
 		
 		if (this instanceof Boss){
 			Point3D bossDelta= calcDelta(deltaX, deltaZ);
@@ -80,135 +89,70 @@ public class Character {
 		// location to move to if there are no collisions
 		Point3D newLoc= new Point3D(loc.x + deltaX, newY, loc.z + deltaZ);
 		
-		Point2D[][] hitBox= GameModel.boxToWorld(getModel(), getHitBox());
-		Point2D[] edgePrime= null;
-		Point2D[] edge2= null;
-		Point3D delta= new Point3D(0,0,0);
+		Point2D[][] hitBox= GameModel.boxToWorld(getModel().getAngle(),newLoc, getHitBox());
+		edgePrime= null;
+		boolean collision = false;
+		Point2D[][] collidedHitBox = null;
+		Character[] guards = gameModel.getGuards();
 		
-//		for (int i= 0; i < guards.length; i++){
-//			double dist= loc.minus(guards[i].getLoc()).length();
-//			
-//			if (dist > threshold2 || guards[i].equals(this))
-//				continue;
-//			
-//			Point2D[][] guardBox= GameModel.boxToWorld(guards[i].getModel(), guards[i].getHitBox());
-//			edges= gameModel.collision(hitBox, guardBox, edges);
-//		}
-		
-		if (model.getObj().equals(ninja.getModel().getObj())){
-			Character boss= gameModel.getBoss();
-			double dist= loc.minus(boss.getLoc()).length();
-			
-			if (dist < threshold2){
-				Point2D[][] bossBox= GameModel.boxToWorld(boss.getModel(), boss.getHitBox());
-				edges= gameModel.collision(hitBox, bossBox, edges);
-				if (!edges.isEmpty()){
-					ninja.takeDamage(1);
-					return;
-				}
+		//Check Collisions with Guards (excludes guards with themselves)
+		for (int i= 0; i < guards.length; i++){
+			collision = characterCollision(loc,guards[i],threshold2,edges, hitBox);
+			if(collision){
+				collidedHitBox = guards[i].getHitBox();
+				collisionDetected(loc, newLoc, edges, collidedHitBox);
+				finishMoving(newLoc, inBox);
+				return;
 			}
 		}
 		
+		//if character is ninja, check for collisions with boss
+		if (model.getObj().equals(ninja.getModel().getObj())){
+			collision = characterCollision(loc,gameModel.getBoss(),threshold2,edges, hitBox);
+		}
+		//if collided with boss finalize hits and move on
+		if(collision){
+			collidedHitBox = ninja.getHitBox();
+			collisionDetected(loc, newLoc, edges, collidedHitBox);
+			finishMoving(newLoc, inBox);
+			return;
+		}
+		//if character is boss, check for collisions with ninja
+		if(model.getObj().equals(gameModel.getBoss().getModel().getObj())){
+			collision = characterCollision(loc,ninja,threshold2,edges, hitBox);
+		}
+
+		if(collision){
+			collidedHitBox = gameModel.getBoss().getHitBox();
+			collisionDetected(loc, newLoc, edges, collidedHitBox);
+			finishMoving(newLoc, inBox);
+			return;
+		}
+		
+		//all characters need to check for collisions with obstacles
 		for (int i= 0; i < obstacles.length; i++){
-			double obsHeight= obstacles[i].getHeight(); // tune this
-			double dist= loc.minus(obstacles[i].getLoc()).length();
-//			double dist2= newLoc.minus(obstacles[i].getLoc()).length();
-			
-			if (dist > threshold)
-				continue;
-			
-			if (obstacles[i].isInBox(loc))
-				inBox= obstacles[i];
-			
-//			if (dist <= dist2 || loc.y >= obsHeight) // character above or not moving toward obstacle
-//				continue;
-			
-			if (loc.y >= obsHeight)
-				continue;
-			
-			edges= gameModel.collision(hitBox, obstacles[i].hitBox, edges);
-			
-			if (!edges.isEmpty()){
+			collision = obstacleCollision(loc, obstacles[i], threshold, inBox, edges, hitBox);
+			if (collision){
 				if (obstacles[i].equals(gameModel.getScroll()) && model.getObj().equals(ninja.getModel().getObj())){
 					gameModel.changeState(GameState.Victory);
+					return;
 				}
-//				say("Number of collisions: "+edges.size());
-				for (int j= 0; j < edges.size(); j++){
-					Point2D[] edge= edges.get(j);
-					double distLoc2prime= 9999;
-					
-					if (edgePrime == null) 
-						edgePrime= edge;
-					else if (edgePrime[0].equals(edge[0]) && edgePrime[1].equals(edge[1]))
-						continue;
-					else{ 
-						distLoc2prime= loc.distanceToLine(edgePrime[0], edgePrime[1]);
-						if (loc.distanceToLine(edge[0], edge[1]) < distLoc2prime){
-							edge2= edgePrime;
-							edgePrime= edge;
-						}else edge2= edge;
-					}
-					
-					for (int k= 0; k < 4; k++){
-						Point2D[] curEdge= obstacles[i].hitBox[k];
-						if (loc.distanceToLine(curEdge[0], curEdge[1]) < distLoc2prime)
-							edgePrime= curEdge;
-					}
-					
-					distLoc2prime= loc.distanceToLine(edgePrime[0], edgePrime[1]);
-					double distNewLoc2prime= newLoc.distanceToLine(edgePrime[0], edgePrime[1]);
-					
-					double distLoc2edge2= 9999;
-					double distNewLoc2edge2= 9999;
-					if (edge2 != null){
-//						say("At least 2 distinct edges:"+edgePrime[0].toString()+","+edgePrime[1].toString()+
-//								" " + edge2[0].toString() + "," + edge2[1].toString());
-						distLoc2edge2= loc.distanceToLine(edge2[0], edge2[1]);
-						distNewLoc2edge2 = newLoc.distanceToLine(edge2[0], edge2[1]);
-					}
-					
-//					say("loc Dist: "+distLoc2prime+" newLoc dist: "+distNewLoc2prime);
-					if (distLoc2prime < distNewLoc2prime){
-//					if (distLoc2prime < distNewLoc2prime || distLoc2edge2 < distNewLoc2edge2){
-//						say("Facing away from prime");
-						setLoc(newLoc);
-						continue;
-					}
-					
-					//say("Distance to edgePrime: "+loc.distanceToLine(edgePrime[0], edgePrime[1]));
-					
-					Point3D input= new Point3D(deltaX, 0, deltaZ);
-					Point3D normal= new Point3D(-(edgePrime[0].getX() - edgePrime[1].getX()),0,
-							(edgePrime[0].getY() - edgePrime[1].getY()));
-					normal.Normalize();
-					//say("Normal: "+normal.toString());
-					
-					Point3D undesired= normal.mult(input.dot(normal));
-					Point3D desired= input.minus(undesired); 
-				
-					if (edge2 != null && edges.size() > 2){
-//					if (edge2 != null && distLoc2edge2 >= distNewLoc2edge2){
-						normal= new Point3D(-(edge2[0].getX() - edge2[1].getX()),0,
-								(edge2[0].getY() - edge2[1].getY()));
-						normal.Normalize();
-						undesired= normal.mult(input.dot(normal));
-						desired= desired.minus(undesired);
-					}
-					
-//					delta.x += desired.x;
-//					delta.z += desired.z;
-					delta = desired;
-					
-					setLoc(new Point3D(loc.x + delta.x, loc.y, loc.z + delta.z));
-				}
-				
+				collidedHitBox = obstacles[i].hitBox;
+				break;
 			}
-			
 		}
+		if(collision){
+			collisionDetected(loc, newLoc, edges, collidedHitBox);
+		}
+		finishMoving(newLoc, inBox);
+		//say("deltaY: "+character.getDeltaY());
+	}
+	
+	private void finishMoving(Point3D newLoc, Obstacle[] inBox){
 		if (edgePrime == null){ // No collision detected
-			if (inBox != null){ // character is inside hitbox (probably on top of obstacle)
+			if (inBox[0] != null){ // character is inside hitbox (probably on top of obstacle)
 				//say("On the roof!");
-				double obsHeight= inBox.getHeight();
+				double obsHeight= inBox[0].getHeight();
 
 				if (newLoc.y < obsHeight){
 					if (getDeltaY() < 0) setDeltaY(0);
@@ -231,7 +175,103 @@ public class Character {
 			if (charLoc.y < 0)
 				charLoc.y= 0;
 		}
-		//say("deltaY: "+character.getDeltaY());
+	}
+	
+	private void collisionDetected(Point3D loc, Point3D newLoc, ArrayList<Point2D[]> edges, Point2D[][] hitBox){
+
+		Point3D delta= new Point3D(0,0,0);
+		Point2D[] edge2= null;
+		double deltaZ = newLoc.z - loc.z;
+		double deltaX = newLoc.x - loc.x;
+//		say("Number of collisions: "+edges.size());
+		for (int j= 0; j < edges.size(); j++){
+			Point2D[] edge= edges.get(j);
+			double distLoc2prime= 9999;
+			
+			if (edgePrime == null) 
+				edgePrime= edge;
+			else if (edgePrime[0].equals(edge[0]) && edgePrime[1].equals(edge[1]))
+				continue;
+			else{ 
+				distLoc2prime= loc.distanceToLine(edgePrime[0], edgePrime[1]);
+				if (loc.distanceToLine(edge[0], edge[1]) < distLoc2prime){
+					edge2= edgePrime;
+					edgePrime= edge;
+				}else edge2= edge;
+			}
+			
+			for (int k= 0; k < 4; k++){
+				Point2D[] curEdge= hitBox[k];
+				if (loc.distanceToLine(curEdge[0], curEdge[1]) < distLoc2prime)
+					edgePrime= curEdge;
+			}
+			
+			distLoc2prime= loc.distanceToLine(edgePrime[0], edgePrime[1]);
+			double distNewLoc2prime= newLoc.distanceToLine(edgePrime[0], edgePrime[1]);
+			
+			double distLoc2edge2= 9999;
+			double distNewLoc2edge2= 9999;
+			if (edge2 != null){
+//				say("At least 2 distinct edges:"+edgePrime[0].toString()+","+edgePrime[1].toString()+
+//						" " + edge2[0].toString() + "," + edge2[1].toString());
+				distLoc2edge2= loc.distanceToLine(edge2[0], edge2[1]);
+				distNewLoc2edge2 = newLoc.distanceToLine(edge2[0], edge2[1]);
+			}
+			
+//			say("loc Dist: "+distLoc2prime+" newLoc dist: "+distNewLoc2prime);
+			if (distLoc2prime < distNewLoc2prime){
+//			if (distLoc2prime < distNewLoc2prime || distLoc2edge2 < distNewLoc2edge2){
+//				say("Facing away from prime");
+				setLoc(newLoc);
+				continue;
+			}
+			
+			//say("Distance to edgePrime: "+loc.distanceToLine(edgePrime[0], edgePrime[1]));
+			
+			Point3D input= new Point3D(deltaX, 0, deltaZ);
+			Point3D normal= new Point3D(-(edgePrime[0].getX() - edgePrime[1].getX()),0,
+					(edgePrime[0].getY() - edgePrime[1].getY()));
+			normal.Normalize();
+			//say("Normal: "+normal.toString());
+			
+			Point3D undesired= normal.mult(input.dot(normal));
+			Point3D desired= input.minus(undesired); 
+		
+			if (edge2 != null && edges.size() > 2){
+//			if (edge2 != null && distLoc2edge2 >= distNewLoc2edge2){
+				normal= new Point3D(-(edge2[0].getX() - edge2[1].getX()),0,
+						(edge2[0].getY() - edge2[1].getY()));
+				normal.Normalize();
+				undesired= normal.mult(input.dot(normal));
+				desired= desired.minus(undesired);
+			}
+			
+//			delta.x += desired.x;
+//			delta.z += desired.z;
+			delta = desired;
+			
+			setLoc(new Point3D(loc.x + delta.x, loc.y, loc.z + delta.z));
+		}
+	}
+	
+	public boolean obstacleCollision(Point3D loc, Obstacle obs, double threshold, Obstacle[] inBox, ArrayList<Point2D[]> edges, Point2D[][] hitBox){
+
+		double obsHeight= obs.getHeight(); // tune this
+		double dist= loc.minus(obs.getLoc()).length();
+		
+		if (dist > threshold)
+			return false;
+		
+		if (obs.isInBox(loc)&&obs.getModel().getTxtr() == 4)
+			inBox[0]= obs;
+		
+		if (loc.y >= obsHeight)
+			return false;
+		
+		edges= gameModel.collision(hitBox, obs.hitBox, edges);
+		if(!edges.isEmpty())
+			return true;
+		return false;
 	}
 	
 	// Determine what OBJ to use this tick, and set it as model.obj
