@@ -434,7 +434,6 @@ public class View extends GLCanvas implements GLEventListener{
 		if(ninjaLoc != null && startDetectingObstacles) {
 			for(Obstacle obstacle : gameModel.getObstacles()) {
 				if(!gameModel.boxHit(cameraLoc,  ninjaLoc, obstacle.getHitBox()).isEmpty() && obstacle.getModel().getObj() != gameModel.getResource().getOBJs()[4]) {
-					say("found an obstacle!");
 					obstacle.getModel().setIsTransparent(true);
 				}
 				else {

@@ -273,7 +273,6 @@ public class OBJ {
 //            init = false;
 //        }
     	if(isTransparent) {
-    		System.out.println("is transparent");
     		gl.glInterleavedArrays(type, 0, modeldata);
 	        gl.glEnable(GL2.GL_CULL_FACE);
 	        gl.glEnable(GL2.GL_POLYGON_STIPPLE);
