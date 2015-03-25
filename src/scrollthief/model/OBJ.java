@@ -1,9 +1,11 @@
 package scrollthief.model;
 
 import com.jogamp.common.nio.Buffers;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
@@ -57,7 +59,7 @@ public class OBJ {
     private void LoadOBJModel(String ModelPath) {
         try {
             // Open a file handle and read the models data
-            BufferedReader br = new BufferedReader(new FileReader(ModelPath));
+            BufferedReader br = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream (ModelPath), "UTF-8"));
             String  line = null;
             while((line = br.readLine()) != null) {
                 if (line.startsWith("#")) { // Read Any Descriptor Data in the File

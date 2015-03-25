@@ -5,6 +5,7 @@ import java.awt.event.KeyListener;
 
 import com.sun.corba.se.impl.oa.poa.ActiveObjectMap.Key;
 
+import scrollthief.model.Data;
 import scrollthief.model.GameModel;
 import scrollthief.view.View;
 
@@ -39,7 +40,7 @@ public class KeyboardControl implements KeyListener {
 			case KeyEvent.VK_RIGHT:
 				gameControl.rotateCameraRight();
 				break;
-			case KeyEvent.VK_R:
+			case KeyEvent.VK_C:
 				gameControl.resetCamera();
 			default:
 				break;
@@ -58,6 +59,9 @@ public class KeyboardControl implements KeyListener {
 				break;
 			case KeyEvent.VK_O:
 				gameControl.toggleDevMode();
+				break;
+			case KeyEvent.VK_R:
+				gameControl.attack();
 				break;
 			case KeyEvent.VK_SPACE:
 				gameControl.jump();

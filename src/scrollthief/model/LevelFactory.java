@@ -19,4 +19,8 @@ public class LevelFactory {
 		
 		return null;
 	}
+	
+	public LevelState getLevelState() {
+		return levelState;
+	}
 }

@@ -13,11 +13,15 @@ import javax.swing.JFrame;
 import ch.aplu.xboxcontroller.XboxController;
 import scrollthief.ScrollThief;
 import scrollthief.model.Boss;
+import scrollthief.model.Data;
 import scrollthief.model.GameModel;
 import scrollthief.model.GameState;
 import scrollthief.model.Guard;
 import scrollthief.model.Character;
+import scrollthief.model.Point3D;
 import scrollthief.model.Projectile;
+import scrollthief.model.Sound;
+import scrollthief.model.SoundFile;
 import scrollthief.model.StateChange;
 import scrollthief.model.StateChangedListener;
 import scrollthief.view.View;
@@ -42,26 +46,44 @@ public class Controller extends TimerTask{
 		this.window= window;
 		this.view= view;
 		this.gameModel= gameModel;
-		
+
 		gameControl = new GameControl(this);
-		
-		dllPath= System.getProperty("user.dir") + 
-				(ScrollThief.is64bit() ? "\\xboxcontroller64.dll" : "\\xboxcontroller.dll");
-		xbc= new XboxController(dllPath, 1, 50, 50);
-        xbc.setLeftThumbDeadZone(.2);
-        xbc.setRightThumbDeadZone(.2);
-        xbc.addXboxControllerListener(new XboxAdapter(this));
+
+		try{
+			dllPath =(ScrollThief.is64bit() ? this.getClass().getResource("/resources/xboxcontroller64.dll").getFile() :
+				this.getClass().getResource("/resources/xboxcontroller.dll").getFile());
+			say("dllPath: " + dllPath);
+			xbc= new XboxController(dllPath, 1, 50, 50);
+	        xbc.setLeftThumbDeadZone(.2);
+	        xbc.setRightThumbDeadZone(.2);
+	        xbc.addXboxControllerListener(new XboxAdapter(this));
+		}catch(Exception e){
+			System.out.println("Unable to load xbox controller dlls");
+		}
+		if (xbc == null){
+			try{
+				dllPath = System.getProperty("user.dir") + 
+						(ScrollThief.is64bit() ? "\\src\\resources\\xboxcontroller64.dll" : 
+							"\\src\\resources\\xboxcontroller.dll");
+				say("dllPath: " + dllPath);
+				xbc= new XboxController(dllPath, 1, 50, 50);
+		        xbc.setLeftThumbDeadZone(.2);
+		        xbc.setRightThumbDeadZone(.2);
+		        xbc.addXboxControllerListener(new XboxAdapter(this));
+			}catch(Exception e){
+				System.out.println("Still unable to load xbox controller dlls");
+			}
+		}
         keyboard = new KeyboardControl(this);
         view.addKeyListener(keyboard);
         mouse = new MouseControl(this);
         view.addMouseMotionListener(mouse);
         view.addMouseListener(mouse);
-        if(!xbc.isConnected())
+        if(xbc != null && !xbc.isConnected())
         {
         	System.out.println("Xbox controller not connected...");
         }
         
-
 		this.gameModel.addStateChangedListener(new StateChangedListener() {
 	      public void stateChanged(StateChange evt) {
 	        redisplay();
@@ -88,13 +110,24 @@ public class Controller extends TimerTask{
 			window.setCursor(noCursor);
 			isCursorInvisible = true;
 		}
-		
+
 		if (gameModel.getState() == GameState.Uninitialized || gameModel.getState() == GameState.Initialized)
 			return;
+		if (gameModel.getState() == GameState.Start){
+			gameModel.getSound().playMusic(SoundFile.SNEAK);
+			gameModel.changeState(GameState.Paused);
+			view.display();
+			return;
+		}
+		if(gameModel.getState() == GameState.Dialog){
+			view.display();
+			return;
+		}
 		if(gameModel.getState() != GameState.Playing){
 			view.display();
 			return;
 		}
+		
 		Guard[] guards= gameModel.getGuards();
 		Character ninja= gameModel.getNinja();
 		Boss boss= (Boss) gameModel.getBoss();
@@ -145,6 +178,11 @@ public class Controller extends TimerTask{
 			}
 		}
 		
+// ------------------------------------------------Music--------------------------------------------
+		Sound sound = gameModel.getSound();
+		if ((sound.getCurrentMusic() == SoundFile.SNEAK) && boss.isNear())
+			sound.delayedPlayMusic(SoundFile.BOSS, 700);
+		
 // ------------ Update Boss --------------------------------------------------------------------------
 		boss.update();
 		boss.animate(tick);
@@ -165,7 +203,7 @@ public class Controller extends TimerTask{
 			if (proj.ninjaCollision()){
 				ninja.takeDamage(1);
 				collided.add(proj);
-				say("You've been hit! Current HP: "+ ninja.getHP());
+//				say("You've been hit! Current HP: "+ ninja.getHP());
 				hitTimer= 30;
 				continue;
 			}
@@ -200,6 +238,18 @@ public class Controller extends TimerTask{
 			gameControl.setNinjaSpeed(1);
 		}
 		
+
+
+// ----------------Check level dialog hotspots--------------------------------------------------------
+		
+		for(int i = 0; i < gameModel.getCurrentLevel().getDialogHotspots().size(); i++) {
+			if(gameModel.getCurrentLevel().getDialogHotspots().get(i).checkForActivate(ninja.getLoc())) {
+				gameModel.getCurrentLevel().setCurrentDialogHotspot(gameModel.getCurrentLevel().getDialogHotspots().get(i));
+				gameModel.changeState(GameState.Dialog);
+				break;
+			}
+		}
+		
 // ---------------------------------------------------------------------------------------------------	
 		
 		view.display();
@@ -227,7 +277,8 @@ public class Controller extends TimerTask{
 	}
 	
 	public void vibrate(int leftVibrate, int rightVibrate){
-		xbc.vibrate(leftVibrate, rightVibrate);
+		if(xbc != null)
+			xbc.vibrate(leftVibrate, rightVibrate);
 	}
 	
 	public void reset(){
@@ -256,12 +307,18 @@ public class Controller extends TimerTask{
 		view.setCamHeight(4);
 		view.setCamDistance(6);
 		gameModel.changeState(GameState.Paused);
+		
+		gameModel.reloadMusic();
+		gameModel.getSound().playMusic(SoundFile.SNEAK);
 	}
 	
 	private void gameOver(GameState reason){
+		if (reason == GameState.Spotted)
+			gameModel.getSound().playEffect(SoundFile.GUARD);
 		gameModel.changeState(reason);
 		vibrate(0,0);
 		hitTimer= 0;
+		gameModel.getSound().playMusic(SoundFile.GAMEOVER);
 	}
 	
 	private void say(String message){

@@ -20,10 +20,15 @@ public class Character {
 	double speed, oldSpeed, deltaY, angleDelta, goalAngle= 0;
 	double turnRate= .3;
 	public boolean isJumping= false;
+	public int attacking = -1; //for the 4 attacking states
+	public int nextAttack = -1;
+	public int prevAttack = -1;
+	public int attackingStateMax = 3;
 	public boolean isMoving= false;
 	int hp = 3; // player dies after 3 projectile hits, or one boss hit.
 	int animFrame= 0; // The frame of animation currently being displayed
 	OBJ[] motion= null; // The current animation loop
+	boolean alive = true;
 	String type;
 	double ninjaDirection;
 
@@ -267,12 +272,31 @@ public class Character {
 	
 	public void takeDamage(int damage){
 		hp -= damage;
+		if(this instanceof Boss) {
+			if(hp <= 0) {
+				Data.say("Boss killed!!!");
+				alive = false;
+			}
+		}
+		else if(this instanceof Ninja) {
+//			Data.say("You got hit! ");
+		}
 	}
 	
 	public void advanceFrame(){
 		animFrame++;
 		if (animFrame >= motion.length)
 			animFrame= 0;
+	}
+	
+	public void advanceAttackFrame(Ninja ninja){
+		animFrame++;
+		if (animFrame >= motion.length) {
+			ninja.detectAttackCollision();
+			animFrame= 0;
+			attacking = nextAttack;
+			nextAttack = -1;
+		}
 	}
 	
 	//--------------- getters -----------------------------------------------------

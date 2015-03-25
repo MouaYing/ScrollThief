@@ -3,8 +3,11 @@ package scrollthief.controller;
 import java.util.List;
 
 import scrollthief.model.Button;
+import scrollthief.model.Data;
 import scrollthief.model.GameModel;
 import scrollthief.model.GameState;
+import scrollthief.model.Point3D;
+import scrollthief.model.SoundFile;
 import scrollthief.view.View;
 
 public class GameControl {
@@ -18,10 +21,10 @@ public class GameControl {
 	private double ninjaRotationIncrement = 0.075;
 	private double cameraRotationIncrement = 0.075;
 	private float cameraHeightIncrement = 0.1f;
-	
+
 	private boolean usingMouse;
 	
-	public GameControl(Controller controller){
+	public GameControl(Controller controller) {
 		this.controller= controller;
 		this.view= controller.view;
 		this.gameModel= controller.gameModel;
@@ -43,7 +46,8 @@ public class GameControl {
 				gameModel.getState() == GameState.Paused ||
 				gameModel.getState() == GameState.Spotted || 
 				gameModel.getState() == GameState.Killed || 
-				gameModel.getState() == GameState.Victory){
+				gameModel.getState() == GameState.Victory ||
+				gameModel.getState() == GameState.Dialog){
 			return true;
 		}
 		return false;
@@ -88,13 +92,13 @@ public class GameControl {
 	}
 	
 	public void increaseSpeed(){
-		if(canPlay())
+		if(canPlay() && !isAttacking())
 			if (gameModel.getNinjaSpeed() < 1)
 				gameModel.setNinjaSpeed(gameModel.getNinjaSpeed() + speedIncrement);
 	}
 	
 	public void stop(){
-		if(canPlay())
+		if(canPlay() && !isAttacking())
 			gameModel.setNinjaSpeed(0);
 	}
 	
@@ -149,20 +153,45 @@ public class GameControl {
 	}
 	
 	public void toggleDevMode(){
+		//for putting the ninja next to the boss for testing
+		scrollthief.model.Character ninja= gameModel.getNinja();
+		
+//		ninja.setLoc(new Point3D(10, 0, 70));  //for if you want quick teleport to boss
+		
 		if (controller.devmode)
 			controller.devmode= false;
-		else controller.devmode= true;
+		else 
+			controller.devmode= true;
 		say("Developer mode = " + controller.devmode);
 	}
 	
 	public void jump(){
 		scrollthief.model.Character ninja= gameModel.getNinja();
-		if(canPlay())
+		if(canPlay() && !isAttacking())
 			if (ninja != null && !ninja.isJumping){
 				ninja.isJumping= true;
 				gameModel.getNinja().setDeltaY(.2);
-				// say("Jump!");
+				gameModel.getSound().playEffect(SoundFile.JUMP);
 			}
+	}
+	
+	public void attack() {
+		scrollthief.model.Character ninja= gameModel.getNinja();
+		if(canPlay()) {
+			if(ninja.attacking < 1)
+				ninja.attacking = 1;
+			else {
+				ninja.nextAttack = ninja.attacking + 1; 
+				if(ninja.nextAttack > ninja.attackingStateMax) {
+					ninja.nextAttack = 1;
+				}
+			}
+		}
+	}
+	
+	public boolean isAttacking() {
+		scrollthief.model.Character ninja= gameModel.getNinja();
+		return ninja.attacking > -1;
 	}
 	
 	public void reset(){
@@ -188,6 +217,15 @@ public class GameControl {
 			}
 			if (gameModel.getState() == GameState.Spotted || gameModel.getState() == GameState.Killed || gameModel.getState() == GameState.Victory){ // game is over---reset
 				controller.reset();
+			}
+			else if (gameModel.getState() == GameState.Dialog) {
+				if(view.getDialogRenderer().isFinished() || view.getDialogRenderer().isNextScroll()) {
+					gameModel.getCurrentLevel().getCurrentDialogHotspot().setRepeatable(false);
+					gameModel.changeState(GameState.Playing);
+				}
+				else {
+					view.getDialogRenderer().setIsNextScroll(true);
+				}
 			}
 			else if (gameModel.getState() == GameState.Paused){
 				gameModel.changeState(GameState.Playing);

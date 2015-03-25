@@ -25,6 +25,7 @@ public class GameModel {
 	private ArrayList<Button> pauseButtons;
 	
 	private GameState state = GameState.Uninitialized;
+	private GameState lastState;
 	private Level currentLevel;
 	private LevelFactory levelFactory;
 	
@@ -147,6 +148,10 @@ public class GameModel {
 		resource.loadTextures(gl);
 	}
 	
+	public void reloadMusic() {
+		resource.reloadMusic();
+	}
+	
 	public void finishedLoading(String type){
 		if(type.equals("resource")){
 			say("LevelLoading");
@@ -164,6 +169,7 @@ public class GameModel {
 	//This makes 
 	public void changeState(GameState newState) {
 		say("Game State moving from " + state + " to " + newState);
+		lastState = state;
 		state = newState;
 		fireStateChanged(new StateChange(newState));
 	}
@@ -178,6 +184,14 @@ public class GameModel {
 	
 	public GameState getState(){
 		return state;
+	}
+	
+	public GameState getLastState(){
+		return lastState;
+	}
+	
+	public Sound getSound() {
+		return resource.getSound();
 	}
 	
 	public Guard[] getGuards(){
@@ -227,6 +241,10 @@ public class GameModel {
 		return getNinja().getSpeed();
 	}
 	
+	public Level getCurrentLevel() {
+		return currentLevel;
+	}
+	
 	public Point3D getNinjaLoc(){
 		if(getNinja() == null){
 			return new Point3D(0,0,0);
@@ -254,6 +272,10 @@ public class GameModel {
 		return resource;
 	}
 	
+	public LevelFactory getLevelFactory() {
+		return levelFactory;
+	}
+	
 	public void doPauseButton() {
 		for(Button b : pauseButtons){
 			if(b.IsSelected()){
@@ -267,18 +289,25 @@ public class GameModel {
 	}
 	
 	public static Point2D[][] boxToWorld(Model model, Point2D[][] oldBox){
+		return boxToWorld(model.getAngle(), model.getLoc(), oldBox);
+	}
+	
+	public static Point2D[][] boxToWorld(double angle, Point3D loc, Point2D[][] oldBox){
 		Point2D[] points= new Point2D[4];
 		points[0]= oldBox[0][0];
 		points[1]= oldBox[1][0];
 		points[2]= oldBox[2][0];
 		points[3]= oldBox[3][0];
 		
-		return boxToWorld(model, points);
+		return boxToWorld(angle, loc, points);
 	}
 	
 	public static Point2D[][] boxToWorld(Model model, Point2D[] points){
-		double angle= model.getAngle();
-		Point2D center= model.getLoc().to2D();
+		return boxToWorld(model.getAngle(), model.getLoc(), points);
+	}
+	
+	public static Point2D[][] boxToWorld(double angle, Point3D loc, Point2D[] points){
+		Point2D center= loc.to2D();
 		//Point2D.Double[] points= new Point2D.Double[4];
 		
 		Point2D.Double newP1= new Point2D.Double();
