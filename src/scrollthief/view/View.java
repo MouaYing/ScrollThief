@@ -18,6 +18,7 @@ import com.jogamp.opengl.util.texture.Texture;
 import scrollthief.model.Button;
 import scrollthief.model.GameState;
 import scrollthief.model.LoadingBar;
+import scrollthief.model.Obstacle;
 import scrollthief.model.Data;
 import scrollthief.model.Point3D;
 import scrollthief.model.Model;
@@ -46,6 +47,7 @@ public class View extends GLCanvas implements GLEventListener{
 	TextRenderer tRend;
 	TextRenderer tRend2;
 	TextRenderer tRendLoadingBar;
+	boolean startDetectingObstacles;
 
 	public View(GameModel model){
 		say("Loading view...");
@@ -54,6 +56,7 @@ public class View extends GLCanvas implements GLEventListener{
         addGLEventListener(this);
         init= false;
 		say("--View loaded--\n");
+		startDetectingObstacles = false;
 	}
 	
 	@Override
@@ -127,7 +130,7 @@ public class View extends GLCanvas implements GLEventListener{
 				//apply object to window transform
 				obj2world(gl, model);
 				
-				model.getObj().DrawModel(gl);
+				model.getObj().DrawModel(gl, model.getIsTransparent());
 				
 				gl.glPopMatrix();
 				gl.glFlush();
@@ -258,7 +261,7 @@ public class View extends GLCanvas implements GLEventListener{
 		gl.glPushMatrix();
 		gl.glMatrixMode(GL2.GL_PROJECTION);
 		gl.glLoadIdentity();
-		gl.glOrtho(0, this.windowX, 0, this.windowY, -10, 10);
+		gl.glOrtho(0, Data.windowX, 0, Data.windowY, -10, 10);
 		gl.glColor3f(1f, 1f, ((float)153/(float)255));
 		gl.glBegin(GL2.GL_QUADS);
 			gl.glVertex2d(leftX, leftY);
@@ -435,10 +438,17 @@ public class View extends GLCanvas implements GLEventListener{
 		Point3D ninjaLoc= gameModel.getNinjaLoc();
 		lookAt= new float[]{(float) ninjaLoc.x, (float) ninjaLoc.y * scale + 2, (float) ninjaLoc.z};
 		
+		if (gameModel.getUsingMouse()) {
+			cameraAngle = ninjaAngle;
+			lookFrom[1] = 4;
+			gameModel.setUsingMouse(false);
+		}
+		
 		if (resetting){ // center the camera behind the ninja
 			cameraAngle= ninjaAngle;
 			cameraDistance= 6;
 			lookFrom[1]= 4;
+			resetting = false;
 		}
 		
 		dZ= -Math.cos(cameraAngle); 
@@ -455,6 +465,25 @@ public class View extends GLCanvas implements GLEventListener{
 		glu.gluLookAt(lookFrom[0], lookFrom[1], lookFrom[2],
 		        lookAt[0], lookAt[1], lookAt[2],
 		        0.0f, 1.0f, 0.0f);
+		
+		Point3D cameraLoc = new Point3D(lookFrom[0], lookFrom[1], lookFrom[2]);
+		ninjaLoc = gameModel.getNinjaLoc();
+		
+		if(gameModel.getState() == GameState.Start) {
+			startDetectingObstacles = true;
+		}
+	
+		// TODO: detect when an obstacle is between the viewer and the ninja and give it opacity
+		if(ninjaLoc != null && startDetectingObstacles) {
+			for(Obstacle obstacle : gameModel.getObstacles()) {
+				if(!gameModel.boxHit(cameraLoc,  ninjaLoc, obstacle.getHitBox()).isEmpty() && obstacle.getModel().getObj() != gameModel.getResource().getOBJs()[4]) {
+					obstacle.getModel().setIsTransparent(true);
+				}
+				else {
+					obstacle.getModel().setIsTransparent(false);
+				}
+			}
+		}
 
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
 		//gl.glLoadIdentity();

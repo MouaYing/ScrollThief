@@ -31,6 +31,12 @@ public class GameModel {
 	private Level currentLevel;
 	private LevelFactory levelFactory;
 	
+	private boolean aPressed;
+	private boolean sPressed;
+	private boolean dPressed;
+	private boolean wPressed;
+	private boolean usingMouse;
+	
 	protected EventListenerList listenerList = new EventListenerList();
 
 	  public void addStateChangedListener(StateChangedListener listener) {
@@ -81,6 +87,52 @@ public class GameModel {
 		
 		currentLevel = levelFactory.getNextLevel(resource, this, loadingPhrases);
 		changeState(GameState.Initialized);
+		
+		this.aPressed = false;
+		this.sPressed = false;
+		this.dPressed = false;
+		this.wPressed = false;
+		this.usingMouse = false;
+	}
+	
+	public boolean getAPressed() {
+		return aPressed;
+	}
+	
+	public void setAPressed(boolean aPressed) {
+		this.aPressed = aPressed;
+	}
+	
+	public boolean getSPressed() {
+		return sPressed;
+	}
+	
+	public void setSPressed(boolean sPressed) {
+		this.sPressed = sPressed;
+	}
+	
+	public boolean getDPressed() {
+		return dPressed;
+	}
+	
+	public void setDPressed(boolean dPressed) {
+		this.dPressed = dPressed;
+	}
+	
+	public boolean getWPressed() {
+		return wPressed;
+	}
+	
+	public void setWPressed(boolean wPressed) {
+		this.wPressed = wPressed;
+	}
+	
+	public boolean getUsingMouse() {
+		return usingMouse;
+	}
+	
+	public void setUsingMouse(boolean usingMouse) {
+		this.usingMouse = usingMouse;
 	}
 	
 	public void saveGame() {

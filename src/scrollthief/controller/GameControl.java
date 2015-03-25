@@ -18,14 +18,27 @@ public class GameControl {
 	double cameraDir = 0;
 	double cameraMag = 0;
 	private double speedIncrement = 0.7;
-	private double ninjaRotationIncrement = 0.2;
-	private double cameraRotationIncrement = 0.1;
+	private double ninjaRotationIncrement = 0.075;
+	private double cameraRotationIncrement = 0.075;
 	private float cameraHeightIncrement = 0.1f;
+
+	private boolean usingMouse;
 	
 	public GameControl(Controller controller) {
 		this.controller= controller;
 		this.view= controller.view;
 		this.gameModel= controller.gameModel;
+		
+		this.usingMouse = false;
+	}
+	
+	public boolean getUsingMouse() {
+		return usingMouse;
+	}
+	
+	public void setUsingMouse(boolean usingMouse) {
+		this.usingMouse = usingMouse;
+		gameModel.setUsingMouse(usingMouse);
 	}
 	
 	public boolean canPlay(){
@@ -55,6 +68,14 @@ public class GameControl {
 			view.setCamAngle(view.getCamAngle() - cameraRotationIncrement);
 	}
 	
+	public void strafeNinjaRight() {
+		
+	}
+	
+	public void strafeNinjaLeft() {
+		
+	}
+	
 	public void rotateCameraRight(){
 		if(canPlay())
 			view.setCamAngle(view.getCamAngle() + cameraRotationIncrement);
@@ -81,9 +102,21 @@ public class GameControl {
 			gameModel.setNinjaSpeed(0);
 	}
 	
+	public void forward() {
+		
+	}
+	
+	public void backward() {
+		
+	}
+	
 	public void setNinjaAngle(double direction){
 		if(canPlay())
 			gameModel.setNinjaAngle(Math.toRadians(direction) +  view.getCamAngle());
+	}
+	
+	public double getNinjaAngle() {
+		return gameModel.getNinjaAngle();
 	}
 	
 	public void setNinjaSpeed(double magnitude){
@@ -166,6 +199,17 @@ public class GameControl {
 	}
 	
 	public void pause(){
+		System.out.println(gameModel == null);
+		
+//		if (gameModel.getState() == GameState.Spotted || gameModel.getState() == GameState.Killed && gameModel.getState() == GameState.Victory){ // game is over---reset
+//			controller.reset();
+//		}
+//		else if (gameModel.getState() == GameState.Paused){
+//			gameModel.changeState(GameState.Playing);
+//		}
+//		else {
+//			gameModel.changeState(GameState.Paused);
+//		}
 		if(canPlay() || gameModel.getState() == GameState.Start){
 			if(gameModel.getState() == GameState.Start){
 				gameModel.changeState(GameState.Playing);

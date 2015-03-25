@@ -31,13 +31,17 @@ public class Character {
 	boolean alive = true;
 	
 	private Point2D[] edgePrime;
+	String type;
+	double ninjaDirection;
 
-	public Character(GameModel gameModel, Model model, double boxLength, double boxWidth){
+	public Character(GameModel gameModel, Model model, double boxLength, double boxWidth, String type){
 		this.gameModel= gameModel;
 		this.model= model;
 		defaultOBJ= model.getObj();
 		Point2D[] boxPoints= GameModel.findPoints(boxLength, boxWidth);
 		hitBox= GameModel.createHitBox(boxPoints);
+		this.type = type;
+		ninjaDirection = 0;
 	}
 	
 	private boolean characterCollision(Point3D loc, Character character, double threshold2, ArrayList<Point2D[]> edges, Point2D[][] hitBox){
@@ -59,10 +63,13 @@ public class Character {
 		float gravity = .01f; // tune this
 		double movement = getSpeed() * .125f;
 		double direction= getAngle() + Math.PI;
+		if(type.equals("Ninja"))
+			direction = ninjaDirection;
+		else
+			direction= getAngle() + Math.PI;
 		// this is the movement vector for this tick
 		double deltaX = Math.sin(direction) * movement;
 		double deltaZ = -Math.cos(direction) * movement;
-		
 		Point3D loc= getLoc();
 		Obstacle[] obstacles= gameModel.getObstacles();
 		Character ninja= gameModel.getNinja();
@@ -384,6 +391,10 @@ public class Character {
 	
 	public void setDeltaY(double newDelta){
 		deltaY= newDelta;
+	}
+	
+	public void setNinjaDirection(double ninjaDirection) {
+		this.ninjaDirection = ninjaDirection;
 	}
 	
 	protected void say(String message){
