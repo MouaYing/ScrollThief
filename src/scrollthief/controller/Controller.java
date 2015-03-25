@@ -42,12 +42,27 @@ public class Controller extends TimerTask{
 		try{
 			dllPath =(ScrollThief.is64bit() ? this.getClass().getResource("/resources/xboxcontroller64.dll").getFile() :
 				this.getClass().getResource("/resources/xboxcontroller.dll").getFile());
+			say("dllPath: " + dllPath);
 			xbc= new XboxController(dllPath, 1, 50, 50);
 	        xbc.setLeftThumbDeadZone(.2);
 	        xbc.setRightThumbDeadZone(.2);
 	        xbc.addXboxControllerListener(new XboxAdapter(this));
 		}catch(Exception e){
 			System.out.println("Unable to load xbox controller dlls");
+		}
+		if (xbc == null){
+			try{
+				dllPath = System.getProperty("user.dir") + 
+						(ScrollThief.is64bit() ? "\\src\\resources\\xboxcontroller64.dll" : 
+							"\\src\\resources\\xboxcontroller.dll");
+				say("dllPath: " + dllPath);
+				xbc= new XboxController(dllPath, 1, 50, 50);
+		        xbc.setLeftThumbDeadZone(.2);
+		        xbc.setRightThumbDeadZone(.2);
+		        xbc.addXboxControllerListener(new XboxAdapter(this));
+			}catch(Exception e){
+				System.out.println("Still unable to load xbox controller dlls");
+			}
 		}
         keyboard = new KeyboardControl(this);
         view.addKeyListener(keyboard);
