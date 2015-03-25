@@ -258,7 +258,7 @@ public class View extends GLCanvas implements GLEventListener{
 		gl.glPushMatrix();
 		gl.glMatrixMode(GL2.GL_PROJECTION);
 		gl.glLoadIdentity();
-		gl.glOrtho(0, this.windowX, 0, this.windowY, -10, 10);
+		gl.glOrtho(0, Data.windowX, 0, Data.windowY, -10, 10);
 		gl.glColor3f(1f, 1f, ((float)153/(float)255));
 		gl.glBegin(GL2.GL_QUADS);
 			gl.glVertex2d(leftX, leftY);
