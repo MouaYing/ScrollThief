@@ -29,13 +29,17 @@ public class Character {
 	int animFrame= 0; // The frame of animation currently being displayed
 	OBJ[] motion= null; // The current animation loop
 	boolean alive = true;
+	String type;
+	double ninjaDirection;
 
-	public Character(GameModel gameModel, Model model, double boxLength, double boxWidth){
+	public Character(GameModel gameModel, Model model, double boxLength, double boxWidth, String type){
 		this.gameModel= gameModel;
 		this.model= model;
 		defaultOBJ= model.getObj();
 		Point2D[] boxPoints= GameModel.findPoints(boxLength, boxWidth);
 		hitBox= GameModel.createHitBox(boxPoints);
+		this.type = type;
+		ninjaDirection = 0;
 	}
 	
 	public void move(){
@@ -45,7 +49,13 @@ public class Character {
 //		float scale= .25f;
 		float scale= .125f;
 		float gravity= .01f; // tune this
-		double direction= getAngle() + Math.PI;
+		
+		double direction;
+		if(type.equals("Ninja"))
+			direction = ninjaDirection;
+		else
+			direction= getAngle() + Math.PI;
+		
 		double speed= getSpeed();
 		double deltaX;
 		double deltaZ;
@@ -344,6 +354,10 @@ public class Character {
 	
 	public void setDeltaY(double newDelta){
 		deltaY= newDelta;
+	}
+	
+	public void setNinjaDirection(double ninjaDirection) {
+		this.ninjaDirection = ninjaDirection;
 	}
 	
 	protected void say(String message){

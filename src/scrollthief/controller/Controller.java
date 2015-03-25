@@ -1,5 +1,10 @@
 package scrollthief.controller;
 
+import java.awt.Cursor;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.TimerTask;
 
@@ -25,6 +30,7 @@ public class Controller extends TimerTask{
 	JFrame window;
 	View view;
 	GameModel gameModel;
+	private GameControl gameControl;
 	public XboxController xbc;
 	public KeyboardControl keyboard;
 	public MouseControl mouse;
@@ -32,6 +38,7 @@ public class Controller extends TimerTask{
 	int tick= 0;
 	int hitTimer= 0;
 	boolean devmode= false;
+	boolean isCursorInvisible = true;
 	
 	public Controller(JFrame window, View view, GameModel gameModel){
 		say("Loading main controller...");
@@ -39,6 +46,9 @@ public class Controller extends TimerTask{
 		this.window= window;
 		this.view= view;
 		this.gameModel= gameModel;
+
+		gameControl = new GameControl(this);
+
 		try{
 			dllPath =(ScrollThief.is64bit() ? this.getClass().getResource("/resources/xboxcontroller64.dll").getFile() :
 				this.getClass().getResource("/resources/xboxcontroller.dll").getFile());
@@ -89,6 +99,18 @@ public class Controller extends TimerTask{
 
 	@Override
 	public void run() {
+		if((gameModel.getState() == GameState.Paused||gameModel.getState() == GameState.MainMenu) && isCursorInvisible) {
+			 window.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			 isCursorInvisible = false;
+		}
+		else if((gameModel.getState() != GameState.Paused&&gameModel.getState() != GameState.MainMenu) && !isCursorInvisible) {
+			Toolkit t = Toolkit.getDefaultToolkit();
+		    Image i = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+			Cursor noCursor = t.createCustomCursor(i, new Point(0, 0), "none");
+			window.setCursor(noCursor);
+			isCursorInvisible = true;
+		}
+
 		if (gameModel.getState() == GameState.Uninitialized || gameModel.getState() == GameState.Initialized)
 			return;
 		if(gameModel.getState() == GameState.Dialog){
@@ -191,6 +213,26 @@ public class Controller extends TimerTask{
 			gameModel.getModels().remove(proj.getModel());
 			gameModel.getProjectiles().remove(proj);
 		}
+// ---------------------------------------------------------------------------------------------------	
+		
+		if(gameModel.getWPressed())
+			gameControl.setNinjaSpeed(1);
+		if(gameModel.getSPressed())
+			gameControl.setNinjaSpeed(-1);
+		if(!gameModel.getWPressed() && !gameModel.getSPressed())
+			gameControl.setNinjaSpeed(0);
+//		if(gameModel.getAPressed())
+//			gameControl.rotateNinjaLeft();
+//		if(gameModel.getDPressed())
+//			gameControl.rotateNinjaRight();
+		if(gameModel.getAPressed()) {
+			gameControl.setNinjaSpeed(1);
+		}
+		if(gameModel.getDPressed()) {
+			gameControl.setNinjaSpeed(1);
+		}
+		
+
 
 // ----------------Check level dialog hotspots--------------------------------------------------------
 		
@@ -206,6 +248,14 @@ public class Controller extends TimerTask{
 		
 		view.display();
 		
+	}
+
+	public void setGameControl(GameControl gameControl) {
+		this.gameControl = gameControl;
+	}
+	
+	public GameControl getGameControl() {
+		return gameControl;
 	}
 	
 	public void moveCamera(){

@@ -14,6 +14,7 @@ public class Model {
 	public double scaleX;
 	private boolean flashRed = false;
 	private int flashCount = 0;
+	private boolean isTransparent;
 	
 	public Model(OBJ obj, int textureIndex, Point3D location, double[] rotation, double scale, double scaleX){
 		this.obj= obj;
@@ -22,6 +23,8 @@ public class Model {
 		this.rotation= rotation;
 		this.scale= scale;
 		this.scaleX= scaleX;
+		
+		isTransparent = false;
 	}
 	
 	public void setFlash(boolean flash) {
@@ -66,6 +69,10 @@ public class Model {
 		return scale;
 	}
 	
+	public boolean getIsTransparent() {
+		return isTransparent;
+	}
+	
 	// setters
 	public void setLoc(Point3D newLoc){
 		location= newLoc;
@@ -81,5 +88,9 @@ public class Model {
 	
 	public void setOBJ(OBJ newOBJ){
 		obj= newOBJ;
+	}
+	
+	public void setIsTransparent(boolean isTransparent) {
+		this.isTransparent = isTransparent;
 	}
 }
