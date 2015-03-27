@@ -11,5 +11,5 @@ public class Data {
 	public static int windowX = 947;
 	public static int windowY = 710;
 	
-	public static String DIALOG_SCROLL_FILE = "src/resources/textures/dialog_scroll.png";
+	public static String DIALOG_SCROLL_FILE = "/resources/images/dialog_scroll.png";
 }

@@ -234,7 +234,7 @@ public class Resource {
 		imgPaths[7]= "textures/shortwall.jpg";
 		imgPaths[8]= "textures/guard.jpg";
 		imgPaths[9]= "textures/scroll.jpg";
-		imgPaths[10]= "textures/goo.jpg";
+		imgPaths[10]= "textures/matatabi_texture.jpg";
 		imgPaths[11]= "textures/fireball.jpg";
 		
 		for (int i= 0; i < imgPaths.length; i++){

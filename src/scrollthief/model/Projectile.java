@@ -20,8 +20,10 @@ public class Projectile {
 	}
 	
 	public void move(){
-		double speed= .15;
+		double speed= .03 / attackSize; //originally .15, this change makes the small shots faster
 		Point3D loc= model.getLoc(); 
+		if(attackSize == 1) 
+			targetVector = gameModel.getNinja().getLoc();
 		Point3D delta= targetVector.mult(speed);
 		
 		model.setLoc(new Point3D(loc.x + delta.x, loc.y + delta.y, loc.z + delta.z));

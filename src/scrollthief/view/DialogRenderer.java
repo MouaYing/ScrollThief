@@ -133,7 +133,7 @@ public class DialogRenderer {
 	public void loadDialogBackgroundImage(GL2 gl) {
 		GLProfile profile= gl.getGLProfile();
 		try{
-			BufferedImage image = ImageIO.read(new File(Data.DIALOG_SCROLL_FILE));
+			BufferedImage image = ImageIO.read(this.getClass().getResourceAsStream(Data.DIALOG_SCROLL_FILE));
 			ImageUtil.flipImageVertically(image);
 			dialogBackground = AWTTextureIO.newTexture(profile, image, false);
 		}catch(IOException e){

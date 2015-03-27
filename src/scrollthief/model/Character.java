@@ -26,6 +26,7 @@ public class Character {
 	public int attackingStateMax = 3;
 	public boolean isMoving= false;
 	int hp = 3; // player dies after 3 projectile hits, or one boss hit.
+	int maxHp = 3;
 	int animFrame= 0; // The frame of animation currently being displayed
 	OBJ[] motion= null; // The current animation loop
 	boolean alive = true;
@@ -263,10 +264,8 @@ public class Character {
 	public void takeDamage(int damage){
 		hp -= damage;
 		if(this instanceof Boss) {
-			if(hp <= 0) {
-				Data.say("Boss killed!!!");
-				alive = false;
-			}
+			Character boss= gameModel.getBoss();
+			boss.takeDamage(damage);
 		}
 		else if(this instanceof Ninja) {
 //			Data.say("You got hit! ");
