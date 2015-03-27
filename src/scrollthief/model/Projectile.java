@@ -7,27 +7,45 @@ public class Projectile {
 	GameModel gameModel;
 	Model model;
 	Point3D targetVector;
+	Point3D origLoc;
+	double origAngle;
+	double turnRate= .3;
 	Point2D[][] hitbox;
 	int attackSize;
 	
-	public Projectile(GameModel gameModel, Model model, Point3D targetVector, int attackSize) {
+	public Projectile(GameModel gameModel, Model model, Point3D targetVector, int attackSize, Point3D origLoc, double origAngle) {
 		this.gameModel= gameModel;
 		this.model= model;
 		this.targetVector= targetVector;
 		Point2D[] boxPoints= GameModel.findPoints(.5, .5);
 		hitbox= GameModel.createHitBox(boxPoints);
 		this.attackSize = attackSize;
+		this.origLoc = origLoc;
+		this.origAngle = origAngle;
 	}
 	
 	public void move(){
-		double speed= .03 / attackSize; //originally .15, this change makes the small shots faster
+		double speed= .1;
 		Point3D loc= model.getLoc(); 
-		if(attackSize == 1) 
-			targetVector = gameModel.getNinja().getLoc();
+		if(attackSize == 1) {
+			setTargetVector();
+		}
 		Point3D delta= targetVector.mult(speed);
 		
 		model.setLoc(new Point3D(loc.x + delta.x, loc.y + delta.y, loc.z + delta.z));
 		
+	}
+	
+	//for making the projectile ninja seeking
+	private void setTargetVector() {
+		Character ninja = gameModel.getNinja();
+		double dist= ninja.getLoc().minus(origLoc).length();
+		double goalAngle= -Math.atan2(model.getLoc().x - ninja.getLoc().x, model.getLoc().z - ninja.getLoc().z);
+		
+		double targetX= Math.sin(goalAngle);
+		double targetY= -1/dist;
+		double targetZ= -Math.cos(goalAngle);
+		targetVector= new Point3D(targetX, targetY, targetZ);
 	}
 	
 	public boolean ninjaCollision(){

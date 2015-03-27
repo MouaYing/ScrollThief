@@ -21,7 +21,7 @@ public class Boss extends Character{
 	int charge = 0; //for charging up the big attack
 	final int ATTACK_SIZE_SMALL = 1;
 	final int ATTACK_SIZE_BIG = 2;
-	int TICKS_BETWEEN_POUNCES = 300; //1000;
+	int TICKS_BETWEEN_POUNCES = 1000;
 	int TICKS_BETWEEN_ATTACKS = 75;
 	final int TICKS_FOR_CHARGE = 200;
 	final int PROBABILITY_OF_BIG_ATTACK = 30; //out of 100
@@ -31,7 +31,7 @@ public class Boss extends Character{
 	public Boss(GameModel gameModel, Model model, double boxLength, double boxWidth) {
 		super(gameModel, model, boxLength, boxWidth);
 		lastPouncePoint = gameModel.getCurrentLevel().getBossPouncePoints().get(0);
-		turnRate= .02;
+		turnRate= .05;
 		standing= new OBJ[] {model.getObj()};
 		pouncing= gameModel.getResource().getBossPounce();
 		motion= standing;
@@ -195,7 +195,7 @@ public class Boss extends Character{
 		double[] rot = model.getRot().clone();
 		rot[0]= -targetY * scale;
 		Model projModel= new Model(objs[8], 11, bossHead, rot, sizeScale, 1);
-		gameModel.getProjectiles().add(new Projectile(gameModel, projModel, targetVector, attackSize));
+		gameModel.getProjectiles().add(new Projectile(gameModel, projModel, targetVector, attackSize, bossHead, direction));
 		gameModel.getModels().add(projModel);
 	}
 
