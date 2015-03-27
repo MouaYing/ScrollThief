@@ -17,17 +17,15 @@ public class EffectPlayer {
 	public void play() {
 		if (lastThread != null)
 			lastThread.interrupt();
+		
+		EffectPlayer thisPlayer = this;
 			
 		Thread thread = new Thread()
 		{
 			public void run()
 			{
 				try {
-					player = new AdvancedPlayer
-							(
-									this.getClass().getResourceAsStream(file),
-									javazoom.jl.player.FactoryRegistry.systemRegistry().createAudioDevice()
-							);
+					player.setPlayBackListener(new EffectListener(thisPlayer));
 					player.play();
 				} catch (JavaLayerException e) {
 					// TODO Auto-generated catch block
@@ -38,5 +36,18 @@ public class EffectPlayer {
 		
 		lastThread = thread;
 		thread.start();
+	}
+
+	public void loadPlayer() {
+		try {
+			this.player = new AdvancedPlayer
+						 (
+						 	this.getClass().getResourceAsStream(file),
+							javazoom.jl.player.FactoryRegistry.systemRegistry().createAudioDevice()
+						 );
+		} catch (JavaLayerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

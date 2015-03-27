@@ -68,7 +68,9 @@ public class Sound {
 	public void loadEffect(SoundFile sf, String path) {
 		String urlAsString = "";
 		urlAsString = path;
-		effects.put(sf, new EffectPlayer(urlAsString));
+		EffectPlayer player = new EffectPlayer(urlAsString);
+		player.loadPlayer();
+		effects.put(sf, player);
 	}
 	
 	public void loadMusic(SoundFile sf, String path, RepeatType repeatType) {
