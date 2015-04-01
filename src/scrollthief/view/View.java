@@ -138,6 +138,14 @@ public class View extends GLCanvas implements GLEventListener{
 				gl.glPopMatrix();
 				gl.glFlush();
 			}
+			
+			// draw player health
+			if(gameModel.getNinja() != null && gameModel.getHeart() != null) {
+				drawPlayerHealth(gl, gameModel.getHeart());
+			}
+			
+			// draw boss health if close enough
+			// drawBossHealth(gl);
 		}
 		else if(gameModel.getState() == GameState.ResourceLoading){
 			
@@ -327,6 +335,54 @@ public class View extends GLCanvas implements GLEventListener{
 		
 		gl.glDisable(GL2.GL_TEXTURE_2D);
 		gl.glPopMatrix();
+	}
+	
+	private void drawPlayerHealth(GL2 gl, Texture t) {
+		int ninjaHealth = gameModel.getNinja().getHP();
+		double offset = 0;
+		
+		gl.glPushMatrix();
+		gl.glMatrixMode(GL2.GL_PROJECTION);
+		gl.glLoadIdentity();
+		gl.glOrtho(0, Data.windowX, Data.windowY, 0, -10, 10);
+		gl.glEnable( GL2.GL_TEXTURE_2D );
+		
+		gl.glEnable (GL2.GL_BLEND);
+		gl.glBlendFunc (GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
+		
+		for(int i = 0; i < ninjaHealth; i++) {
+			// Logic for drawing each individual heart
+			t.bind(gl);
+			gl.glLoadIdentity();
+			gl.glBegin( GL2.GL_QUADS );
+				double originX = -0.85 + offset;
+				double originY = 0.85;
+				double x = -0.95 + offset;
+				double y = 0.95;
+				
+				//these values define what part of the image renders on the screen from 0.0 to 1.0
+				double coordOriginX = 0.0;
+				double coordOriginY = 0.0;
+				double coordX = 1.0;
+				double coordY = 1.0;
+				
+				gl.glTexCoord2d(coordOriginX, coordOriginY); gl.glVertex2d(originX,originY);
+				gl.glTexCoord2d(coordX, coordOriginY); gl.glVertex2d(x,originY);
+				gl.glTexCoord2d(coordX, coordY); gl.glVertex2d(x,y);
+				gl.glTexCoord2d(coordOriginX, coordY); gl.glVertex2d(originX,y);
+			gl.glEnd();
+			
+			
+			gl.glPopMatrix();
+			gl.glFlush();
+			offset += 0.125;
+		}
+		
+		gl.glDisable(GL2.GL_BLEND);
+	}
+	
+	private void drawBossHealth(GL2 gl) {
+		// Logic for drawing the boss health
 	}
 	
 	private void drawLoadingBar(GL2 gl, LoadingBar loading){

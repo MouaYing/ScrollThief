@@ -31,6 +31,7 @@ public class Resource {
 	private Texture[] textures;
 	private LoadingBar loadingBar;
 	private Texture[] images;
+	private Texture heart;
 	private Sound sound;
 	private Thread musicThread;
 	private Random rand;
@@ -239,6 +240,18 @@ public class Resource {
 		}
 	}
 	
+	public void loadHeart(GL2 gl) {
+		GLProfile profile = gl.getGLProfile();
+		String heartPath = "images/heart.png";
+		try {
+			BufferedImage image = ImageIO.read(this.getClass().getResourceAsStream("/resources/" + heartPath));
+			ImageUtil.flipImageVertically(image);
+			heart = AWTTextureIO.newTexture(profile, image, false);
+		} catch(IOException e) {
+			System.out.println("Error Loading Heart Image");
+		}
+	}
+	
 	public Sound getSound() {
 		return sound;
 	}
@@ -273,6 +286,10 @@ public class Resource {
 	
 	public Texture getLevelSplash() {
 		return images[levelSplashIndex];
+	}
+	
+	public Texture getHeart() {
+		return heart;
 	}
 	
 	public Thread getMusicThread() {

@@ -153,6 +153,8 @@ public class DialogRenderer {
 		gl.glLoadIdentity();
 		gl.glOrtho(0, Data.windowX, Data.windowY, 0, -10, 10);
 		gl.glEnable( GL2.GL_TEXTURE_2D );
+		gl.glEnable (GL2.GL_BLEND);
+		gl.glBlendFunc (GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
 		t.bind(gl);
 		gl.glLoadIdentity();
 		gl.glBegin( GL2.GL_QUADS );
@@ -173,8 +175,9 @@ public class DialogRenderer {
 			gl.glTexCoord2d(coordX, coordY); gl.glVertex2d(x,y);
 			gl.glTexCoord2d(coordOriginX, coordY); gl.glVertex2d(originX,y);
 		gl.glEnd();
-//		gl.glDisable(GL2.GL_TEXTURE_2D);
+		
 		gl.glPopMatrix();
+		gl.glDisable(GL2.GL_BLEND);
 	}
 	
 	private void updateTimer() {
