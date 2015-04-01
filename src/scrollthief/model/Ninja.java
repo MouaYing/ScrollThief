@@ -35,7 +35,7 @@ public class Ninja extends Character {
 		attacking3 = running.clone(); //gameModel.getResource().getNinjaAttack3();
 		jumping= new OBJ[] {running[0]};
 		motion= standing;
-		hp = 3;																																																																											;
+		hp = 6;																																																																											;
 	}
 	
 	// Determine what OBJ to use this tick, and set it as model.obj

@@ -145,7 +145,9 @@ public class View extends GLCanvas implements GLEventListener{
 			}
 			
 			// draw boss health if close enough
-			// drawBossHealth(gl);
+			if(gameModel.getBoss() != null && gameModel.getBoss().isNear()) {
+				drawBossHealth(gl);
+			}
 		}
 		else if(gameModel.getState() == GameState.ResourceLoading){
 			
@@ -345,7 +347,7 @@ public class View extends GLCanvas implements GLEventListener{
 		gl.glMatrixMode(GL2.GL_PROJECTION);
 		gl.glLoadIdentity();
 		gl.glOrtho(0, Data.windowX, Data.windowY, 0, -10, 10);
-		gl.glEnable( GL2.GL_TEXTURE_2D );
+		//gl.glEnable( GL2.GL_TEXTURE_2D );
 		
 		gl.glEnable (GL2.GL_BLEND);
 		gl.glBlendFunc (GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
@@ -379,10 +381,41 @@ public class View extends GLCanvas implements GLEventListener{
 		}
 		
 		gl.glDisable(GL2.GL_BLEND);
+		//gl.glDisable( GL2.GL_TEXTURE_2D );
 	}
 	
 	private void drawBossHealth(GL2 gl) {
 		// Logic for drawing the boss health
+		double leftX = Data.windowX - 230;
+		double leftY = Data.windowY - 685;
+		float percentage = ((float)gameModel.getBoss().getHP()/(float)gameModel.getBoss().getFullHP());
+		float width = 200 * percentage;
+		int maxWidth = 200;
+		int height = 25;
+		gl.glDisable( GL2.GL_TEXTURE_2D );
+		gl.glPushMatrix();
+		gl.glMatrixMode(GL2.GL_PROJECTION);
+		gl.glLoadIdentity();
+		gl.glOrtho(0, Data.windowX, Data.windowY, 0, -10, 10);
+		gl.glColor3f(((float)204/(float)255), 0f, 0f);
+		gl.glBegin(GL2.GL_QUADS);
+			gl.glVertex2d(leftX, leftY);
+			gl.glVertex2d(leftX, leftY+height);
+			gl.glVertex2d(leftX+maxWidth, leftY+height);
+			gl.glVertex2d(leftX+maxWidth, leftY);
+		gl.glEnd();
+
+		gl.glColor3f(1f, 1f, ((float)51/(float)255));
+		gl.glBegin(GL2.GL_QUADS);
+			gl.glVertex2d(leftX, leftY);
+			gl.glVertex2d(leftX, leftY+height);
+			gl.glVertex2d(leftX+width, leftY+height);
+			gl.glVertex2d(leftX+width, leftY);
+		gl.glEnd();
+	    gl.glFlush();
+
+		gl.glPopMatrix();
+		gl.glEnable( GL2.GL_TEXTURE_2D );
 	}
 	
 	private void drawLoadingBar(GL2 gl, LoadingBar loading){
