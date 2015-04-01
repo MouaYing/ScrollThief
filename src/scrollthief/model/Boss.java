@@ -21,12 +21,16 @@ public class Boss extends Character{
 	int charge = 0; //for charging up the big attack
 	final int ATTACK_SIZE_SMALL = 1;
 	final int ATTACK_SIZE_BIG = 2;
+	final int ATTACK_FRENZY = 3;
 	int TICKS_BETWEEN_POUNCES = 1000;
 	int TICKS_BETWEEN_ATTACKS = 75;
 	final int TICKS_FOR_CHARGE = 200;
+	final double HEALTH_RATIO_BEFORE_HEAT_SEEKING = .5;
+	final double HEALTH_RATIO_BEFORE_FRENZY = .4;
 	final int PROBABILITY_OF_BIG_ATTACK = 30; //out of 100
 	final int PROBABILITY_OF_SMALL_ATTACK = 60; //out of 100
-	final int TOTAL_ATTACK_PROBABILITY = PROBABILITY_OF_BIG_ATTACK + PROBABILITY_OF_SMALL_ATTACK;
+	final int PROBABILITY_OF_FRENZY_ATTACK = 30; //out of 100
+	final int TOTAL_ATTACK_PROBABILITY = PROBABILITY_OF_BIG_ATTACK + PROBABILITY_OF_SMALL_ATTACK + PROBABILITY_OF_FRENZY_ATTACK;
 	
 	public Boss(GameModel gameModel, Model model, double boxLength, double boxWidth) {
 		super(gameModel, model, boxLength, boxWidth);
@@ -35,7 +39,7 @@ public class Boss extends Character{
 		standing= new OBJ[] {model.getObj()};
 		pouncing= gameModel.getResource().getBossPounce();
 		motion= standing;
-		maxHp = 100;
+		maxHp = 300;
 		hp=maxHp;
 		randomGenerator = new Random();
 	}
@@ -92,7 +96,6 @@ public class Boss extends Character{
 	private void startPounce() {
 		setNextPouncePoint();
 		isPouncing = true;
-		Data.say("pouncing!");
 	}
 	
 	private void pounceController() {
@@ -138,7 +141,7 @@ public class Boss extends Character{
 		if(charge > 0) {
 			charge--;
 			if(charge <= 0)
-				shoot(ATTACK_SIZE_BIG);
+				shoot(ATTACK_SIZE_BIG, false);
 			return;
 		}
 		if(tickCount % TICKS_BETWEEN_ATTACKS == 0)
@@ -152,7 +155,10 @@ public class Boss extends Character{
 			charge = TICKS_FOR_CHARGE;
 		}
 		else if((rand -= PROBABILITY_OF_SMALL_ATTACK) < 0) {
-			shoot(ATTACK_SIZE_SMALL);
+			shoot(ATTACK_SIZE_SMALL, false);
+		}
+		else if(hp / maxHp < HEALTH_RATIO_BEFORE_FRENZY && (rand -= PROBABILITY_OF_FRENZY_ATTACK) < 0) {
+			shoot(ATTACK_SIZE_BIG, true);
 		}
 	}
 	
@@ -169,10 +175,8 @@ public class Boss extends Character{
 	}
 	
 	//attackSize: 1 = small, 2 = large
-	private void shoot(int attackSize) {
-		readyForAttack = false;
-		Data.say("Boss Attack " + attackSize);
-		double scale= 1;
+	private void shoot(int attackSize, boolean isFrenzy) {
+		readyForAttack = false;		
 		double directionScale = 4;
 		double direction= getAngle() - Math.PI;
 		double deltaX= Math.sin(direction) * directionScale;
@@ -183,19 +187,36 @@ public class Boss extends Character{
 		Point3D bossHead= new Point3D(getLoc().x + deltaX, getLoc().y + 2.4, getLoc().z + deltaZ);
 		double dist= ninjaLoc.minus(bossHead).length();
 		
+		Point3D targetVector= calculateTargetVector(direction, dist);
+		createProjectile(attackSize, targetVector, objs[8], bossHead, direction);
+		
+		if(isFrenzy) { //if it's in a frenzy, then shoot left and right as well
+			direction= getAngle() - Math.PI + .2;
+			targetVector= calculateTargetVector(direction, dist);
+			createProjectile(attackSize, targetVector, objs[8], bossHead, direction);
+			direction= getAngle() - Math.PI - .2;
+			targetVector= calculateTargetVector(direction, dist);
+			createProjectile(attackSize, targetVector, objs[8], bossHead, direction);
+		}
+	}
+	
+	public Point3D calculateTargetVector(double direction, double dist) {
+		double scale= 1;
 		double targetX= Math.sin(direction);
 		double targetY= (-1/dist) * scale;
 		double targetZ= -Math.cos(direction);
 		
-		Point3D targetVector= new Point3D(targetX, targetY, targetZ);
-		
-		// create projectile
-		scale= 4;
+		return new Point3D(targetX, targetY, targetZ);
+	}
+	
+	public void createProjectile(int attackSize, Point3D targetVector, OBJ obj, Point3D bossHead, double direction) {
+		int scale= 4;
 		double sizeScale = .3 * attackSize;
 		double[] rot = model.getRot().clone();
-		rot[0]= -targetY * scale;
-		Model projModel= new Model(objs[8], 11, bossHead, rot, sizeScale, 1);
-		gameModel.getProjectiles().add(new Projectile(gameModel, projModel, targetVector, attackSize, bossHead, direction));
+		rot[0]= -targetVector.y * scale;
+		Model projModel= new Model(obj, 11, bossHead, rot, sizeScale, 1);
+		boolean heatSeeking = hp / maxHp < HEALTH_RATIO_BEFORE_HEAT_SEEKING;
+		gameModel.getProjectiles().add(new Projectile(gameModel, projModel, targetVector, attackSize, heatSeeking, bossHead, direction));
 		gameModel.getModels().add(projModel);
 	}
 
@@ -225,6 +246,8 @@ public class Boss extends Character{
 	}
 	
 	public void takeDamage(int damage) {
+		Data.say("hit boss for " + damage + " damage");
+		//increase boss difficulty after each hit
 		turnRate += damage / maxHp / 10;
 		TICKS_BETWEEN_POUNCES -= damage / maxHp * 100;
 		TICKS_BETWEEN_ATTACKS -= damage / maxHp * 100 / 3;

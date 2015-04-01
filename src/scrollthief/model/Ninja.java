@@ -46,7 +46,6 @@ public class Ninja extends Character {
 			animFrame= 0;
 		}
 		else if (attacking == 1 && prevAttack != 1) {
-			Data.say(getLoc().toString());
 			speed = 0;
 			motion= attacking1;
 			animFrame= 0;
@@ -95,7 +94,7 @@ public class Ninja extends Character {
 	}
 	
 	public void detectAttackCollision() {
-		double threshold2 = 5;
+		double threshold2 = 10;
 		Point3D loc = getLoc();
 		ArrayList<Point2D[]> edges= new ArrayList<Point2D[]>();
 		Character boss = gameModel.getBoss();
@@ -103,7 +102,7 @@ public class Ninja extends Character {
 		//area of attacking collision area
 		double direction= getAngle() + Math.PI;
 		float scale= .125f;
-		double swordLength = 1.5;  //should be 1 or 2 probably, but it's longer for testing
+		double swordLength = 2; //1.5;  //should be 1 or 2 probably, but it's longer for testing
 		double deltaX= Math.sin(direction) * (scale * swordLength);
 		double deltaZ= -Math.cos(direction) * (scale * swordLength);
 		Point3D atkLoc= new Point3D(getLoc().x + deltaX, getLoc().y, getLoc().z + deltaZ);
@@ -111,6 +110,7 @@ public class Ninja extends Character {
 		
 		//check if boss is close enough to even check for collision
 		double dist = loc.minus(boss.getLoc()).length();
+		Data.say("checking atk collision at dist: " + dist);
 		if(dist < threshold2) {
 			Point2D[][] bossBox = GameModel.boxToWorld(boss.getModel(), boss.getHitBox());
 			edges = gameModel.collision(atkHitBox, bossBox, edges);

@@ -149,7 +149,7 @@ public class Level1 implements Level {
 			guards[i]= new Guard(gameModel, models.get(i + 2), .35, .5, orders[i]); 
 			loadingBar.increaseProgress(1);
 		}
-		boss= new Boss(gameModel, models.get(models.size()-1), 1.5, 1.5);
+		boss= new Boss(gameModel, models.get(models.size()-1), 10, 4);  //alien was ,,1.5, 1.5
 		loadingBar.increaseProgress(1);
 	}
 	

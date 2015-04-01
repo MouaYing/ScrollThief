@@ -12,14 +12,16 @@ public class Projectile {
 	double turnRate= .3;
 	Point2D[][] hitbox;
 	int attackSize;
+	boolean heatSeeking;
 	
-	public Projectile(GameModel gameModel, Model model, Point3D targetVector, int attackSize, Point3D origLoc, double origAngle) {
+	public Projectile(GameModel gameModel, Model model, Point3D targetVector, int attackSize, boolean heatSeeking, Point3D origLoc, double origAngle) {
 		this.gameModel= gameModel;
 		this.model= model;
 		this.targetVector= targetVector;
 		Point2D[] boxPoints= GameModel.findPoints(.5, .5);
 		hitbox= GameModel.createHitBox(boxPoints);
 		this.attackSize = attackSize;
+		this.heatSeeking = heatSeeking;
 		this.origLoc = origLoc;
 		this.origAngle = origAngle;
 	}
@@ -27,7 +29,7 @@ public class Projectile {
 	public void move(){
 		double speed= .1;
 		Point3D loc= model.getLoc(); 
-		if(attackSize == 1) {
+		if(heatSeeking) {
 			setTargetVector();
 		}
 		Point3D delta= targetVector.mult(speed);

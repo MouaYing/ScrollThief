@@ -42,9 +42,9 @@ public class Resource {
 	// private final int total = 5;
 	private final int OBJS_NUM = 9;
 	private final int NINJA_RUN_NUM = 21;
-	private final int NINJA_STRIKE1_NUM = 12;
-	private final int NINJA_STRIKE2_NUM = 8;
-	private final int NINJA_STRIKE3_NUM = 20;
+	private final int NINJA_STRIKE1_NUM = 24;
+	private final int NINJA_STRIKE2_NUM = 16;
+	private final int NINJA_STRIKE3_NUM = 40;
 	private final int GUARD_WALK_NUM = 30;
 	private final int BOSS_POUNCE_NUM = 45;
 	private final int TEXTURES_NUM = 12;
@@ -64,7 +64,7 @@ public class Resource {
 		guardWalk = new OBJ[GUARD_WALK_NUM];
 		bossPounce = new OBJ[BOSS_POUNCE_NUM];
 		textures = new Texture[TEXTURES_NUM];
-		int total = SOUNDS_NUM + OBJS_NUM + NINJA_RUN_NUM + //NINJA_STRIKE1_NUM + NINJA_STRIKE2_NUM + NINJA_STRIKE3_NUM + 
+		int total = SOUNDS_NUM + OBJS_NUM + NINJA_RUN_NUM + NINJA_STRIKE1_NUM + NINJA_STRIKE2_NUM + NINJA_STRIKE3_NUM + 
 				GUARD_WALK_NUM + BOSS_POUNCE_NUM + TEXTURES_NUM;
 		loadingBar = new LoadingBar(total,gameModel,"resource", phrases);
 		levelSplashIndex = rand.nextInt(IMAGES_NUM);
@@ -173,25 +173,27 @@ public class Resource {
 			ninjaRun[i]= new OBJ(fileName);
 			loadingBar.increaseProgress(1);
 		}
-//		for (int i= 0; i < NINJA_STRIKE1_NUM; i++){
-//			say("Loading strike 1 cycle frame " + (i+1));
-//			String fileName= "/resources/obj/anim/ninja/attack/strike1." + (i+1) + ".obj";
-//			Data.say(ninjaStrike1.length + " " +fileName);
-//			ninjaStrike1[i]= new OBJ(fileName);
-//			loadingBar.increaseProgress(1);
-//		}
-//		for (int i= 0; i < NINJA_STRIKE2_NUM; i++){
-//			say("Loading strike 2 cycle frame " + (i+1));
-//			String fileName= "/resources/obj/anim/ninja/attack/strike2." + (i+1) + ".obj";
-//			ninjaStrike2[i]= new OBJ(fileName);
-//			loadingBar.increaseProgress(1);
-//		}
-//		for (int i= 0; i < NINJA_STRIKE3_NUM; i++){
-//			say("Loading strike 3 cycle frame " + (i+1));
-//			String fileName= "/resources/obj/anim/ninja/attack/strike3." + (i+1) + ".obj";
-//			ninjaStrike3[i]= new OBJ(fileName);
-//			loadingBar.increaseProgress(1);
-//		}
+		int j = 1;
+		for (int i= 0; i < NINJA_STRIKE1_NUM; i++){
+			String fileName= "/resources/obj/anim/ninja/attack/strike1." + (j++) + ".obj";
+			ninjaStrike1[i++]= new OBJ(fileName);
+			ninjaStrike1[i]= new OBJ(fileName);
+			loadingBar.increaseProgress(2);
+		}
+		j = 1;
+		for (int i= 0; i < NINJA_STRIKE2_NUM; i++){
+			String fileName= "/resources/obj/anim/ninja/attack/strike2." + (j++) + ".obj";
+			ninjaStrike2[i++]= new OBJ(fileName);
+			ninjaStrike2[i]= new OBJ(fileName);
+			loadingBar.increaseProgress(2);
+		}
+		j = 1;
+		for (int i= 0; i < NINJA_STRIKE3_NUM; i++){
+			String fileName= "/resources/obj/anim/ninja/attack/strike3." + (j++) + ".obj";
+			ninjaStrike3[i++]= new OBJ(fileName);
+			ninjaStrike3[i]= new OBJ(fileName);
+			loadingBar.increaseProgress(2);
+		}
 		say("done with ninja");
 	}
 	
