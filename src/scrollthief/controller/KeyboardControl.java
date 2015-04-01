@@ -5,7 +5,6 @@ import java.awt.event.KeyListener;
 
 import com.sun.corba.se.impl.oa.poa.ActiveObjectMap.Key;
 
-import javafx.scene.input.KeyCode;
 import scrollthief.model.Data;
 import scrollthief.model.GameModel;
 import scrollthief.view.View;
@@ -13,25 +12,27 @@ import scrollthief.view.View;
 public class KeyboardControl implements KeyListener {
 
 	private GameControl gameControl;
+	private GameModel gameModel;
 	
 	public KeyboardControl(Controller controller){
-		gameControl = new GameControl(controller);
+		gameControl = controller.getGameControl();
+		gameModel = controller.gameModel;
 	}
 	
 	@Override
 	public void keyPressed(KeyEvent arg0) {
 		switch (arg0.getKeyCode()) {
 			case KeyEvent.VK_W:
-				gameControl.increaseSpeed();
+				gameModel.setWPressed(true);
 				break;
 			case KeyEvent.VK_S:
-				gameControl.stop();
+				gameModel.setSPressed(true);
 				break;
 			case KeyEvent.VK_A:
-				gameControl.rotateNinjaLeft();
+				gameModel.setAPressed(true);
 				break;
 			case KeyEvent.VK_D:
-				gameControl.rotateNinjaRight();
+				gameModel.setDPressed(true);
 				break;
 			case KeyEvent.VK_LEFT:
 				gameControl.rotateCameraLeft();
@@ -39,6 +40,8 @@ public class KeyboardControl implements KeyListener {
 			case KeyEvent.VK_RIGHT:
 				gameControl.rotateCameraRight();
 				break;
+			case KeyEvent.VK_C:
+				gameControl.resetCamera();
 			default:
 				break;
 		}
@@ -62,13 +65,25 @@ public class KeyboardControl implements KeyListener {
 				break;
 			case KeyEvent.VK_SPACE:
 				gameControl.jump();
-				gameControl.pauseButtonClick();
+				gameControl.buttonClick();
 				break;
 			case KeyEvent.VK_UP:
 				gameControl.switchSelectedButton(0);
 				break;
 			case KeyEvent.VK_DOWN:
 				gameControl.switchSelectedButton(1);
+				break;
+			case KeyEvent.VK_W:
+				gameModel.setWPressed(false);
+				break;
+			case KeyEvent.VK_S:
+				gameModel.setSPressed(false);
+				break;
+			case KeyEvent.VK_A:
+				gameModel.setAPressed(false);
+				break;
+			case KeyEvent.VK_D:
+				gameModel.setDPressed(false);
 				break;
 			default:
 				break;

@@ -33,7 +33,7 @@ public class Boss extends Character{
 	final int TOTAL_ATTACK_PROBABILITY = PROBABILITY_OF_BIG_ATTACK + PROBABILITY_OF_SMALL_ATTACK + PROBABILITY_OF_FRENZY_ATTACK;
 	
 	public Boss(GameModel gameModel, Model model, double boxLength, double boxWidth) {
-		super(gameModel, model, boxLength, boxWidth);
+		super(gameModel, model, boxLength, boxWidth, "Boss");
 		lastPouncePoint = gameModel.getCurrentLevel().getBossPouncePoints().get(0);
 		turnRate= .05;
 		standing= new OBJ[] {model.getObj()};

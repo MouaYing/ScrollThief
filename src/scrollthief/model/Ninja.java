@@ -26,7 +26,7 @@ public class Ninja extends Character {
 	float[] attackPowers;  //what percentage of the maxAttackDamage to use
 	
 	public Ninja(GameModel gameModel, Model model, double boxLength, double boxWidth) {
-		super(gameModel, model, boxLength, boxWidth);
+		super(gameModel, model, boxLength, boxWidth, "Ninja");
 		standing= new OBJ[] {defaultOBJ};
 		attackPowers = new float[] {0f, .3f, .4f, 1f};
 		running= gameModel.getResource().getNinjaRun();
@@ -68,6 +68,21 @@ public class Ninja extends Character {
 			motion= running;
 			animFrame= 0;
 		}
+		
+		if(gameModel.getAPressed() && !gameModel.getWPressed() && !gameModel.getSPressed())
+			setNinjaDirection(getAngle() + Math.PI - Math.toRadians(90));
+		else if(gameModel.getDPressed() && !gameModel.getWPressed() && !gameModel.getSPressed())
+			setNinjaDirection(getAngle() + Math.PI + Math.toRadians(90));
+		else if(gameModel.getAPressed() && gameModel.getWPressed())
+			setNinjaDirection(getAngle() + Math.PI - Math.toRadians(45));
+		else if(gameModel.getDPressed() && gameModel.getWPressed())
+			setNinjaDirection(getAngle() + Math.PI + Math.toRadians(45));
+		else if(gameModel.getAPressed() && gameModel.getSPressed())
+			setNinjaDirection(getAngle() + Math.PI - Math.toRadians(135));
+		else if(gameModel.getDPressed() && gameModel.getSPressed())
+			setNinjaDirection(getAngle() + Math.PI + Math.toRadians(135));
+		else
+			setNinjaDirection(getAngle() + Math.PI);
 		
 		wasJumping= isJumping;
 		oldSpeed= speed;

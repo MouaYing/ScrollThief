@@ -25,6 +25,7 @@ public class DialogRenderer {
 //	Dialog dialog;
 	TextRenderer tRend;
 	TextRenderer tRend2;
+	TextRenderer tRendLoadingBar;
 	Texture dialogBackground;
 	float startTime;
 	float timer;
@@ -41,6 +42,7 @@ public class DialogRenderer {
 		this.gl = gl;
 		tRend = new TextRenderer(new Font("Helvetica", Font.BOLD, 20));
 		tRend2 = new TextRenderer(new Font("Helvetica", Font.BOLD, 60));
+		tRendLoadingBar= new TextRenderer(new Font("Helvetica", Font.PLAIN, 10));
 		loadDialogBackgroundImage(gl);
 		timer = 0;
 		startTime = 0;
@@ -122,6 +124,10 @@ public class DialogRenderer {
 		TextRenderer rend = tRend;
 		if (type.equals("big"))
 			rend = tRend2;
+		else if(type == "loading")
+			rend = tRendLoadingBar;
+		else if(type == "pause")
+			rend = new TextRenderer(new Font("Helvetica", Font.PLAIN, 15));
 			
 		rend.setColor(color);
 		rend.beginRendering(Data.windowX, Data.windowY, true);

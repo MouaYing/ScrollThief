@@ -3,6 +3,7 @@ package scrollthief.view;
 import java.awt.Color;
 import java.awt.Font;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
@@ -17,6 +18,7 @@ import com.jogamp.opengl.util.texture.Texture;
 import scrollthief.model.Button;
 import scrollthief.model.GameState;
 import scrollthief.model.LoadingBar;
+import scrollthief.model.Obstacle;
 import scrollthief.model.Data;
 import scrollthief.model.Point3D;
 import scrollthief.model.Model;
@@ -45,14 +47,16 @@ public class View extends GLCanvas implements GLEventListener{
 	TextRenderer tRend;
 	TextRenderer tRend2;
 	TextRenderer tRendLoadingBar;
+	boolean startDetectingObstacles;
 
 	public View(GameModel model){
 		say("Loading view...");
 		this.gameModel= model;
-		setPreferredSize(new java.awt.Dimension(Data.windowX, Data.windowY));
+		setPreferredSize(new java.awt.Dimension(this.windowX, this.windowY));
         addGLEventListener(this);
         init= false;
 		say("--View loaded--\n");
+		startDetectingObstacles = false;
 	}
 	
 	@Override
@@ -114,13 +118,22 @@ public class View extends GLCanvas implements GLEventListener{
 				gl.glPushMatrix();
 				Model model= models.get(i);
 				
+				// don't draw guards if they are obscured
+				if (model.getTxtr() == 8 && cullObscured(model)) continue;
+				
 				// assign texture
 				textures[model.getTxtr()].bind(gl);
+				if(model.isHurt()){
+					gl.glColor3f(1,0,0);
+				}
+				else {
+					gl.glColor3f(1,1,1);
+				}
 				
 				//apply object to window transform
 				obj2world(gl, model);
 				
-				model.getObj().DrawModel(gl);
+				model.getObj().DrawModel(gl, model.getIsTransparent());
 				
 				gl.glPopMatrix();
 				gl.glFlush();
@@ -150,7 +163,6 @@ public class View extends GLCanvas implements GLEventListener{
 			LoadingBar loading = gameModel.getLevelLoadingBar();
 			drawLoadingBar(gl,loading);
 			
-			//Display Game Title
 			if(gameModel.getState() == GameState.Start){
 
 				String text = "Press Esc to Begin Mission";
@@ -160,12 +172,12 @@ public class View extends GLCanvas implements GLEventListener{
 			gl.glEnable(GL2.GL_TEXTURE_2D);
 		}
 		if (gameModel.getState() == GameState.Paused){
-			String text= "Steal the enemy battle plans (scroll)";
-			dialogRenderer.overlayText(text,  Data.windowX/2 - (15 * text.length()/2), Data.windowY/2 + 150, Color.blue, "reg");
-			text= "without being detected";
-			dialogRenderer.overlayText(text,  Data.windowX/2 - (15 * text.length()/2), Data.windowY/2 + 100, Color.blue, "reg");
-			text= "Press start to begin";
-			dialogRenderer.overlayText(text,  Data.windowX/2 - (30 * text.length()/2), Data.windowY/2, Color.blue, "big");
+//			String text= "Steal the enemy battle plans (scroll)";
+//			dialogRenderer.overlayText(text,  Data.windowX/2 - (15 * text.length()/2), Data.windowY/2 + 150, Color.blue, "reg");
+//			text= "without being detected";
+//			dialogRenderer.overlayText(text,  Data.windowX/2 - (15 * text.length()/2), Data.windowY/2 + 100, Color.blue, "reg");
+//			text= "Press start to begin";
+//			dialogRenderer.overlayText(text,  Data.windowX/2 - (30 * text.length()/2), Data.windowY/2, Color.blue, "big");
 
 			drawPauseMenu(gl);
 //			String text= "Steal the enemy battle plans (scroll)";
@@ -204,15 +216,51 @@ public class View extends GLCanvas implements GLEventListener{
 			else
 				dialogRenderer.render(gameModel.getCurrentLevel().getCurrentDialogHotspot().getText());
 		}
+		else if(gameModel.getState() == GameState.MainMenu){
+			displaySplashImage(gameModel.getSplashImage());
+
+			//Display Game Title
+			String text = "THE SCROLL THIEF";
+			overlayText(text, (int)(Data.windowX/2 - Data.windowX*.15), Data.windowY-100, Color.white, "reg");
+			
+			
+			drawMainMenu(gl);
+		}
+	}
+	
+
+	private void drawMainMenu(GL2 gl){
+		gl.glDisable(GL2.GL_TEXTURE_2D);
+				
+		String text = "MAIN MENU";
+		drawButtonMenu(gl,gameModel.getMainMenuButtons(), text);
+		
+	    gl.glFlush();
+
+		gl.glPopMatrix();
+		gl.glEnable(GL2.GL_TEXTURE_2D);
+		
 	}
 	
 	private void drawPauseMenu(GL2 gl){
 
 		gl.glDisable(GL2.GL_TEXTURE_2D);
-		double leftX = 200;
-		double leftY = 200;
+
+		String text = "GAME PAUSED";
+		drawButtonMenu(gl, gameModel.getPauseButtons(), text);
+
+	    gl.glFlush();
+
+		gl.glPopMatrix();
+		gl.glEnable(GL2.GL_TEXTURE_2D);
+		
+	}
+	
+	private void drawButtonMenu(GL2 gl, List<Button> buttons, String text){
 		double height = 300;
 		double maxWidth = 300;
+		double leftX = (Data.windowX - maxWidth)/2;
+		double leftY = (Data.windowY - height)/2;
 		gl.glPushMatrix();
 		gl.glMatrixMode(GL2.GL_PROJECTION);
 		gl.glLoadIdentity();
@@ -224,12 +272,12 @@ public class View extends GLCanvas implements GLEventListener{
 			gl.glVertex2d(leftX+maxWidth, leftY+height);
 			gl.glVertex2d(leftX+maxWidth, leftY);
 		gl.glEnd();
-
-
-		String text = "GAME PAUSED";
-		dialogRenderer.overlayText(text, (int)(leftX + 100), (int)(leftY + height - 20), Color.black, "pause");
-		
-		for(Button b : gameModel.getPauseButtons()){
+		overlayText(text, (int)(leftX + 100), (int)(leftY + height - 20), Color.black, "pause");
+		//dialogRenderer.overlayText(text, (int)(leftX + 100), (int)(leftY + height - 20), Color.black, "pause");
+		for(Button b : buttons){
+			b.setOffset((int)leftX, (int)leftY);
+		}
+		for(Button b : buttons){
 			if(b.IsSelected()){
 				gl.glColor3f(1f, 1f, 1f);
 				gl.glBegin(GL2.GL_QUADS);
@@ -246,14 +294,15 @@ public class View extends GLCanvas implements GLEventListener{
 				gl.glVertex2d(b.getX()+b.getWidth(), b.getY()+b.getHeight());
 				gl.glVertex2d(b.getX()+b.getWidth(), b.getY());
 			gl.glEnd();
-			dialogRenderer.overlayText(b.getText(), (int)(b.getX()+b.getWidth()/4), (int)(b.getY() + b.getHeight()/4), Color.black, "pause");
+			text = b.getText();
+			int x = (int)(b.getX()+b.getWidth()/5);
+			if(text.length() > 7){
+				x -= 5*(text.length()-7);
+			}
+			int y = (int)(b.getY() + b.getHeight()/3);
+			overlayText(b.getText(),x ,y , Color.black, "pause");
+			//dialogRenderer.overlayText(b.getText(), (int)(b.getX()+b.getWidth()/4), (int)(b.getY() + b.getHeight()/4), Color.black, "pause");
 		}
-
-	    gl.glFlush();
-
-		gl.glPopMatrix();
-		gl.glEnable(GL2.GL_TEXTURE_2D);
-		
 	}
 	
 	private void displaySplashImage(Texture t){
@@ -392,10 +441,17 @@ public class View extends GLCanvas implements GLEventListener{
 		Point3D ninjaLoc= gameModel.getNinjaLoc();
 		lookAt= new float[]{(float) ninjaLoc.x, (float) ninjaLoc.y * scale + 2, (float) ninjaLoc.z};
 		
+		if (gameModel.getUsingMouse()) {
+			cameraAngle = ninjaAngle;
+			lookFrom[1] = 4;
+			gameModel.setUsingMouse(false);
+		}
+		
 		if (resetting){ // center the camera behind the ninja
 			cameraAngle= ninjaAngle;
 			cameraDistance= 6;
 			lookFrom[1]= 4;
+			resetting = false;
 		}
 		
 		dZ= -Math.cos(cameraAngle); 
@@ -412,6 +468,25 @@ public class View extends GLCanvas implements GLEventListener{
 		glu.gluLookAt(lookFrom[0], lookFrom[1], lookFrom[2],
 		        lookAt[0], lookAt[1], lookAt[2],
 		        0.0f, 1.0f, 0.0f);
+		
+		Point3D cameraLoc = new Point3D(lookFrom[0], lookFrom[1], lookFrom[2]);
+		ninjaLoc = gameModel.getNinjaLoc();
+		
+		if(gameModel.getState() == GameState.Start) {
+			startDetectingObstacles = true;
+		}
+	
+		// TODO: detect when an obstacle is between the viewer and the ninja and give it opacity
+		if(ninjaLoc != null && startDetectingObstacles) {
+			for(Obstacle obstacle : gameModel.getObstacles()) {
+				if(!gameModel.boxHit(cameraLoc,  ninjaLoc, obstacle.getHitBox()).isEmpty() && obstacle.getModel().getObj() != gameModel.getResource().getOBJs()[4]) {
+					obstacle.getModel().setIsTransparent(true);
+				}
+				else {
+					obstacle.getModel().setIsTransparent(false);
+				}
+			}
+		}
 
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
 		//gl.glLoadIdentity();
@@ -419,6 +494,26 @@ public class View extends GLCanvas implements GLEventListener{
 	
 	public DialogRenderer getDialogRenderer() {
 		return dialogRenderer;
+	}
+	
+	private boolean cullObscured(Model model){
+		Point3D modelLoc= model.getLoc();
+		Point3D cameraLoc= new Point3D((double)lookFrom[0], (double)lookFrom[1], (double)lookFrom[2]);
+		Obstacle[] obstacles= gameModel.getObstacles();
+		
+		for (int i= 0; i < obstacles.length; i++){
+			Obstacle obs= obstacles[i];
+			int type = obs.getModel().getTxtr();
+			
+			// don't count pillars or tables, or transparent obstacles
+			if (type == 3 || type == 4 || obs.getModel().getIsTransparent()) continue; 
+			
+			// see if the line between camera and model crosses obstacle hitbox	
+			if (!gameModel.boxHit(modelLoc, cameraLoc, obs.getHitBox()).isEmpty()) 
+				return true;
+		}
+		
+		return false;
 	}
 	
 // -----------------Camera getters -----------------------------

@@ -20,6 +20,10 @@ public class LoadingBar {
 		this.loadingPhrases = loadingPhrases;
 	}
 	
+	public void reset() {
+		progress = 0;
+	}
+	
 	public synchronized void increaseProgress(int up){
 		progress += up;
 		if(progress >= total){

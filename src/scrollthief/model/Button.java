@@ -6,6 +6,8 @@ public class Button {
 	private int height;
 	private int x;
 	private int y;
+	private int baseX;
+	private int baseY;
 	private GameModel game;
 	private String text;
 	private boolean selected;
@@ -13,11 +15,16 @@ public class Button {
 	
 	public Button(int x, int y, int width, int height, ButtonType type, boolean selected, GameModel game){
 		this.width = width;
+		this.baseX = x;
+		this.baseY = y;
 		this.x = x;
 		this.y = y;
 		this.height = height;
 		this.type = type;
 		this.text = type.toString();
+		if(type == ButtonType.MAINMENU){
+			this.text = "MAIN MENU";
+		}
 		this.selected = selected;
 		this.game = game;
 	}
@@ -56,6 +63,12 @@ public class Button {
 	public int getY() {
 		return y;
 	}
+	
+	public void setOffset(int offsetX, int offsetY){
+		this.x = offsetX + baseX;
+		this.y = offsetY + baseY;
+	}
+	
 
 	public void doAction() {
 		if(type == ButtonType.RESUME){
@@ -65,8 +78,22 @@ public class Button {
 			System.exit(0);
 		}
 		else if(type == ButtonType.RESTART){
-			game.getNinja().reset();
-			game.getBoss().reset();
+			game.resetLevel();
+			game.changeState(GameState.Playing);
+		}
+		else if(type == ButtonType.START){
+			game.changeState(GameState.LevelLoading);
+		}
+		else if(type == ButtonType.CONTINUE){
+			game.continueGame();
+		}
+		else if(type == ButtonType.SAVE){
+			game.saveGame();
+		}
+		else if(type == ButtonType.MAINMENU){
+			game.resetLevel();
+			game.resetLevelLoading();
+			game.changeState(GameState.MainMenu);
 		}
 	}
 

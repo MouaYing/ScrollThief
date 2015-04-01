@@ -10,6 +10,10 @@ public class LevelFactory {
 		levelState = LevelState.Level0;
 	}
 	
+	public LevelFactory(LevelState state) {
+		levelState = state;
+	}
+	
 	public Level getNextLevel(Resource resource, GameModel gameModel, Map<String,ArrayList<String>> phrases) {
 		if(levelState == LevelState.Level0)
 			return new Level1(resource, gameModel, phrases);

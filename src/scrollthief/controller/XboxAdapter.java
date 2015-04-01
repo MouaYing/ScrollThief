@@ -75,7 +75,7 @@ public class XboxAdapter extends XboxControllerAdapter{
 	public void buttonA(boolean pressed){
 		if (pressed){
 			gameControl.jump();
-			gameControl.pauseButtonClick();
+			gameControl.buttonClick();
 		}
 	}
 	

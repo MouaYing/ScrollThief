@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface Level {
-	public void createModels();
-	public void createCharacters();
-	public void createObstacles();
 	public Guard[] getGuards();
 	public Obstacle[] getObstacles();
 	public Ninja getNinja();
@@ -20,4 +17,6 @@ public interface Level {
 	public void setCurrentDialogHotspot(DialogHotspot curr);
 	public LoadingBar getLoadingBar();
 	public List<Point3D> getBossPouncePoints();
+	public void reset();
+	public void initialize();
 }
