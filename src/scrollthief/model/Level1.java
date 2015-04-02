@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import scrollthief.model.characters.Boss;
+import scrollthief.model.characters.Guard;
+import scrollthief.model.characters.Ninja;
+
 public class Level1 implements Level {
 	int numGuards;
 	int numWalls;
@@ -375,7 +379,7 @@ public class Level1 implements Level {
 			}
 			//walls
 			else if(type >= 5 && type <=7){
-				obstacles[obsLoc++]= new Obstacle(models.get(i), false, .6, 4, 5); 
+				obstacles[obsLoc++]= new Obstacle(models.get(i), false, .65, 4.15, 5); 
 				loadingBar.increaseProgress(1);
 			}
 		}

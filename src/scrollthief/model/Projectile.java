@@ -3,18 +3,21 @@ package scrollthief.model;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
+import scrollthief.model.characters.Character;
+import scrollthief.model.characters.Edge;
+import scrollthief.model.characters.HitBox;
+
 public class Projectile {
 	GameModel gameModel;
 	Model model;
 	Point3D targetVector;
-	Point2D[][] hitbox;
+	HitBox actualHitBox;
 	
 	public Projectile(GameModel gameModel, Model model, Point3D targetVector) {
 		this.gameModel= gameModel;
 		this.model= model;
 		this.targetVector= targetVector;
-		Point2D[] boxPoints= GameModel.findPoints(.5, .5);
-		hitbox= GameModel.createHitBox(boxPoints);
+		actualHitBox = new HitBox(.5, .5, model.getAngle(), model.getLoc());
 	}
 	
 	public void move(){
@@ -28,17 +31,17 @@ public class Projectile {
 	
 	public boolean ninjaCollision(){
 		Character ninja= gameModel.getNinja();
-		Point2D[][] myBox= GameModel.boxToWorld(model, hitbox);
-		Point2D[][] ninjaBox= GameModel.boxToWorld(ninja.model, ninja.hitBox);
+		actualHitBox.createNewHitBox(getModel().getAngle(), getModel().getLoc());
+		HitBox ninjaBox = ninja.getHitBox();
 		Point3D loc= model.getLoc();
 		double threshold= 5;
-		ArrayList<Point2D[]> edges= new ArrayList<Point2D[]>();
+		ArrayList<Edge> edges= new ArrayList<Edge>();
 		double dist= loc.minus(ninja.getLoc()).length();
 		
 		if (dist > threshold)
 			return false;
 		
-		edges= gameModel.collision(myBox, ninjaBox, edges);
+		edges= actualHitBox.getCollidedEdges(ninjaBox);
 		
 		if (!edges.isEmpty())
 			return true;
@@ -48,10 +51,10 @@ public class Projectile {
 	
 	public boolean obsCollision(){
 		Obstacle[] obstacles= gameModel.getObstacles();
-		Point2D[][] myBox= GameModel.boxToWorld(model, hitbox);
+		actualHitBox.createNewHitBox(getModel().getAngle(), getModel().getLoc());
 		Point3D loc= model.getLoc();
 		double threshold= 10;
-		ArrayList<Point2D[]> edges= new ArrayList<Point2D[]>();
+		ArrayList<Edge> edges= new ArrayList<Edge>();
 		
 		for(int i= 0; i < obstacles.length; i++){
 			Obstacle obs= obstacles[i];
@@ -59,8 +62,8 @@ public class Projectile {
 			
 			if (dist > threshold || obs.isLow)
 				continue;
-			
-			edges= gameModel.collision(myBox, obstacles[i].hitBox, edges);
+
+			edges= actualHitBox.getCollidedEdges(obstacles[i].getHitBox());
 			
 			if (!edges.isEmpty())
 				return true;

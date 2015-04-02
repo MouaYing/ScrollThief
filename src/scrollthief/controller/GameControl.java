@@ -154,7 +154,7 @@ public class GameControl {
 	
 	public void toggleDevMode(){
 		//for putting the ninja next to the boss for testing
-		scrollthief.model.Character ninja= gameModel.getNinja();
+		scrollthief.model.characters.Character ninja= gameModel.getNinja();
 		
 //		ninja.setLoc(new Point3D(10, 0, 70));  //for if you want quick teleport to boss
 		
@@ -166,7 +166,7 @@ public class GameControl {
 	}
 	
 	public void jump(){
-		scrollthief.model.Character ninja= gameModel.getNinja();
+		scrollthief.model.characters.Character ninja= gameModel.getNinja();
 		if(canPlay() && !isAttacking())
 			if (ninja != null && !ninja.isJumping){
 				ninja.isJumping= true;
@@ -176,7 +176,7 @@ public class GameControl {
 	}
 	
 	public void attack() {
-		scrollthief.model.Character ninja= gameModel.getNinja();
+		scrollthief.model.characters.Character ninja= gameModel.getNinja();
 		if(canPlay()) {
 			if(ninja.attacking < 1)
 				ninja.attacking = 1;
@@ -190,7 +190,7 @@ public class GameControl {
 	}
 	
 	public boolean isAttacking() {
-		scrollthief.model.Character ninja= gameModel.getNinja();
+		scrollthief.model.characters.Character ninja= gameModel.getNinja();
 		return ninja.attacking > -1;
 	}
 	

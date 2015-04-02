@@ -3,6 +3,10 @@ package scrollthief.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import scrollthief.model.characters.Boss;
+import scrollthief.model.characters.Guard;
+import scrollthief.model.characters.Ninja;
+
 public interface Level {
 	public Guard[] getGuards();
 	public Obstacle[] getObstacles();

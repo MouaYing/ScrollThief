@@ -1,7 +1,14 @@
-package scrollthief.model;
+package scrollthief.model.characters;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+
+import scrollthief.model.GameModel;
+import scrollthief.model.GameState;
+import scrollthief.model.Model;
+import scrollthief.model.OBJ;
+import scrollthief.model.Obstacle;
+import scrollthief.model.Point3D;
 
 /**
  * @author Jon "Neo" Pimentel
@@ -25,6 +32,8 @@ public class Ninja extends Character {
 	float maxAttackDamage = 10f;
 	float[] attackPowers;  //what percentage of the maxAttackDamage to use
 	
+	private float gravity = .01f;
+	
 	public Ninja(GameModel gameModel, Model model, double boxLength, double boxWidth) {
 		super(gameModel, model, boxLength, boxWidth, "Ninja");
 		standing= new OBJ[] {defaultOBJ};
@@ -36,6 +45,47 @@ public class Ninja extends Character {
 		jumping= new OBJ[] {running[0]};
 		motion= standing;
 		hp = 3;																																																																											;
+	}
+	
+	public double getDirection() {
+		return ninjaDirection;
+	}
+	
+	public double calcNewY(Point3D loc) {
+		setDeltaY((loc.y > 0 || getDeltaY() > 0) ? (getDeltaY() - gravity) : 0);
+		double newY= (loc.y + getDeltaY());
+		if (newY <= 0){ // on the ground
+			newY = 0;
+			isJumping= false;
+		}
+		return newY;
+	}
+	
+	public ArrayList<Edge> specificCharacterCollisionCheck(double deltax, double deltaZ, Point3D newLocation) {
+		ArrayList<Edge> collidedEdges = new ArrayList<Edge>();
+		inObstacleBox = null;
+		Character boss= gameModel.getBoss();
+		collidedEdges.addAll(characterCollisionCheck(newLocation, boss));
+		
+		Character[] guards = gameModel.getGuards();
+		
+		for (int i= 0; i < guards.length; i++){
+			Character guard = guards[i];
+			collidedEdges.addAll(characterCollisionCheck(newLocation, guard));
+		}
+		
+		Obstacle[] obstacles= gameModel.getObstacles();
+		
+		for (int i = 0; i < obstacles.length; i++){
+			int preSize = collidedEdges.size();
+			collidedEdges.addAll(obstacleCollisionCheck(newLocation, obstacles[i]));
+
+			if (obstacles[i].equals(gameModel.getScroll()) && preSize != collidedEdges.size()){
+				gameModel.changeState(GameState.Victory);
+				return collidedEdges;
+			}
+		}
+		return collidedEdges;
 	}
 	
 	// Determine what OBJ to use this tick, and set it as model.obj
@@ -109,9 +159,7 @@ public class Ninja extends Character {
 	}
 	
 	public void detectAttackCollision() {
-		double threshold2 = 5;
 		Point3D loc = getLoc();
-		ArrayList<Point2D[]> edges= new ArrayList<Point2D[]>();
 		Character boss = gameModel.getBoss();
 		
 		//area of attacking collision area
@@ -120,18 +168,14 @@ public class Ninja extends Character {
 		double swordLength = 1.5;  //should be 1 or 2 probably, but it's longer for testing
 		double deltaX= Math.sin(direction) * (scale * swordLength);
 		double deltaZ= -Math.cos(direction) * (scale * swordLength);
-		Point3D atkLoc= new Point3D(getLoc().x + deltaX, getLoc().y, getLoc().z + deltaZ);
-		Point2D[][] atkHitBox= GameModel.boxToWorld(getModel().getAngle(), atkLoc, getHitBox());
+		Point3D atkLoc= new Point3D(loc.x + deltaX, loc.y, loc.z + deltaZ);
 		
-		//check if boss is close enough to even check for collision
-		double dist = loc.minus(boss.getLoc()).length();
-		if(dist < threshold2) {
-			Point2D[][] bossBox = GameModel.boxToWorld(boss.getModel(), boss.getHitBox());
-			edges = gameModel.collision(atkHitBox, bossBox, edges);
-			if(!edges.isEmpty()) {
-				if(attacking >= 0 && attacking < attackPowers.length) {
-					boss.takeDamage((int) (attackPowers[attacking] * maxAttackDamage));
-				}
+		actualHitBox.createNewHitBox(getModel().getAngle(), atkLoc);
+		ArrayList<Edge> collidedEdges = characterCollisionCheck(atkLoc, boss);
+		
+		if(!collidedEdges.isEmpty()) {
+			if(attacking >= 0 && attacking < attackPowers.length) {
+				boss.takeDamage((int) (attackPowers[attacking] * maxAttackDamage));
 			}
 		}
 	}

@@ -4,9 +4,16 @@
  * 
  */
 
-package scrollthief.model;
+package scrollthief.model.characters;
 
+import java.awt.geom.Line2D;
 import java.util.Random;
+
+import scrollthief.model.GameModel;
+import scrollthief.model.Model;
+import scrollthief.model.OBJ;
+import scrollthief.model.Obstacle;
+import scrollthief.model.Point3D;
 
 public class Guard extends Character{
 	double sightRange= 10; // needs tuning
@@ -75,8 +82,8 @@ public class Guard extends Character{
 			Obstacle obs= obstacles[i];
 			if ((obs.getLoc().minus(guardLoc)).length() > sightRange || obs.isLow)
 				continue;
-			
-			if (!gameModel.boxHit(guardLoc, ninjaLoc, obs.hitBox).isEmpty()) // see if the line between guard and ninja crosses hitbox	
+			Line2D cameraToNinja = new Line2D.Double(guardLoc.to2D(), ninjaLoc.to2D());
+			if (!HitBox.getCollidedEdges(cameraToNinja, obs.getHitBox()).isEmpty()) // see if the line between guard and ninja crosses hitbox	
 				return false;
 		}
 		

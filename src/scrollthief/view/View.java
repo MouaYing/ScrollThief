@@ -2,6 +2,7 @@ package scrollthief.view;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,7 @@ import scrollthief.model.Data;
 import scrollthief.model.Point3D;
 import scrollthief.model.Model;
 import scrollthief.model.GameModel;
+import scrollthief.model.characters.HitBox;
 
 public class View extends GLCanvas implements GLEventListener{
 	private static final long serialVersionUID = 1L;
@@ -469,14 +471,15 @@ public class View extends GLCanvas implements GLEventListener{
 		Point3D cameraLoc = new Point3D(lookFrom[0], lookFrom[1], lookFrom[2]);
 		ninjaLoc = gameModel.getNinjaLoc();
 		
-		if(gameModel.getState() == GameState.Start) {
+		if(gameModel.getState() == GameState.Playing) {
 			startDetectingObstacles = true;
 		}
 	
 		// TODO: detect when an obstacle is between the viewer and the ninja and give it opacity
 		if(ninjaLoc != null && startDetectingObstacles) {
+			Line2D cameraToNinja = new Line2D.Double(cameraLoc.to2D(), ninjaLoc.to2D());
 			for(Obstacle obstacle : gameModel.getObstacles()) {
-				if(!gameModel.boxHit(cameraLoc,  ninjaLoc, obstacle.getHitBox()).isEmpty() && obstacle.getModel().getObj() != gameModel.getResource().getOBJs()[4]) {
+				if(!HitBox.getCollidedEdges(cameraToNinja, obstacle.getHitBox()).isEmpty() && obstacle.getModel().getObj() != gameModel.getResource().getOBJs()[4]) {
 					obstacle.getModel().setIsTransparent(true);
 				}
 				else {

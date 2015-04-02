@@ -3,21 +3,24 @@ package scrollthief.model;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 
+import scrollthief.model.characters.HitBox;
+
 public class Obstacle {
 	Model model;
 	public boolean isLow;
-	Point2D[][] hitBox;
 	double boxWidth, boxLength, height;
+	
+	public HitBox actualHitBox;
 	
 	public Obstacle(Model model, boolean isLow, double boxLength, double boxWidth, double height){
 		this.model= model;
 		this.isLow= isLow;
 		boxWidth *= model.scaleX;
-		Point2D[] boxPoints= GameModel.findPoints(boxLength, boxWidth);
-		hitBox= GameModel.boxToWorld(model, boxPoints);
 		this.boxWidth= boxWidth;
 		this.boxLength= boxLength;
 		this.height= height;
+		
+		actualHitBox = new HitBox(boxLength, boxWidth, getModel().getAngle(), getLoc());
 	}
 	
 	public boolean isInBox(Point3D point){
@@ -67,8 +70,8 @@ public class Obstacle {
 		return model;
 	}
 	
-	public Point2D[][] getHitBox() {
-		return hitBox;
+	public HitBox getHitBox() {
+		return actualHitBox;
 	}
 	
 	@SuppressWarnings("unused")

@@ -1,8 +1,12 @@
-package scrollthief.model;
+package scrollthief.model.characters;
 
 import java.util.ArrayList;
 
+import scrollthief.model.GameModel;
+import scrollthief.model.Model;
+import scrollthief.model.OBJ;
 import scrollthief.model.Point3D;
+import scrollthief.model.Projectile;
 
 public class Boss extends Character{
 	ArrayList<Character> projectiles= new ArrayList<Character>();
@@ -31,6 +35,16 @@ public class Boss extends Character{
 		move();
 		if (tickCount >= 30 && isFacingNinja()) // determine whether to shoot or not
 			shoot();
+	}
+	
+	public double getDeltaX(double direction, double movement) {
+		Point3D bossDelta= calcDelta(0, 0);
+		return bossDelta.x;
+	}
+	
+	public double getDeltaZ(double direction, double movement) {
+		Point3D bossDelta= calcDelta(0, 0);
+		return bossDelta.z;
 	}
 	
 	public void animate(int tick){

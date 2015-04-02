@@ -12,18 +12,18 @@ import javax.swing.JFrame;
 
 import ch.aplu.xboxcontroller.XboxController;
 import scrollthief.ScrollThief;
-import scrollthief.model.Boss;
 import scrollthief.model.Data;
 import scrollthief.model.GameModel;
 import scrollthief.model.GameState;
-import scrollthief.model.Guard;
-import scrollthief.model.Character;
 import scrollthief.model.Point3D;
 import scrollthief.model.Projectile;
 import scrollthief.model.Sound;
 import scrollthief.model.SoundFile;
 import scrollthief.model.StateChange;
 import scrollthief.model.StateChangedListener;
+import scrollthief.model.characters.Boss;
+import scrollthief.model.characters.Character;
+import scrollthief.model.characters.Guard;
 import scrollthief.view.View;
 
 public class Controller extends TimerTask{
@@ -145,7 +145,7 @@ public class Controller extends TimerTask{
 		if (ninja.getHP() <= 0 && !devmode)
 			gameOver(GameState.Killed);
 		if (gameModel.getState() == GameState.Victory){
-			gameModel.changeState(GameState.Paused);
+			//gameModel.changeState(GameState.Paused);
 			vibrate(0,0);
 			hitTimer= 0;
 		}
