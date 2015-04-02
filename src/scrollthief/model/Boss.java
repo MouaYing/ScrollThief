@@ -10,7 +10,10 @@ public class Boss extends Character{
 	double sightRange= 30;
 	int tickCount= 0;
 	OBJ[] standing;
-	OBJ[] pouncing;
+	OBJ[] pounce;
+	OBJ[] shooting;
+	OBJ[] windUp;
+	OBJ[] windDown;
 	boolean inBattle= false;
 	boolean isPouncing = false;
 	Random randomGenerator;
@@ -34,10 +37,12 @@ public class Boss extends Character{
 	
 	public Boss(GameModel gameModel, Model model, double boxLength, double boxWidth) {
 		super(gameModel, model, boxLength, boxWidth, "Boss");
-		lastPouncePoint = gameModel.getCurrentLevel().getBossPouncePoints().get(0);
 		turnRate= .05;
 		standing= new OBJ[] {model.getObj()};
-		pouncing= gameModel.getResource().getBossPounce();
+		pounce = gameModel.getCurrentLevel().getBossPounce();
+		shooting = gameModel.getCurrentLevel().getBossShooting();
+		windUp = gameModel.getCurrentLevel().getBossWindUp();
+		windDown = gameModel.getCurrentLevel().getBossWindDown();
 		motion= standing;
 		maxHp = 300;
 		hp=maxHp;
@@ -153,6 +158,7 @@ public class Boss extends Character{
 		
 		if((rand -= PROBABILITY_OF_BIG_ATTACK) < 0) {
 			charge = TICKS_FOR_CHARGE;
+			motion = windUp;
 		}
 		else if((rand -= PROBABILITY_OF_SMALL_ATTACK) < 0) {
 			shoot(ATTACK_SIZE_SMALL, false);
@@ -177,6 +183,7 @@ public class Boss extends Character{
 	//attackSize: 1 = small, 2 = large
 	private void shoot(int attackSize, boolean isFrenzy) {
 		readyForAttack = false;		
+		motion = shooting;
 		double directionScale = 4;
 		double direction= getAngle() - Math.PI;
 		double deltaX= Math.sin(direction) * directionScale;

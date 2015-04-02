@@ -19,4 +19,8 @@ public interface Level {
 	public List<Point3D> getBossPouncePoints();
 	public void reset();
 	public void initialize();
+	public OBJ[] getBossPounce();
+	public OBJ[] getBossShooting();
+	public OBJ[] getBossWindUp();
+	public OBJ[] getBossWindDown();
 }

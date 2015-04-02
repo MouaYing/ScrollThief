@@ -97,7 +97,7 @@ public class Ninja extends Character {
 			if (tick % (int)(2/speed) == 0) 
 				advanceFrame();
 		}
-		else if(attacking > -1) {
+		else if(tick % 2 == 0 && attacking > -1) {
 			advanceAttackFrame(this);
 		}
 		else{
@@ -109,7 +109,7 @@ public class Ninja extends Character {
 	}
 	
 	public void detectAttackCollision() {
-		double threshold2 = 10;
+		double threshold2 = 6;
 		Point3D loc = getLoc();
 		ArrayList<Point2D[]> edges= new ArrayList<Point2D[]>();
 		Character boss = gameModel.getBoss();
@@ -125,7 +125,7 @@ public class Ninja extends Character {
 		
 		//check if boss is close enough to even check for collision
 		double dist = loc.minus(boss.getLoc()).length();
-		Data.say("checking atk collision at dist: " + dist);
+		Data.say("checking atk collision at dist: " + dist + " at loc " + getLoc().x + " " + getLoc().z);
 		if(dist < threshold2) {
 			Point2D[][] bossBox = GameModel.boxToWorld(boss.getModel(), boss.getHitBox());
 			edges = gameModel.collision(atkHitBox, bossBox, edges);

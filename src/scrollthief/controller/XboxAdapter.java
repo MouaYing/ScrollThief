@@ -79,6 +79,12 @@ public class XboxAdapter extends XboxControllerAdapter{
 		}
 	}
 	
+	public void buttonX(boolean pressed){
+		if (pressed){
+			gameControl.attack();
+		}
+	}
+	
 	public void back(boolean pressed){
 		if (pressed)
 			controller.reset();

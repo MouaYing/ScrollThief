@@ -30,7 +30,7 @@ public class Resource {
 	private OBJ[] ninjaStrike2;
 	private OBJ[] ninjaStrike3;
 	private OBJ[] guardWalk;
-	private OBJ[] bossPounce;
+	
 	private Texture[] textures;
 	private LoadingBar loadingBar;
 	private Texture[] images;
@@ -42,11 +42,10 @@ public class Resource {
 	// private final int total = 5;
 	private final int OBJS_NUM = 9;
 	private final int NINJA_RUN_NUM = 21;
-	private final int NINJA_STRIKE1_NUM = 24;
-	private final int NINJA_STRIKE2_NUM = 16;
-	private final int NINJA_STRIKE3_NUM = 40;
+	private final int NINJA_STRIKE1_NUM = 12;
+	private final int NINJA_STRIKE2_NUM = 8;
+	private final int NINJA_STRIKE3_NUM = 20;
 	private final int GUARD_WALK_NUM = 30;
-	private final int BOSS_POUNCE_NUM = 45;
 	private final int TEXTURES_NUM = 12;
 	private final int IMAGES_NUM = 2;
 	private final int SOUNDS_NUM = 6;
@@ -62,10 +61,9 @@ public class Resource {
 		ninjaStrike2 = new OBJ[NINJA_STRIKE2_NUM];
 		ninjaStrike3 = new OBJ[NINJA_STRIKE3_NUM];
 		guardWalk = new OBJ[GUARD_WALK_NUM];
-		bossPounce = new OBJ[BOSS_POUNCE_NUM];
 		textures = new Texture[TEXTURES_NUM];
 		int total = SOUNDS_NUM + OBJS_NUM + NINJA_RUN_NUM + NINJA_STRIKE1_NUM + NINJA_STRIKE2_NUM + NINJA_STRIKE3_NUM + 
-				GUARD_WALK_NUM + BOSS_POUNCE_NUM + TEXTURES_NUM;
+				GUARD_WALK_NUM + TEXTURES_NUM;
 		loadingBar = new LoadingBar(total,gameModel,"resource", phrases);
 		levelSplashIndex = rand.nextInt(IMAGES_NUM);
 		while(levelSplashIndex == mainSplashIndex){
@@ -141,13 +139,6 @@ public class Resource {
 			}
 		});
 		threads.get(threads.size() - 1).start();
-		
-		threads.add(new Thread() {
-			public void run() {
-				loadBossAnimations();
-			}
-		});
-		threads.get(threads.size() - 1).start();
 	
 		/*
 		 * To add a new animation, copy the above lines to add a new thread and start it,  
@@ -173,24 +164,18 @@ public class Resource {
 			ninjaRun[i]= new OBJ(fileName);
 			loadingBar.increaseProgress(1);
 		}
-		int j = 1;
 		for (int i= 0; i < NINJA_STRIKE1_NUM; i++){
-			String fileName= "/resources/obj/anim/ninja/attack/strike1." + (j++) + ".obj";
-			ninjaStrike1[i++]= new OBJ(fileName);
+			String fileName= "/resources/obj/anim/ninja/attack/strike1." + (i+1) + ".obj";
 			ninjaStrike1[i]= new OBJ(fileName);
 			loadingBar.increaseProgress(2);
 		}
-		j = 1;
 		for (int i= 0; i < NINJA_STRIKE2_NUM; i++){
-			String fileName= "/resources/obj/anim/ninja/attack/strike2." + (j++) + ".obj";
-			ninjaStrike2[i++]= new OBJ(fileName);
+			String fileName= "/resources/obj/anim/ninja/attack/strike2." + (i+1) + ".obj";
 			ninjaStrike2[i]= new OBJ(fileName);
 			loadingBar.increaseProgress(2);
 		}
-		j = 1;
 		for (int i= 0; i < NINJA_STRIKE3_NUM; i++){
-			String fileName= "/resources/obj/anim/ninja/attack/strike3." + (j++) + ".obj";
-			ninjaStrike3[i++]= new OBJ(fileName);
+			String fileName= "/resources/obj/anim/ninja/attack/strike3." + (i+1) + ".obj";
 			ninjaStrike3[i]= new OBJ(fileName);
 			loadingBar.increaseProgress(2);
 		}
@@ -207,18 +192,6 @@ public class Resource {
 			loadingBar.increaseProgress(1);
 		}
 		say("done with guard ");
-	}
-	
-	private void loadBossAnimations() {
-		// Boss pounce cycle
-		say("\nLoading Boss animation frames...");
-		for (int i= 0; i < BOSS_POUNCE_NUM; i++){
-			say("Loading pounce cycle frame " + (i+1));
-			String fileName="/resources/obj/anim/boss/pounce/boss_pounce." + (i+1) + ".obj";
-			bossPounce[i]= new OBJ(fileName);
-			loadingBar.increaseProgress(1);
-		}
-		say("done with boss ");
 	}
 	
 	public void loadTextures(GL2 gl){
@@ -276,10 +249,6 @@ public class Resource {
 	
 	public OBJ[] getOBJs(){
 		return objs;
-	}
-	
-	public OBJ[] getBossPounce(){
-		return bossPounce;
 	}
 	
 	public OBJ[] getGuardWalk(){

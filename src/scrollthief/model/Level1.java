@@ -10,8 +10,16 @@ public class Level1 implements Level {
 	int numPillars;
 	int numTables;
 	int numObs;
+	int numBossPounce;
+	int numBossShooting;
+	int numBossWindUp;
+	int numBossWindDown;
 	Resource resource;
 	int numModels;
+	OBJ[] bossPounce;
+	OBJ[] bossShooting;
+	OBJ[] bossWindUp;
+	OBJ[] bossWindDown;
 	Guard[] guards;
 	Obstacle[] obstacles;
 	ArrayList<Model> models;
@@ -24,19 +32,20 @@ public class Level1 implements Level {
 	Map<String,ArrayList<String>> phrases;
 	List<DialogHotspot> dialogHotspots;
 	DialogHotspot currentDialogHotspot;
-<<<<<<< HEAD
 	List<Point3D> bossPouncePoints;
-
-=======
 	RoomCreator creator;
->>>>>>> master
+	
 	public Level1(Resource resource, GameModel gameModel, Map<String,ArrayList<String>> phrases) {
 		creator = new RoomCreator(resource,gameModel);
 		numGuards = 12;
 		numWalls = 34;
 		numPillars = 8;
 		numTables = 5;
-		numObs = numWalls + numPillars + numTables + 1;
+		numBossPounce = 45;
+		numBossShooting = 11;
+		numBossWindUp = 17;
+		numBossWindDown = 9;
+		numObs = numWalls + numPillars + numTables + numBossPounce + numBossShooting + numBossWindUp + numBossWindDown + 1;
 		this.resource = resource;
 		this.gameModel = gameModel;
 		
@@ -44,6 +53,10 @@ public class Level1 implements Level {
 		models= new ArrayList<Model>();
 		guards= new Guard[numGuards];
 		obstacles= new Obstacle[numObs];
+		bossPounce = new OBJ[numBossPounce];
+		bossShooting = new OBJ[numBossShooting];
+		bossWindUp = new OBJ[numBossWindUp];
+		bossWindDown = new OBJ[numBossWindDown];
 		projectiles= new ArrayList<Projectile>();
 		this.phrases = phrases;
 		setDialogHotspots();
@@ -56,6 +69,7 @@ public class Level1 implements Level {
 		createModels();
 		createCharacters();
 		createObstacles();
+		loadBossAnimations();
 	}
 	
 	@Override
@@ -65,6 +79,33 @@ public class Level1 implements Level {
 		obstacles= new Obstacle[numObs];
 		projectiles= new ArrayList<Projectile>();
 		loadingBar = new LoadingBar(numModels,gameModel, "level", phrases);
+	}
+	
+	private void loadBossAnimations() {
+		// Boss pounce cycle
+		for (int i= 0; i < numBossPounce; i++){
+			String fileName="/resources/obj/anim/boss/pounce/boss_pounce." + (i+1) + ".obj";
+			bossPounce[i]= new OBJ(fileName);
+			loadingBar.increaseProgress(1);
+		}
+		// Boss shooting cycle
+		for (int i= 0; i < numBossShooting; i++){
+			String fileName="/resources/obj/anim/boss/attack/shooting." + (i+1) + ".obj";
+			bossShooting[i]= new OBJ(fileName);
+			loadingBar.increaseProgress(1);
+		}
+		// Boss wind up cycle
+		for (int i= 0; i < numBossWindUp; i++){
+			String fileName="/resources/obj/anim/boss/attack/windUp." + (i+1) + ".obj";
+			bossWindUp[i]= new OBJ(fileName);
+			loadingBar.increaseProgress(1);
+		}
+		// Boss wind down cycle
+		for (int i= 0; i < numBossWindDown; i++){
+			String fileName="/resources/obj/anim/boss/attack/windDown." + (i+1) + ".obj";
+			bossWindDown[i]= new OBJ(fileName);
+			loadingBar.increaseProgress(1);
+		}
 	}
 	
 	private void createModels() {
@@ -349,7 +390,8 @@ public class Level1 implements Level {
 		say("Creating characters...");
 		ninja= new Ninja(gameModel, models.get(2), .35, .5);
 		loadingBar.increaseProgress(1);
-		boss= new Boss(gameModel, models.get(3), 1.5, 1.5);
+		boss= new Boss(gameModel, models.get(3), 6, 1);
+		boss.lastPouncePoint = bossPouncePoints.get(2);
 		loadingBar.increaseProgress(1);
 		
 		Point3D[][] orders= createGuardOrders();
@@ -357,11 +399,6 @@ public class Level1 implements Level {
 			guards[i]= new Guard(gameModel, models.get(i + 4), .35, .5, orders[i]); 
 			loadingBar.increaseProgress(1);
 		}
-<<<<<<< HEAD
-		boss= new Boss(gameModel, models.get(models.size()-1), 10, 4);  //alien was ,,1.5, 1.5
-		loadingBar.increaseProgress(1);
-=======
->>>>>>> master
 	}
 	
 	private void createObstacles() {
@@ -441,10 +478,10 @@ public class Level1 implements Level {
 	public void setBossPouncePoints() {
 		bossPouncePoints = new ArrayList<Point3D>();
 		
-		bossPouncePoints.add(new Point3D(6.4, 0, 76)); //by table with scroll (left)
-		bossPouncePoints.add(new Point3D(-4.4, 0, 77)); //by table with scroll (right)
-		bossPouncePoints.add(new Point3D(-1, 0, 70)); //between entrance and table to the side
-		bossPouncePoints.add(new Point3D(10.5, 0, 70)); //by door
+		bossPouncePoints.add(new Point3D(10.4, 0, 83)); //by table with scroll (left)
+		bossPouncePoints.add(new Point3D(-13, 0, 81.7)); //by table with scroll (right)
+		bossPouncePoints.add(new Point3D(-.66, 0, 77.4)); //in front of table
+		bossPouncePoints.add(new Point3D(-.66, 0, 66)); //by door
 	}
 	
 	public List<Point3D> getBossPouncePoints() {
@@ -455,6 +492,34 @@ public class Level1 implements Level {
 		return loadingBar;
 	}
 	
+	public OBJ[] getBossPounce(){
+		return bossPounce;
+	}
+	
+	public OBJ[] getBossShooting() {
+		return bossShooting;
+	}
+
+	public void setBossShooting(OBJ[] bossShooting) {
+		this.bossShooting = bossShooting;
+	}
+
+	public OBJ[] getBossWindUp() {
+		return bossWindUp;
+	}
+
+	public void setBossWindUp(OBJ[] bossWindUp) {
+		this.bossWindUp = bossWindUp;
+	}
+
+	public OBJ[] getBossWindDown() {
+		return bossWindDown;
+	}
+
+	public void setBossWindDown(OBJ[] bossWindDown) {
+		this.bossWindDown = bossWindDown;
+	}
+
 	private void say(String message){
 		System.out.println(message);
 	}
