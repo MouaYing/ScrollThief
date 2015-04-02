@@ -214,24 +214,26 @@ public class Controller extends TimerTask{
 			gameModel.getProjectiles().remove(proj);
 		}
 // ---------------------------------------------------------------------------------------------------	
+		if (!xbc.isConnected()){
 		
-		if(gameModel.getWPressed())
-			gameControl.setNinjaSpeed(1);
-		if(gameModel.getSPressed())
-			gameControl.setNinjaSpeed(-1);
-		if(!gameModel.getWPressed() && !gameModel.getSPressed())
-			gameControl.setNinjaSpeed(0);
-//		if(gameModel.getAPressed())
-//			gameControl.rotateNinjaLeft();
-//		if(gameModel.getDPressed())
-//			gameControl.rotateNinjaRight();
-		if(gameModel.getAPressed()) {
-			gameControl.setNinjaSpeed(1);
-		}
-		if(gameModel.getDPressed()) {
-			gameControl.setNinjaSpeed(1);
-		}
+			if(gameModel.getWPressed())
+				gameControl.setNinjaSpeed(1);
+			if(gameModel.getSPressed())
+				gameControl.setNinjaSpeed(-1);
+			if(!gameModel.getWPressed() && !gameModel.getSPressed())
+				gameControl.setNinjaSpeed(0);
+	//		if(gameModel.getAPressed())
+	//			gameControl.rotateNinjaLeft();
+	//		if(gameModel.getDPressed())
+	//			gameControl.rotateNinjaRight();
+			if(gameModel.getAPressed()) {
+				gameControl.setNinjaSpeed(1);
+			}
+			if(gameModel.getDPressed()) {
+				gameControl.setNinjaSpeed(1);
+			}
 		
+		}
 
 
 // ----------------Check level dialog hotspots--------------------------------------------------------
