@@ -120,6 +120,9 @@ public class View extends GLCanvas implements GLEventListener{
 				gl.glPushMatrix();
 				Model model= models.get(i);
 				
+				// don't draw guards if they are obscured
+				if (model.getTxtr() == 8 && cullObscured(model)) continue;
+				
 				// assign texture
 				textures[model.getTxtr()].bind(gl);
 				if(model.isHurt()){
@@ -478,11 +481,13 @@ public class View extends GLCanvas implements GLEventListener{
 		// TODO: detect when an obstacle is between the viewer and the ninja and give it opacity
 		if(ninjaLoc != null && startDetectingObstacles) {
 			for(Obstacle obstacle : gameModel.getObstacles()) {
-				if(!gameModel.boxHit(cameraLoc,  ninjaLoc, obstacle.getHitBox()).isEmpty() && obstacle.getModel().getObj() != gameModel.getResource().getOBJs()[4]) {
-					obstacle.getModel().setIsTransparent(true);
-				}
-				else {
-					obstacle.getModel().setIsTransparent(false);
+				if(obstacle != null) {
+					if(!gameModel.boxHit(cameraLoc,  ninjaLoc, obstacle.getHitBox()).isEmpty() && obstacle.getModel().getObj() != gameModel.getResource().getOBJs()[4]) {
+						obstacle.getModel().setIsTransparent(true);
+					}
+					else {
+						obstacle.getModel().setIsTransparent(false);
+					}
 				}
 			}
 		}
@@ -493,6 +498,26 @@ public class View extends GLCanvas implements GLEventListener{
 	
 	public DialogRenderer getDialogRenderer() {
 		return dialogRenderer;
+	}
+	
+	private boolean cullObscured(Model model){
+		Point3D modelLoc= model.getLoc();
+		Point3D cameraLoc= new Point3D((double)lookFrom[0], (double)lookFrom[1], (double)lookFrom[2]);
+		Obstacle[] obstacles= gameModel.getObstacles();
+		
+		for (int i= 0; i < obstacles.length; i++){
+			Obstacle obs= obstacles[i];
+			int type = obs.getModel().getTxtr();
+			
+			// don't count pillars or tables, or transparent obstacles
+			if (type == 3 || type == 4 || obs.getModel().getIsTransparent()) continue; 
+			
+			// see if the line between camera and model crosses obstacle hitbox	
+			if (!gameModel.boxHit(modelLoc, cameraLoc, obs.getHitBox()).isEmpty()) 
+				return true;
+		}
+		
+		return false;
 	}
 	
 // -----------------Camera getters -----------------------------
