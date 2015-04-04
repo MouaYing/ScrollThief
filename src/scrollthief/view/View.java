@@ -47,6 +47,7 @@ public class View extends GLCanvas implements GLEventListener{
 	TextRenderer tRend;
 	TextRenderer tRend2;
 	TextRenderer tRendLoadingBar;
+	TextRenderer tRendPause;
 	boolean startDetectingObstacles;
 
 	public View(GameModel model){
@@ -67,6 +68,7 @@ public class View extends GLCanvas implements GLEventListener{
 		tRend= new TextRenderer(new Font("Helvetica", Font.BOLD, 30));
 		tRend2= new TextRenderer(new Font("Helvetica", Font.BOLD, 60));
 		tRendLoadingBar= new TextRenderer(new Font("Helvetica", Font.PLAIN, 10));
+		tRendPause = new TextRenderer(new Font("Helvetica", Font.PLAIN, 15));
 		
 		setupLighting(gl);
 		
@@ -394,7 +396,7 @@ public class View extends GLCanvas implements GLEventListener{
 		else if(type == "loading")
 			rend = tRendLoadingBar;
 		else if(type == "pause")
-			rend = new TextRenderer(new Font("Helvetica", Font.PLAIN, 15));
+			rend = tRendPause;
 			
 		rend.setColor(color);
 		rend.beginRendering(Data.windowX, Data.windowY, true);

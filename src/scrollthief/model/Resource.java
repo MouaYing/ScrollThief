@@ -72,22 +72,22 @@ public class Resource {
 	
 	private void loadEffects() {
 		say("Loading effects...");
-		sound.loadEffect(SoundFile.JUMP, "/resources/sounds/jump.mp3");
+		sound.loadEffect(SoundFile.JUMP, "/resources/sounds/jump.wav");
 		loadingBar.increaseProgress(1);
-		sound.loadEffect(SoundFile.GUARD, "/resources/sounds/guardHey.mp3");
+		sound.loadEffect(SoundFile.GUARD, "/resources/sounds/guardHey.wav");
 		loadingBar.increaseProgress(1);
 	}
 	
 	private void loadSounds() {
 		say("Loading music...");
-		sound.loadMusic(SoundFile.TITLE, "/resources/music/ST_Title_1.mp3", RepeatType.REPEAT);
+		sound.loadMusic(SoundFile.TITLE, "/resources/music/ST_Title.wav", RepeatType.REPEAT);
 		loadingBar.increaseProgress(1);
 		sound.playMusic(SoundFile.TITLE);
-		sound.loadMusic(SoundFile.SNEAK, "/resources/music/ST_Sneak.mp3", RepeatType.REPEAT);
+		sound.loadMusic(SoundFile.SNEAK, "/resources/music/ST_Sneak.wav", RepeatType.REPEAT);
 		loadingBar.increaseProgress(1);
-		sound.loadMusic(SoundFile.GAMEOVER, "/resources/music/Game_Over.mp3", RepeatType.NOREPEAT);
+		sound.loadMusic(SoundFile.GAMEOVER, "/resources/music/Game_Over.wav", RepeatType.NOREPEAT);
 		loadingBar.increaseProgress(1);
-		sound.loadMusic(SoundFile.BOSS, "/resources/music/ST_Boss_1.mp3", RepeatType.REPEAT);
+		sound.loadMusic(SoundFile.BOSS, "/resources/music/ST_Boss_1.wav", RepeatType.REPEAT);
 		loadingBar.increaseProgress(1);
 	}
 	

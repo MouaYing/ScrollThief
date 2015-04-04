@@ -12,7 +12,7 @@ public class Sound {
 	HashMap<SoundFile, MusicPlayer> players;
 	HashMap<SoundFile, EffectPlayer> effects;
 	SoundFile currentMusic;
-	MusicPlayer currentMusicThread;
+	MusicPlayer currentMusicPlayer;
 	boolean shouldRepeat;
 	
 	public boolean shouldRepeat() {
@@ -27,8 +27,8 @@ public class Sound {
 		return currentMusic;
 	}
 
-	public Thread getCurrentMusicThread() {
-		return currentMusicThread;
+	public MusicPlayer getCurrentMusicPlayer() {
+		return currentMusicPlayer;
 	}
 
 	public Sound() {
@@ -38,22 +38,34 @@ public class Sound {
 	}
 	
 	public void delayedPlayMusic(SoundFile soundFile, long delay) {
-		if (currentMusic != null && currentMusicThread != null)
-			currentMusicThread.interrupt();
+		if (currentMusic != null && currentMusicPlayer != null)
+			currentMusicPlayer.stop();
 		currentMusic = soundFile;
 		MusicPlayer player = players.get(soundFile); 
 		player.setDelay(delay);
-		player.start();
-		currentMusicThread = player;
+		player.playFromBeginning();
+		currentMusicPlayer = player;
 	}
 	
 	public void playMusic(SoundFile soundFile) {
-		if (currentMusic != null && currentMusicThread != null)
-			currentMusicThread.interrupt();
+		if (currentMusic != null && currentMusicPlayer != null)
+			currentMusicPlayer.stop();
 		currentMusic = soundFile;
 		MusicPlayer player = players.get(soundFile); 
-		player.start();
-		currentMusicThread = player;
+		player.playFromBeginning();
+		currentMusicPlayer = player;
+	}
+	
+	public void pauseMusic() {
+		if (currentMusicPlayer != null) {
+			currentMusicPlayer.stop();
+		}
+	}
+	
+	public void resumeMusic() {
+		if (currentMusicPlayer != null) {
+			currentMusicPlayer.resumePlay();
+		}
 	}
 	
 	public void playEffect(SoundFile soundFile) {
@@ -61,15 +73,10 @@ public class Sound {
 		player.play();
 	}
 	
-	public void stopMusic(SoundFile soundFile) {
-		currentMusicThread.interrupt();
-	}
-	
 	public void loadEffect(SoundFile sf, String path) {
 		String urlAsString = "";
 		urlAsString = path;
 		EffectPlayer player = new EffectPlayer(urlAsString);
-		player.loadPlayer();
 		effects.put(sf, player);
 	}
 	

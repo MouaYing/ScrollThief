@@ -1,51 +1,48 @@
 package scrollthief.model;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 
-import javazoom.jl.decoder.JavaLayerException;
-import javazoom.jl.player.advanced.AdvancedPlayer;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class EffectPlayer {
-	AdvancedPlayer player;
-	private String file;
-	private Thread lastThread;
+	AudioInputStream audioStream;
+	private StreamSwitcher streamManager;
+	private Clip clip;
 	
 	public EffectPlayer(String file) {
-		this.file = file;
+		streamManager = new StreamSwitcher(file);
+		loadPlayer();
 	}
 	
 	public void play() {
-		if (lastThread != null)
-			lastThread.interrupt();
-		
-		EffectPlayer thisPlayer = this;
-			
 		Thread thread = new Thread()
 		{
 			public void run()
 			{
-				try {
-					player.setPlayBackListener(new EffectListener(thisPlayer));
-					player.play();
-				} catch (JavaLayerException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}	
+				clip.setFramePosition(0);
+			    clip.start();
 			}
 		};
-		
-		lastThread = thread;
 		thread.start();
 	}
 
 	public void loadPlayer() {
 		try {
-			this.player = new AdvancedPlayer
-						 (
-						 	this.getClass().getResourceAsStream(file),
-							javazoom.jl.player.FactoryRegistry.systemRegistry().createAudioDevice()
-						 );
-		} catch (JavaLayerException e) {
+			audioStream = AudioSystem.getAudioInputStream(new BufferedInputStream(streamManager.getStream()));
+			clip = AudioSystem.getClip();
+			clip.open(audioStream);
+		} catch (UnsupportedAudioFileException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (LineUnavailableException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

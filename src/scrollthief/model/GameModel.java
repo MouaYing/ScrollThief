@@ -205,6 +205,7 @@ public class GameModel {
 			newState = data.getState();
 			getNinja().setLoc(data.getLocations().get(0));
 			getBoss().setLoc(data.getLocations().get(1));
+			resource.getSound().playMusic(SoundFile.SNEAK);
 		}
 		lastState = state;
 		state = newState;

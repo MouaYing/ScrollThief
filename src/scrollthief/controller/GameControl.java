@@ -229,9 +229,11 @@ public class GameControl {
 			}
 			else if (gameModel.getState() == GameState.Paused){
 				gameModel.changeState(GameState.Playing);
+				gameModel.getResource().getSound().resumeMusic();
 			}
 			else {
 				gameModel.changeState(GameState.Paused);
+				gameModel.getResource().getSound().pauseMusic();
 			}
 		}
 	}
