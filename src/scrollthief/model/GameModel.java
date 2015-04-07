@@ -169,6 +169,7 @@ public class GameModel {
 	
 	public void init(final GL2 gl){
 		resource.loadImages(gl);
+		resource.loadHeart(gl);
 		changeState(GameState.ResourceLoading);
 		Thread resourceThread = new Thread() {
 			public void run() {
@@ -230,6 +231,10 @@ public class GameModel {
 	
 	public Texture getLevelSplashImage(){
 		return resource.getLevelSplash();
+	}
+	
+	public Texture getHeart() {
+		return resource.getHeart();
 	}
 	
 	public GameState getState(){
