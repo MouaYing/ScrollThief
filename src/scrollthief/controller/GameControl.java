@@ -20,7 +20,7 @@ public class GameControl {
 	private double speedIncrement = 0.7;
 	private double ninjaRotationIncrement = 0.075;
 	private double cameraRotationIncrement = 0.075;
-	private float cameraHeightIncrement = 0.1f;
+	private float cameraHeightIncrement = 0.2f;
 
 	private boolean usingMouse;
 	

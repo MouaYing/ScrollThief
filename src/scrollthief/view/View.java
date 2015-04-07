@@ -49,6 +49,8 @@ public class View extends GLCanvas implements GLEventListener{
 	TextRenderer tRendLoadingBar;
 	TextRenderer tRendPause;
 	boolean startDetectingObstacles;
+	float heightTop= 15;
+	float heightBottom= 1;
 
 	public View(GameModel model){
 		say("Loading view...");
@@ -445,7 +447,6 @@ public class View extends GLCanvas implements GLEventListener{
 		
 		if (gameModel.getUsingMouse()) {
 			cameraAngle = ninjaAngle;
-			lookFrom[1] = 4;
 			gameModel.setUsingMouse(false);
 		}
 		
@@ -543,7 +544,8 @@ public class View extends GLCanvas implements GLEventListener{
 	}
 	
 	public void setCamHeight(float height){
-		lookFrom[1]= height;
+		if(height < heightTop && height > heightBottom)
+			lookFrom[1]= height;
 	}
 	
 	public void setCamAngle(double angle){
