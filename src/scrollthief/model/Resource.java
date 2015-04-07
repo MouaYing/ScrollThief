@@ -1,7 +1,7 @@
 package scrollthief.model;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
+//import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
@@ -34,6 +34,7 @@ public class Resource {
 	private Texture[] textures;
 	private LoadingBar loadingBar;
 	private Texture[] images;
+	private Texture heart;
 	private Sound sound;
 	private Thread musicThread;
 	private Random rand;
@@ -72,30 +73,30 @@ public class Resource {
 	}
 	
 	public void reloadMusic() {
-		sound.loadMusic(SoundFile.TITLE, "/resources/music/ST_Title_1.mp3", RepeatType.REPEAT);
-		sound.loadMusic(SoundFile.SNEAK, "/resources/music/ST_Sneak.mp3", RepeatType.REPEAT);
-		sound.loadMusic(SoundFile.GAMEOVER, "/resources/music/Game_Over.mp3", RepeatType.NOREPEAT);
-		sound.loadMusic(SoundFile.BOSS, "/resources/music/ST_Boss_1.mp3", RepeatType.REPEAT);
+		sound.loadMusic(SoundFile.TITLE, "/resources/music/ST_Title_1.wav", RepeatType.REPEAT);
+		sound.loadMusic(SoundFile.SNEAK, "/resources/music/ST_Sneak.wav", RepeatType.REPEAT);
+		sound.loadMusic(SoundFile.GAMEOVER, "/resources/music/Game_Over.wav", RepeatType.NOREPEAT);
+		sound.loadMusic(SoundFile.BOSS, "/resources/music/ST_Boss_1.wav", RepeatType.REPEAT);
 	}
 	
 	private void loadEffects() {
 		say("Loading effects...");
-		sound.loadEffect(SoundFile.JUMP, "/resources/sounds/jump.mp3");
+		sound.loadEffect(SoundFile.JUMP, "/resources/sounds/jump.wav");
 		loadingBar.increaseProgress(1);
-		sound.loadEffect(SoundFile.GUARD, "/resources/sounds/guardHey.mp3");
+		sound.loadEffect(SoundFile.GUARD, "/resources/sounds/guardHey.wav");
 		loadingBar.increaseProgress(1);
 	}
 	
 	private void loadSounds() {
 		say("Loading music...");
-		sound.loadMusic(SoundFile.TITLE, "/resources/music/ST_Title_1.mp3", RepeatType.REPEAT);
+		sound.loadMusic(SoundFile.TITLE, "/resources/music/ST_Title.wav", RepeatType.REPEAT);
 		loadingBar.increaseProgress(1);
 		sound.playMusic(SoundFile.TITLE);
-		sound.loadMusic(SoundFile.SNEAK, "/resources/music/ST_Sneak.mp3", RepeatType.REPEAT);
+		sound.loadMusic(SoundFile.SNEAK, "/resources/music/ST_Sneak.wav", RepeatType.REPEAT);
 		loadingBar.increaseProgress(1);
-		sound.loadMusic(SoundFile.GAMEOVER, "/resources/music/Game_Over.mp3", RepeatType.NOREPEAT);
+		sound.loadMusic(SoundFile.GAMEOVER, "/resources/music/Game_Over.wav", RepeatType.NOREPEAT);
 		loadingBar.increaseProgress(1);
-		sound.loadMusic(SoundFile.BOSS, "/resources/music/ST_Boss_1.mp3", RepeatType.REPEAT);
+		sound.loadMusic(SoundFile.BOSS, "/resources/music/ST_Boss_1.wav", RepeatType.REPEAT);
 		loadingBar.increaseProgress(1);
 	}
 	
@@ -243,6 +244,18 @@ public class Resource {
 		}
 	}
 	
+	public void loadHeart(GL2 gl) {
+		GLProfile profile = gl.getGLProfile();
+		String heartPath = "images/heart.png";
+		try {
+			BufferedImage image = ImageIO.read(this.getClass().getResourceAsStream("/resources/" + heartPath));
+			ImageUtil.flipImageVertically(image);
+			heart = AWTTextureIO.newTexture(profile, image, false);
+		} catch(IOException e) {
+			System.out.println("Error Loading Heart Image");
+		}
+	}
+	
 	public Sound getSound() {
 		return sound;
 	}
@@ -297,6 +310,10 @@ public class Resource {
 	
 	public Texture getLevelSplash() {
 		return images[levelSplashIndex];
+	}
+	
+	public Texture getHeart() {
+		return heart;
 	}
 	
 	public Thread getMusicThread() {

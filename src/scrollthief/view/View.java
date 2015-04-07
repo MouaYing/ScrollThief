@@ -47,7 +47,10 @@ public class View extends GLCanvas implements GLEventListener{
 	TextRenderer tRend;
 	TextRenderer tRend2;
 	TextRenderer tRendLoadingBar;
+	TextRenderer tRendPause;
 	boolean startDetectingObstacles;
+	float heightTop= 15;
+	float heightBottom= 1;
 
 	public View(GameModel model){
 		say("Loading view...");
@@ -67,6 +70,7 @@ public class View extends GLCanvas implements GLEventListener{
 		tRend= new TextRenderer(new Font("Helvetica", Font.BOLD, 30));
 		tRend2= new TextRenderer(new Font("Helvetica", Font.BOLD, 60));
 		tRendLoadingBar= new TextRenderer(new Font("Helvetica", Font.PLAIN, 10));
+		tRendPause = new TextRenderer(new Font("Helvetica", Font.PLAIN, 15));
 		
 		setupLighting(gl);
 		
@@ -138,6 +142,16 @@ public class View extends GLCanvas implements GLEventListener{
 				gl.glPopMatrix();
 				gl.glFlush();
 			}
+			
+			// draw player health
+			if(gameModel.getNinja() != null && gameModel.getHeart() != null) {
+				drawPlayerHealth(gl, gameModel.getHeart());
+			}
+			
+			// draw boss health if close enough
+			if(gameModel.getBoss() != null && gameModel.getBoss().isNear()) {
+				drawBossHealth(gl);
+			}
 		}
 		else if(gameModel.getState() == GameState.ResourceLoading){
 			
@@ -150,13 +164,13 @@ public class View extends GLCanvas implements GLEventListener{
 			drawLoadingBar(gl,loading);
 			
 			//Display Game Title
-			String text = "THE SCROLL THIEF";
-			dialogRenderer.overlayText(text, (int)(Data.windowX/2 - Data.windowX*.15), Data.windowY-100, Color.white, "reg");
+//			String text = "THE SCROLL THIEF";
+//			dialogRenderer.overlayText(text, (int)(Data.windowX/2 - Data.windowX*.15), Data.windowY-100, Color.white, "reg");
 			
 			gl.glEnable(GL2.GL_TEXTURE_2D);
 		}
 		else if(gameModel.getState() == GameState.LevelLoading || gameModel.getState() == GameState.Start){
-			//Display the 
+			//Display the splash
 			displaySplashImage(gameModel.getLevelSplashImage());
 			
 			//Display Loading Bar
@@ -165,7 +179,7 @@ public class View extends GLCanvas implements GLEventListener{
 			
 			if(gameModel.getState() == GameState.Start){
 
-				String text = "Press Esc to Begin Mission";
+				String text = "Press Start to Begin Mission";
 				dialogRenderer.overlayText(text, (int)(Data.windowX/2 - Data.windowX*.15), Data.windowY-100, Color.white, "reg");
 			}
 			
@@ -220,8 +234,8 @@ public class View extends GLCanvas implements GLEventListener{
 			displaySplashImage(gameModel.getSplashImage());
 
 			//Display Game Title
-			String text = "THE SCROLL THIEF";
-			overlayText(text, (int)(Data.windowX/2 - Data.windowX*.15), Data.windowY-100, Color.white, "reg");
+			//String text = "THE SCROLL THIEF";
+			//overlayText(text, (int)(Data.windowX/2 - Data.windowX*.15), Data.windowY-100, Color.white, "reg");
 			
 			
 			drawMainMenu(gl);
@@ -329,6 +343,85 @@ public class View extends GLCanvas implements GLEventListener{
 		gl.glPopMatrix();
 	}
 	
+	private void drawPlayerHealth(GL2 gl, Texture t) {
+		int ninjaHealth = gameModel.getNinja().getHP();
+		double offset = 0;
+		
+		gl.glPushMatrix();
+		gl.glMatrixMode(GL2.GL_PROJECTION);
+		gl.glLoadIdentity();
+		gl.glOrtho(0, Data.windowX, Data.windowY, 0, -10, 10);
+		//gl.glEnable( GL2.GL_TEXTURE_2D );
+		
+		gl.glEnable (GL2.GL_BLEND);
+		gl.glBlendFunc (GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
+		
+		for(int i = 0; i < ninjaHealth; i++) {
+			// Logic for drawing each individual heart
+			t.bind(gl);
+			gl.glLoadIdentity();
+			gl.glBegin( GL2.GL_QUADS );
+				double originX = -0.85 + offset;
+				double originY = 0.85;
+				double x = -0.95 + offset;
+				double y = 0.95;
+				
+				//these values define what part of the image renders on the screen from 0.0 to 1.0
+				double coordOriginX = 0.0;
+				double coordOriginY = 0.0;
+				double coordX = 1.0;
+				double coordY = 1.0;
+				
+				gl.glTexCoord2d(coordOriginX, coordOriginY); gl.glVertex2d(originX,originY);
+				gl.glTexCoord2d(coordX, coordOriginY); gl.glVertex2d(x,originY);
+				gl.glTexCoord2d(coordX, coordY); gl.glVertex2d(x,y);
+				gl.glTexCoord2d(coordOriginX, coordY); gl.glVertex2d(originX,y);
+			gl.glEnd();
+			
+			
+			gl.glPopMatrix();
+			gl.glFlush();
+			offset += 0.125;
+		}
+		
+		gl.glDisable(GL2.GL_BLEND);
+		//gl.glDisable( GL2.GL_TEXTURE_2D );
+	}
+	
+	private void drawBossHealth(GL2 gl) {
+		// Logic for drawing the boss health
+		double leftX = Data.windowX - 230;
+		double leftY = Data.windowY - 685;
+		float percentage = ((float)gameModel.getBoss().getHP()/(float)gameModel.getBoss().getFullHP());
+		float width = 200 * percentage;
+		int maxWidth = 200;
+		int height = 25;
+		gl.glDisable( GL2.GL_TEXTURE_2D );
+		gl.glPushMatrix();
+		gl.glMatrixMode(GL2.GL_PROJECTION);
+		gl.glLoadIdentity();
+		gl.glOrtho(0, Data.windowX, Data.windowY, 0, -10, 10);
+		gl.glColor3f(((float)204/(float)255), 0f, 0f);
+		gl.glBegin(GL2.GL_QUADS);
+			gl.glVertex2d(leftX, leftY);
+			gl.glVertex2d(leftX, leftY+height);
+			gl.glVertex2d(leftX+maxWidth, leftY+height);
+			gl.glVertex2d(leftX+maxWidth, leftY);
+		gl.glEnd();
+
+		gl.glColor3f(1f, 1f, ((float)51/(float)255));
+		gl.glBegin(GL2.GL_QUADS);
+			gl.glVertex2d(leftX, leftY);
+			gl.glVertex2d(leftX, leftY+height);
+			gl.glVertex2d(leftX+width, leftY+height);
+			gl.glVertex2d(leftX+width, leftY);
+		gl.glEnd();
+	    gl.glFlush();
+
+		gl.glPopMatrix();
+		gl.glEnable( GL2.GL_TEXTURE_2D );
+	}
+	
 	private void drawLoadingBar(GL2 gl, LoadingBar loading){
 		double leftX = Data.windowX/2 - Data.windowX*.05;
 		double leftY = Data.windowY - 100;
@@ -397,7 +490,7 @@ public class View extends GLCanvas implements GLEventListener{
 		else if(type == "loading")
 			rend = tRendLoadingBar;
 		else if(type == "pause")
-			rend = new TextRenderer(new Font("Helvetica", Font.PLAIN, 15));
+			rend = tRendPause;
 			
 		rend.setColor(color);
 		rend.beginRendering(Data.windowX, Data.windowY, true);
@@ -441,12 +534,6 @@ public class View extends GLCanvas implements GLEventListener{
 		Point3D ninjaLoc= gameModel.getNinjaLoc();
 		lookAt= new float[]{(float) ninjaLoc.x, (float) ninjaLoc.y * scale + 2, (float) ninjaLoc.z};
 		
-		if (gameModel.getUsingMouse()) {
-			cameraAngle = ninjaAngle;
-			lookFrom[1] = 4;
-			gameModel.setUsingMouse(false);
-		}
-		
 		if (resetting){ // center the camera behind the ninja
 			cameraAngle= ninjaAngle;
 			cameraDistance= 6;
@@ -479,11 +566,13 @@ public class View extends GLCanvas implements GLEventListener{
 		// TODO: detect when an obstacle is between the viewer and the ninja and give it opacity
 		if(ninjaLoc != null && startDetectingObstacles) {
 			for(Obstacle obstacle : gameModel.getObstacles()) {
-				if(!gameModel.boxHit(cameraLoc,  ninjaLoc, obstacle.getHitBox()).isEmpty() && obstacle.getModel().getObj() != gameModel.getResource().getOBJs()[4]) {
-					obstacle.getModel().setIsTransparent(true);
-				}
-				else {
-					obstacle.getModel().setIsTransparent(false);
+				if(obstacle != null) {
+					if(!gameModel.boxHit(cameraLoc,  ninjaLoc, obstacle.getHitBox()).isEmpty() && obstacle.getModel().getObj() != gameModel.getResource().getOBJs()[4]) {
+						obstacle.getModel().setIsTransparent(true);
+					}
+					else {
+						obstacle.getModel().setIsTransparent(false);
+					}
 				}
 			}
 		}
@@ -539,7 +628,8 @@ public class View extends GLCanvas implements GLEventListener{
 	}
 	
 	public void setCamHeight(float height){
-		lookFrom[1]= height;
+		if(height < heightTop && height > heightBottom)
+			lookFrom[1]= height;
 	}
 	
 	public void setCamAngle(double angle){

@@ -34,7 +34,8 @@ public class Boss extends Character{
 	final int PROBABILITY_OF_SMALL_ATTACK = 60; //out of 100
 	final int PROBABILITY_OF_FRENZY_ATTACK = 30; //out of 100
 	final int TOTAL_ATTACK_PROBABILITY = PROBABILITY_OF_BIG_ATTACK + PROBABILITY_OF_SMALL_ATTACK + PROBABILITY_OF_FRENZY_ATTACK;
-	
+	int fullHP = 100;
+
 	public Boss(GameModel gameModel, Model model, double boxLength, double boxWidth) {
 		super(gameModel, model, boxLength, boxWidth, "Boss");
 		turnRate= .05;
@@ -44,9 +45,10 @@ public class Boss extends Character{
 		windUp = gameModel.getCurrentLevel().getBossWindUp();
 		windDown = gameModel.getCurrentLevel().getBossWindDown();
 		motion= standing;
-		maxHp = 200;
-		hp=maxHp;
 		randomGenerator = new Random();
+		hp=100;
+		fullHP = 100;
+		maxHp = 100;
 	}
 	
 	public void update(){
@@ -306,5 +308,9 @@ public class Boss extends Character{
 			return true;
 		
 		return false;
+	}
+	
+	public int getFullHP() {
+		return fullHP;
 	}
 }

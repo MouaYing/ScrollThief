@@ -13,12 +13,10 @@ import javax.swing.JFrame;
 import ch.aplu.xboxcontroller.XboxController;
 import scrollthief.ScrollThief;
 import scrollthief.model.Boss;
-import scrollthief.model.Data;
 import scrollthief.model.GameModel;
 import scrollthief.model.GameState;
 import scrollthief.model.Guard;
 import scrollthief.model.Character;
-import scrollthief.model.Point3D;
 import scrollthief.model.Projectile;
 import scrollthief.model.Sound;
 import scrollthief.model.SoundFile;
@@ -79,6 +77,7 @@ public class Controller extends TimerTask{
         mouse = new MouseControl(this);
         view.addMouseMotionListener(mouse);
         view.addMouseListener(mouse);
+        
         if(xbc != null && !xbc.isConnected())
         {
         	System.out.println("Xbox controller not connected...");
@@ -214,24 +213,55 @@ public class Controller extends TimerTask{
 			gameModel.getProjectiles().remove(proj);
 		}
 // ---------------------------------------------------------------------------------------------------	
+		if (!xbc.isConnected()){
+			
+			if(gameModel.getWPressed() && !gameModel.getAPressed() && !gameModel.getDPressed()) {
+				gameControl.setNinjaSpeed(-1);
+				gameModel.getNinja().setAngle(view.getCamAngle());
+				gameModel.getNinja().setNinjaDirection(gameModel.getNinjaAngle());
+			}
+			else if(gameModel.getSPressed() && !gameModel.getAPressed() && !gameModel.getDPressed()) {
+				gameControl.setNinjaSpeed(-1);
+				gameModel.getNinja().setAngle(view.getCamAngle() - Math.toRadians(180));
+				gameModel.getNinja().setNinjaDirection(gameModel.getNinjaAngle());
+			}
+			else if(gameModel.getAPressed() && !gameModel.getWPressed() && !gameModel.getSPressed()) {
+				gameControl.setNinjaSpeed(-1);
+				gameModel.getNinja().setAngle(view.getCamAngle() - Math.toRadians(90));
+				gameModel.getNinja().setNinjaDirection(gameModel.getNinjaAngle());
+			}
+			else if(gameModel.getDPressed() && !gameModel.getWPressed() && !gameModel.getSPressed()) {
+				gameControl.setNinjaSpeed(-1);
+				gameModel.getNinja().setAngle(view.getCamAngle() + Math.toRadians(90));
+				gameModel.getNinja().setNinjaDirection(gameModel.getNinjaAngle());
+			}
+			else if(gameModel.getWPressed() && gameModel.getAPressed()) {
+				gameControl.setNinjaSpeed(-1);
+				gameModel.getNinja().setAngle(view.getCamAngle() - Math.toRadians(45));
+				gameModel.getNinja().setNinjaDirection(gameModel.getNinjaAngle());
+			}
+			else if(gameModel.getWPressed() && gameModel.getDPressed()) {
+				gameControl.setNinjaSpeed(-1);
+				gameModel.getNinja().setAngle(view.getCamAngle() + Math.toRadians(45));
+				gameModel.getNinja().setNinjaDirection(gameModel.getNinjaAngle());
+			}
+			else if(gameModel.getSPressed() && gameModel.getAPressed()) {
+				gameControl.setNinjaSpeed(-1);
+				gameModel.getNinja().setAngle(view.getCamAngle() - Math.toRadians(135));
+				gameModel.getNinja().setNinjaDirection(gameModel.getNinjaAngle());
+			}
+			else if(gameModel.getSPressed() && gameModel.getDPressed()) {
+				gameControl.setNinjaSpeed(-1);
+				gameModel.getNinja().setAngle(view.getCamAngle() + Math.toRadians(135));
+				gameModel.getNinja().setNinjaDirection(gameModel.getNinjaAngle());
+			}
+			else if(!gameModel.getWPressed() && !gameModel.getAPressed() && !gameModel.getSPressed() && !gameModel.getDPressed()) {
+				gameControl.setNinjaSpeed(0);
+				gameModel.getNinja().setAngle(view.getCamAngle());
+				gameModel.getNinja().setNinjaDirection(gameModel.getNinjaAngle());
+			}
 		
-		if(gameModel.getWPressed())
-			gameControl.setNinjaSpeed(1);
-		if(gameModel.getSPressed())
-			gameControl.setNinjaSpeed(-1);
-		if(!gameModel.getWPressed() && !gameModel.getSPressed())
-			gameControl.setNinjaSpeed(0);
-//		if(gameModel.getAPressed())
-//			gameControl.rotateNinjaLeft();
-//		if(gameModel.getDPressed())
-//			gameControl.rotateNinjaRight();
-		if(gameModel.getAPressed()) {
-			gameControl.setNinjaSpeed(1);
 		}
-		if(gameModel.getDPressed()) {
-			gameControl.setNinjaSpeed(1);
-		}
-		
 
 
 // ----------------Check level dialog hotspots--------------------------------------------------------
@@ -297,9 +327,10 @@ public class Controller extends TimerTask{
 		gameModel.getNinja().reset();
 		gameModel.getBoss().reset();
 		
-		view.setCamAngle(0);
-		view.setCamHeight(4);
-		view.setCamDistance(6);
+//		view.setCamAngle(0);
+//		view.setCamHeight(4);
+//		view.setCamDistance(6);
+		view.resetting = true;
 		gameModel.changeState(GameState.Paused);
 		
 		gameModel.reloadMusic();

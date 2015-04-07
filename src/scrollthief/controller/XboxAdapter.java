@@ -6,13 +6,13 @@
  */
 package scrollthief.controller;
 
-import scrollthief.model.GameModel;
-import scrollthief.view.View;
+import scrollthief.model.GameState;
 import ch.aplu.xboxcontroller.XboxControllerAdapter;
 
 public class XboxAdapter extends XboxControllerAdapter{
 	private Controller controller;
 	private GameControl gameControl;
+	private double leftStickMagnitude= 0;
 	
 	public XboxAdapter(Controller controller){
 		this.controller = controller;
@@ -27,18 +27,21 @@ public class XboxAdapter extends XboxControllerAdapter{
 	
 	public void leftThumbDirection(double direction){
 		gameControl.setNinjaAngle(direction);
+		if (leftStickMagnitude > .3){
+			if(direction > 300 || direction < 60)
+				gameControl.switchSelectedButton(0);
+			else if(direction > 120 && direction < 210)
+				gameControl.switchSelectedButton(1);
+		}
 	}
 	
 	public void leftThumbMagnitude(double magnitude){
 		gameControl.setNinjaSpeed(magnitude);
+		leftStickMagnitude = magnitude;
 	}
 	
 	public void rightThumbDirection(double direction){
 		gameControl.setCameraDirection(direction);
-		if(direction > 300 || direction < 60)
-			gameControl.switchSelectedButton(0);
-		else if(direction > 120 && direction < 210)
-			gameControl.switchSelectedButton(1);
 	}
 	
 	public void rightThumbMagnitude(double magnitude){
@@ -74,7 +77,8 @@ public class XboxAdapter extends XboxControllerAdapter{
 	
 	public void buttonA(boolean pressed){
 		if (pressed){
-			gameControl.jump();
+			if (controller.gameModel.getState() == GameState.Playing)
+				gameControl.jump();
 			gameControl.buttonClick();
 		}
 	}
@@ -93,6 +97,15 @@ public class XboxAdapter extends XboxControllerAdapter{
 	public void start(boolean pressed){
 		if (pressed){
 			gameControl.pause();
+		}
+	}
+	
+	public void dpad(int direction, boolean pressed){
+		if (pressed){
+			if (direction == 0) //North (up)
+				gameControl.switchSelectedButton(0);
+			else if (direction == 4) // South (down)
+				gameControl.switchSelectedButton(1);
 		}
 	}
 }

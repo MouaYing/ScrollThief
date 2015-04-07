@@ -3,10 +3,11 @@ package scrollthief.controller;
 import java.util.List;
 
 import scrollthief.model.Button;
-import scrollthief.model.Data;
+//import scrollthief.model.Data;
 import scrollthief.model.GameModel;
 import scrollthief.model.GameState;
 import scrollthief.model.Point3D;
+//import scrollthief.model.Point3D;
 import scrollthief.model.SoundFile;
 import scrollthief.view.View;
 
@@ -20,7 +21,7 @@ public class GameControl {
 	private double speedIncrement = 0.7;
 	private double ninjaRotationIncrement = 0.075;
 	private double cameraRotationIncrement = 0.075;
-	private float cameraHeightIncrement = 0.1f;
+	private float cameraHeightIncrement = 0.2f;
 
 	private boolean usingMouse;
 	
@@ -34,11 +35,6 @@ public class GameControl {
 	
 	public boolean getUsingMouse() {
 		return usingMouse;
-	}
-	
-	public void setUsingMouse(boolean usingMouse) {
-		this.usingMouse = usingMouse;
-		gameModel.setUsingMouse(usingMouse);
 	}
 	
 	public boolean canPlay(){
@@ -66,14 +62,6 @@ public class GameControl {
 	public void rotateCameraLeft(){
 		if(canPlay())
 			view.setCamAngle(view.getCamAngle() - cameraRotationIncrement);
-	}
-	
-	public void strafeNinjaRight() {
-		
-	}
-	
-	public void strafeNinjaLeft() {
-		
 	}
 	
 	public void rotateCameraRight(){
@@ -111,8 +99,10 @@ public class GameControl {
 	}
 	
 	public void setNinjaAngle(double direction){
-		if(canPlay())
+		if(canPlay()){
 			gameModel.setNinjaAngle(Math.toRadians(direction) +  view.getCamAngle());
+			gameModel.getNinja().setNinjaDirection(Math.toRadians(direction + 180) +  view.getCamAngle());
+		}
 	}
 	
 	public double getNinjaAngle() {
@@ -152,7 +142,7 @@ public class GameControl {
 		System.out.println("Camera reset");
 	}
 	
-	public void toggleDevMode(){		
+	public void toggleDevMode(){
 		if (controller.devmode)
 			controller.devmode= false;
 		else 
@@ -223,9 +213,11 @@ public class GameControl {
 			}
 			else if (gameModel.getState() == GameState.Paused){
 				gameModel.changeState(GameState.Playing);
+				gameModel.getResource().getSound().resumeMusic();
 			}
 			else {
 				gameModel.changeState(GameState.Paused);
+				gameModel.getResource().getSound().pauseMusic();
 			}
 		}
 	}

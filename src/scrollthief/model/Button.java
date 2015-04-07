@@ -73,6 +73,7 @@ public class Button {
 	public void doAction() {
 		if(type == ButtonType.RESUME){
 			game.changeState(GameState.Playing);
+			game.getResource().getSound().resumeMusic();
 		}
 		else if(type == ButtonType.QUIT){
 			System.exit(0);
@@ -80,6 +81,7 @@ public class Button {
 		else if(type == ButtonType.RESTART){
 			game.resetLevel();
 			game.changeState(GameState.Playing);
+			game.getResource().getSound().playMusic(SoundFile.SNEAK);
 		}
 		else if(type == ButtonType.START){
 			game.changeState(GameState.LevelLoading);

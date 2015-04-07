@@ -35,7 +35,7 @@ public class Ninja extends Character {
 		attacking3 = gameModel.getResource().getNinjaStrike3();
 		jumping= new OBJ[] {running[0]};
 		motion= standing;
-		hp = 3;																																																																											;
+		hp = 6;																																																																											;
 	}
 	
 	// Determine what OBJ to use this tick, and set it as model.obj
@@ -68,21 +68,6 @@ public class Ninja extends Character {
 			motion= running;
 			animFrame= 0;
 		}
-		
-		if(gameModel.getAPressed() && !gameModel.getWPressed() && !gameModel.getSPressed())
-			setNinjaDirection(getAngle() + Math.PI - Math.toRadians(90));
-		else if(gameModel.getDPressed() && !gameModel.getWPressed() && !gameModel.getSPressed())
-			setNinjaDirection(getAngle() + Math.PI + Math.toRadians(90));
-		else if(gameModel.getAPressed() && gameModel.getWPressed())
-			setNinjaDirection(getAngle() + Math.PI - Math.toRadians(45));
-		else if(gameModel.getDPressed() && gameModel.getWPressed())
-			setNinjaDirection(getAngle() + Math.PI + Math.toRadians(45));
-		else if(gameModel.getAPressed() && gameModel.getSPressed())
-			setNinjaDirection(getAngle() + Math.PI - Math.toRadians(135));
-		else if(gameModel.getDPressed() && gameModel.getSPressed())
-			setNinjaDirection(getAngle() + Math.PI + Math.toRadians(135));
-		else
-			setNinjaDirection(getAngle() + Math.PI);
 		
 		wasJumping= isJumping;
 		oldSpeed= speed;
@@ -138,7 +123,7 @@ public class Ninja extends Character {
 	}
 	
 	public void reset(){
-		hp= 3;
+		hp= 6;
 		setLoc(new Point3D(0, 0, -5));
 		setAngle(0);
 		motion= standing;
