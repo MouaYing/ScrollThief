@@ -93,4 +93,13 @@ public class XboxAdapter extends XboxControllerAdapter{
 			gameControl.pause();
 		}
 	}
+	
+	public void dpad(int direction, boolean pressed){
+		if (pressed){
+			if (direction == 0) //North (up)
+				gameControl.switchSelectedButton(0);
+			else if (direction == 4) // South (down)
+				gameControl.switchSelectedButton(1);
+		}
+	}
 }
