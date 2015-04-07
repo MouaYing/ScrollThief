@@ -445,11 +445,6 @@ public class View extends GLCanvas implements GLEventListener{
 		Point3D ninjaLoc= gameModel.getNinjaLoc();
 		lookAt= new float[]{(float) ninjaLoc.x, (float) ninjaLoc.y * scale + 2, (float) ninjaLoc.z};
 		
-		if (gameModel.getUsingMouse()) {
-			cameraAngle = ninjaAngle;
-			gameModel.setUsingMouse(false);
-		}
-		
 		if (resetting){ // center the camera behind the ninja
 			cameraAngle= ninjaAngle;
 			cameraDistance= 6;

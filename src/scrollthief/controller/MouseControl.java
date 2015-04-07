@@ -4,14 +4,21 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
+import scrollthief.model.GameModel;
+import scrollthief.view.View;
+
 public class MouseControl implements MouseMotionListener, MouseListener {
 	
 	private GameControl gameControl;
+	private GameModel gameModel;
+	private View view;
 	private int prevX;
 	//private int prevY;
 
 	public MouseControl(Controller controller){
-		gameControl = new GameControl(controller);
+		gameControl = controller.getGameControl();
+		gameModel = controller.gameModel;
+		view = controller.view;
 		gameControl.setNinjaRotationIncrement(0.1);
 		prevX = 0;
 		//prevY = 0;
@@ -48,13 +55,46 @@ public class MouseControl implements MouseMotionListener, MouseListener {
 	public void mouseMoved(MouseEvent arg0) {
 		// TODO Auto-generated method stub
 		gameControl.highlightButton(arg0.getX(), arg0.getY());
+		if(gameModel.getNinja() != null) {
+			if(gameModel.getAPressed() && !gameModel.getWPressed() && !gameModel.getSPressed()) {
+				gameModel.getNinja().setAngle(view.getCamAngle() - Math.toRadians(90));
+			}
+			else if(gameModel.getAPressed() && gameModel.getWPressed()) {
+				gameModel.getNinja().setAngle(view.getCamAngle() - Math.toRadians(45));
+			}
+			else if(gameModel.getAPressed() && gameModel.getSPressed()) {
+				gameModel.getNinja().setAngle(view.getCamAngle() - Math.toRadians(135));
+			}
+			else if(gameModel.getDPressed() && !gameModel.getWPressed() && !gameModel.getSPressed()) {
+				gameModel.getNinja().setAngle(view.getCamAngle() + Math.toRadians(90));
+			}
+			else if(gameModel.getDPressed() && gameModel.getWPressed()) {
+				gameModel.getNinja().setAngle(view.getCamAngle() + Math.toRadians(45));
+			}
+			else if(gameModel.getDPressed() && gameModel.getSPressed()) {
+				gameModel.getNinja().setAngle(view.getCamAngle() + Math.toRadians(135));
+			}
+			else if(gameModel.getSPressed() && !gameModel.getAPressed() && !gameModel.getDPressed()) {
+				gameModel.getNinja().setAngle(view.getCamAngle() - Math.toRadians(180));
+			}
+			else {
+				gameModel.getNinja().setAngle(view.getCamAngle());
+			}
+		}
+		
 		if(arg0.getX() > prevX) {
 			gameControl.rotateCameraRight();
 			gameControl.rotateNinjaRight();
+			if(gameModel.getNinja() != null) {
+				gameModel.getNinja().setNinjaDirection(gameModel.getNinjaAngle());
+			}
 		}
 		else if(arg0.getX() < prevX) {
 			gameControl.rotateCameraLeft();
 			gameControl.rotateNinjaLeft();
+			if(gameModel.getNinja() != null) {
+				gameModel.getNinja().setNinjaDirection(gameModel.getNinjaAngle());
+			}
 		}
 		
 //		if (arg0.getY() > prevY) {
@@ -67,7 +107,6 @@ public class MouseControl implements MouseMotionListener, MouseListener {
 		prevX = arg0.getX();
 //		prevY = arg0.getY();
 		
-		gameControl.setUsingMouse(true);
 	}
 
 	@Override

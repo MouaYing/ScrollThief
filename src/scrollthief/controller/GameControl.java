@@ -36,11 +36,6 @@ public class GameControl {
 		return usingMouse;
 	}
 	
-	public void setUsingMouse(boolean usingMouse) {
-		this.usingMouse = usingMouse;
-		gameModel.setUsingMouse(usingMouse);
-	}
-	
 	public boolean canPlay(){
 		if(gameModel.getState() == GameState.Playing || 
 				gameModel.getState() == GameState.Paused ||
@@ -66,14 +61,6 @@ public class GameControl {
 	public void rotateCameraLeft(){
 		if(canPlay())
 			view.setCamAngle(view.getCamAngle() - cameraRotationIncrement);
-	}
-	
-	public void strafeNinjaRight() {
-		
-	}
-	
-	public void strafeNinjaLeft() {
-		
 	}
 	
 	public void rotateCameraRight(){

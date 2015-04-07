@@ -35,7 +35,6 @@ public class GameModel {
 	private boolean sPressed;
 	private boolean dPressed;
 	private boolean wPressed;
-	private boolean usingMouse;
 	
 	protected EventListenerList listenerList = new EventListenerList();
 
@@ -92,7 +91,6 @@ public class GameModel {
 		this.sPressed = false;
 		this.dPressed = false;
 		this.wPressed = false;
-		this.usingMouse = false;
 	}
 	
 	public boolean getAPressed() {
@@ -125,14 +123,6 @@ public class GameModel {
 	
 	public void setWPressed(boolean wPressed) {
 		this.wPressed = wPressed;
-	}
-	
-	public boolean getUsingMouse() {
-		return usingMouse;
-	}
-	
-	public void setUsingMouse(boolean usingMouse) {
-		this.usingMouse = usingMouse;
 	}
 	
 	public void saveGame() {
