@@ -3,11 +3,8 @@ package scrollthief.controller;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import com.sun.corba.se.impl.oa.poa.ActiveObjectMap.Key;
-
-import scrollthief.model.Data;
 import scrollthief.model.GameModel;
-import scrollthief.view.View;
+import scrollthief.model.GameState;
 
 public class KeyboardControl implements KeyListener {
 
@@ -42,6 +39,14 @@ public class KeyboardControl implements KeyListener {
 				break;
 			case KeyEvent.VK_C:
 				gameControl.resetCamera();
+			case KeyEvent.VK_R:
+				gameControl.attack();
+				break;
+			case KeyEvent.VK_SPACE:
+				if (gameModel.getState() == GameState.Playing)
+					gameControl.jump();
+				gameControl.buttonClick();
+				break;
 			default:
 				break;
 		}
@@ -59,13 +64,6 @@ public class KeyboardControl implements KeyListener {
 				break;
 			case KeyEvent.VK_O:
 				gameControl.toggleDevMode();
-				break;
-			case KeyEvent.VK_R:
-				gameControl.attack();
-				break;
-			case KeyEvent.VK_SPACE:
-				gameControl.jump();
-				gameControl.buttonClick();
 				break;
 			case KeyEvent.VK_UP:
 				gameControl.switchSelectedButton(0);

@@ -40,7 +40,6 @@ public class GameModel {
 	private boolean sPressed;
 	private boolean dPressed;
 	private boolean wPressed;
-	private boolean usingMouse;
 	
 	protected EventListenerList listenerList = new EventListenerList();
 
@@ -97,7 +96,6 @@ public class GameModel {
 		this.sPressed = false;
 		this.dPressed = false;
 		this.wPressed = false;
-		this.usingMouse = false;
 	}
 	
 	public boolean getAPressed() {
@@ -130,14 +128,6 @@ public class GameModel {
 	
 	public void setWPressed(boolean wPressed) {
 		this.wPressed = wPressed;
-	}
-	
-	public boolean getUsingMouse() {
-		return usingMouse;
-	}
-	
-	public void setUsingMouse(boolean usingMouse) {
-		this.usingMouse = usingMouse;
 	}
 	
 	public void saveGame() {
@@ -174,6 +164,7 @@ public class GameModel {
 	
 	public void init(final GL2 gl){
 		resource.loadImages(gl);
+		resource.loadHeart(gl);
 		changeState(GameState.ResourceLoading);
 		Thread resourceThread = new Thread() {
 			public void run() {
@@ -210,6 +201,7 @@ public class GameModel {
 			newState = data.getState();
 			getNinja().setLoc(data.getLocations().get(0));
 			getBoss().setLoc(data.getLocations().get(1));
+			resource.getSound().playMusic(SoundFile.SNEAK);
 		}
 		lastState = state;
 		state = newState;
@@ -234,6 +226,10 @@ public class GameModel {
 	
 	public Texture getLevelSplashImage(){
 		return resource.getLevelSplash();
+	}
+	
+	public Texture getHeart() {
+		return resource.getHeart();
 	}
 	
 	public GameState getState(){

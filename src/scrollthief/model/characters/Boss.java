@@ -15,6 +15,7 @@ public class Boss extends Character{
 	OBJ[] standing;
 	OBJ[] stomping;
 	boolean inBattle= false;
+	int fullHP = 100;
 
 	public Boss(GameModel gameModel, Model model, double boxLength, double boxWidth) {
 		super(gameModel, model, boxLength, boxWidth, "Boss");
@@ -24,6 +25,7 @@ public class Boss extends Character{
 		stomping= gameModel.getResource().getBossStomp();
 		motion= standing;
 		hp=100;
+		fullHP = 100;
 	}
 	
 	public void update(){
@@ -141,5 +143,9 @@ public class Boss extends Character{
 			return true;
 		
 		return false;
+	}
+	
+	public int getFullHP() {
+		return fullHP;
 	}
 }

@@ -1,25 +1,20 @@
 package scrollthief.model;
 import java.io.IOException;
 
+import javax.sound.sampled.LineEvent;
+import javax.sound.sampled.LineListener;
+
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.advanced.*;
 
-public class MusicListener extends PlaybackListener {
+public class MusicListener implements LineListener {
 	
 	private MusicPlayer player;
 	public MusicListener(MusicPlayer player) {
 		this.player = player;
 	}
-	
-	@Override
-	public void playbackFinished(PlaybackEvent arg0) {
-		if (player.getRepeatType() == RepeatType.REPEAT && player.shouldRestart())
-			player.play();
-	}
 
 	@Override
-	public void playbackStarted(PlaybackEvent arg0) {
-		// TODO Auto-generated method stub
-		super.playbackStarted(arg0);
+	public void update(LineEvent arg0) {
 	}
 }
