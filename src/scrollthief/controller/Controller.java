@@ -13,12 +13,10 @@ import javax.swing.JFrame;
 import ch.aplu.xboxcontroller.XboxController;
 import scrollthief.ScrollThief;
 import scrollthief.model.Boss;
-import scrollthief.model.Data;
 import scrollthief.model.GameModel;
 import scrollthief.model.GameState;
 import scrollthief.model.Guard;
 import scrollthief.model.Character;
-import scrollthief.model.Point3D;
 import scrollthief.model.Projectile;
 import scrollthief.model.Sound;
 import scrollthief.model.SoundFile;
@@ -79,6 +77,7 @@ public class Controller extends TimerTask{
         mouse = new MouseControl(this);
         view.addMouseMotionListener(mouse);
         view.addMouseListener(mouse);
+        
         if(xbc != null && !xbc.isConnected())
         {
         	System.out.println("Xbox controller not connected...");
@@ -328,9 +327,10 @@ public class Controller extends TimerTask{
 		gameModel.getNinja().reset();
 		gameModel.getBoss().reset();
 		
-		view.setCamAngle(0);
-		view.setCamHeight(4);
-		view.setCamDistance(6);
+//		view.setCamAngle(0);
+//		view.setCamHeight(4);
+//		view.setCamDistance(6);
+		view.resetting = true;
 		gameModel.changeState(GameState.Paused);
 		
 		gameModel.reloadMusic();

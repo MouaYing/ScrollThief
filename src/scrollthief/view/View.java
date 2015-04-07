@@ -164,13 +164,13 @@ public class View extends GLCanvas implements GLEventListener{
 			drawLoadingBar(gl,loading);
 			
 			//Display Game Title
-			String text = "THE SCROLL THIEF";
-			dialogRenderer.overlayText(text, (int)(Data.windowX/2 - Data.windowX*.15), Data.windowY-100, Color.white, "reg");
+//			String text = "THE SCROLL THIEF";
+//			dialogRenderer.overlayText(text, (int)(Data.windowX/2 - Data.windowX*.15), Data.windowY-100, Color.white, "reg");
 			
 			gl.glEnable(GL2.GL_TEXTURE_2D);
 		}
 		else if(gameModel.getState() == GameState.LevelLoading || gameModel.getState() == GameState.Start){
-			//Display the 
+			//Display the splash
 			displaySplashImage(gameModel.getLevelSplashImage());
 			
 			//Display Loading Bar
@@ -179,7 +179,7 @@ public class View extends GLCanvas implements GLEventListener{
 			
 			if(gameModel.getState() == GameState.Start){
 
-				String text = "Press Esc to Begin Mission";
+				String text = "Press Start to Begin Mission";
 				dialogRenderer.overlayText(text, (int)(Data.windowX/2 - Data.windowX*.15), Data.windowY-100, Color.white, "reg");
 			}
 			
@@ -234,8 +234,8 @@ public class View extends GLCanvas implements GLEventListener{
 			displaySplashImage(gameModel.getSplashImage());
 
 			//Display Game Title
-			String text = "THE SCROLL THIEF";
-			overlayText(text, (int)(Data.windowX/2 - Data.windowX*.15), Data.windowY-100, Color.white, "reg");
+			//String text = "THE SCROLL THIEF";
+			//overlayText(text, (int)(Data.windowX/2 - Data.windowX*.15), Data.windowY-100, Color.white, "reg");
 			
 			
 			drawMainMenu(gl);

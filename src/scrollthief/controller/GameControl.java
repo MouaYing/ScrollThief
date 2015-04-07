@@ -98,8 +98,10 @@ public class GameControl {
 	}
 	
 	public void setNinjaAngle(double direction){
-		if(canPlay())
+		if(canPlay()){
 			gameModel.setNinjaAngle(Math.toRadians(direction) +  view.getCamAngle());
+			gameModel.getNinja().setNinjaDirection(Math.toRadians(direction + 180) +  view.getCamAngle());
+		}
 	}
 	
 	public double getNinjaAngle() {
