@@ -167,17 +167,17 @@ public class Resource {
 		for (int i= 0; i < NINJA_STRIKE1_NUM; i++){
 			String fileName= "/resources/obj/anim/ninja/attack/strike1." + (i+1) + ".obj";
 			ninjaStrike1[i]= new OBJ(fileName);
-			loadingBar.increaseProgress(2);
+			loadingBar.increaseProgress(1);
 		}
 		for (int i= 0; i < NINJA_STRIKE2_NUM; i++){
 			String fileName= "/resources/obj/anim/ninja/attack/strike2." + (i+1) + ".obj";
 			ninjaStrike2[i]= new OBJ(fileName);
-			loadingBar.increaseProgress(2);
+			loadingBar.increaseProgress(1);
 		}
 		for (int i= 0; i < NINJA_STRIKE3_NUM; i++){
 			String fileName= "/resources/obj/anim/ninja/attack/strike3." + (i+1) + ".obj";
 			ninjaStrike3[i]= new OBJ(fileName);
-			loadingBar.increaseProgress(2);
+			loadingBar.increaseProgress(1);
 		}
 		say("done with ninja");
 	}

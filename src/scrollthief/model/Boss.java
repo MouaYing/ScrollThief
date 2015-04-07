@@ -26,8 +26,8 @@ public class Boss extends Character{
 	final int ATTACK_SIZE_BIG = 2;
 	final int ATTACK_FRENZY = 3;
 	int TICKS_BETWEEN_POUNCES = 1000;
-	int TICKS_BETWEEN_ATTACKS = 75;
-	final int TICKS_FOR_CHARGE = 200;
+	int TICKS_BETWEEN_ATTACKS = 150;
+//	final int TICKS_FOR_CHARGE = 200;
 	final double HEALTH_RATIO_BEFORE_HEAT_SEEKING = .5;
 	final double HEALTH_RATIO_BEFORE_FRENZY = .4;
 	final int PROBABILITY_OF_BIG_ATTACK = 30; //out of 100
@@ -44,7 +44,7 @@ public class Boss extends Character{
 		windUp = gameModel.getCurrentLevel().getBossWindUp();
 		windDown = gameModel.getCurrentLevel().getBossWindDown();
 		motion= standing;
-		maxHp = 300;
+		maxHp = 200;
 		hp=maxHp;
 		randomGenerator = new Random();
 	}
@@ -63,8 +63,9 @@ public class Boss extends Character{
 		}
 		else {
 			navigate();
-			handleAttack();
 			move();
+			if(motion != windUp)
+				handleAttack();
 		}
 	}
 	
@@ -79,6 +80,28 @@ public class Boss extends Character{
 			advanceFrame();
 		
 		model.setOBJ(motion[animFrame]);
+	}
+	
+	@Override
+	public void advanceFrame(){
+		animFrame++;
+		if (animFrame >= motion.length) {
+			animFrame= 0;
+			if(motion == windUp) {
+				shoot(ATTACK_SIZE_BIG, false);
+				motion = shooting;
+				return;
+			}
+			if(motion == shooting) {
+				motion = windDown;
+				return;
+			}
+			if(motion == windDown) {
+				motion = standing;
+				return;
+			}
+			motion = standing;
+		}
 	}
 	
 	public void reset(){
@@ -104,14 +127,14 @@ public class Boss extends Character{
 	}
 	
 	private void pounceController() {
-		if(getSpeed() > 0 && getLoc().y == 0) { //collisionWithPounce()) {  //end pounce, he is there!
+		if(getSpeed() > 0 && getLoc().y == 0) {  //end pounce, he is there!
 			tickCount = 0;
 			setSpeed(0);
 			setDeltaY(0);
 			isPouncing = false;
 			return;
 		}
-		else if(getSpeed() == 0 && isFacingPouncePoint()) {
+		else if(getSpeed() == 0 && isFacingPouncePoint(0.001f)) {
 			double dist = getLoc().minus(lastPouncePoint).length();
 			float nextPounceSpeed = (float)((1 + dist / 20) * pounceSpeed);
 			setSpeed(nextPounceSpeed);
@@ -120,12 +143,14 @@ public class Boss extends Character{
 				nextJumpSpeed = jumpSpeed;
 			setDeltaY(nextJumpSpeed);
 		}
+		if(getSpeed() == 0 && isFacingPouncePoint(0.1f)) {
+			motion = pounce;
+		}
 		navigate();
 		move();
 	}
 	
-	private boolean isFacingPouncePoint(){
-		float fov= 0.001f; // (radians) needs tuning
+	private boolean isFacingPouncePoint(float fov){
 		Point3D loc= getLoc();
 		double bossAngle= -getAngle();
 		double angToPoint= Math.atan2(lastPouncePoint.x - loc.x, lastPouncePoint.z - loc.z);
@@ -143,12 +168,12 @@ public class Boss extends Character{
 	}	
 	
 	private void handleAttack() {
-		if(charge > 0) {
-			charge--;
-			if(charge <= 0)
-				shoot(ATTACK_SIZE_BIG, false);
-			return;
-		}
+//		if(charge > 0) {
+//			charge--;
+//			if(charge <= 0)
+//				shoot(ATTACK_SIZE_BIG, false);
+//			return;
+//		}
 		if(tickCount % TICKS_BETWEEN_ATTACKS == 0)
 			readyForAttack = true;
 		if(!isFacingNinja() || !readyForAttack)
@@ -157,7 +182,7 @@ public class Boss extends Character{
 		int rand = getRand(TOTAL_ATTACK_PROBABILITY);
 		
 		if((rand -= PROBABILITY_OF_BIG_ATTACK) < 0) {
-			charge = TICKS_FOR_CHARGE;
+//			charge = TICKS_FOR_CHARGE;
 			motion = windUp;
 		}
 		else if((rand -= PROBABILITY_OF_SMALL_ATTACK) < 0) {

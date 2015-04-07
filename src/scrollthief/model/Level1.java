@@ -45,11 +45,11 @@ public class Level1 implements Level {
 		numBossShooting = 11;
 		numBossWindUp = 17;
 		numBossWindDown = 9;
-		numObs = numWalls + numPillars + numTables + numBossPounce + numBossShooting + numBossWindUp + numBossWindDown + 1;
+		numObs = numWalls + numPillars + numTables + 1;
 		this.resource = resource;
 		this.gameModel = gameModel;
 		
-		numModels= numGuards + numObs + 3; //56
+		numModels= numGuards + numObs + numBossPounce + numBossShooting + numBossWindUp + numBossWindDown + 3; //56
 		models= new ArrayList<Model>();
 		guards= new Guard[numGuards];
 		obstacles= new Obstacle[numObs];
@@ -154,7 +154,7 @@ public class Level1 implements Level {
 		
 		numObs = numWalls + numPillars + numTables + 1;
 		
-		numModels= numGuards + numObs + 3; //56
+		numModels= numGuards + numObs + numBossPounce + numBossShooting + numBossWindUp + numBossWindDown + 3; //56
 		guards= new Guard[numGuards];
 		obstacles= new Obstacle[numObs];
 	}
