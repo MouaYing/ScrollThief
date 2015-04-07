@@ -6,8 +6,7 @@
  */
 package scrollthief.controller;
 
-import scrollthief.model.GameModel;
-import scrollthief.view.View;
+import scrollthief.model.GameState;
 import ch.aplu.xboxcontroller.XboxControllerAdapter;
 
 public class XboxAdapter extends XboxControllerAdapter{
@@ -78,7 +77,8 @@ public class XboxAdapter extends XboxControllerAdapter{
 	
 	public void buttonA(boolean pressed){
 		if (pressed){
-			gameControl.jump();
+			if (controller.gameModel.getState() == GameState.Playing)
+				gameControl.jump();
 			gameControl.buttonClick();
 		}
 	}
