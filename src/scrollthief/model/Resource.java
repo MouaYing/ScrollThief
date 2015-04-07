@@ -1,7 +1,7 @@
 package scrollthief.model;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
+//import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
@@ -64,10 +64,10 @@ public class Resource {
 	}
 	
 	public void reloadMusic() {
-		sound.loadMusic(SoundFile.TITLE, "/resources/music/ST_Title_1.mp3", RepeatType.REPEAT);
-		sound.loadMusic(SoundFile.SNEAK, "/resources/music/ST_Sneak.mp3", RepeatType.REPEAT);
-		sound.loadMusic(SoundFile.GAMEOVER, "/resources/music/Game_Over.mp3", RepeatType.NOREPEAT);
-		sound.loadMusic(SoundFile.BOSS, "/resources/music/ST_Boss_1.mp3", RepeatType.REPEAT);
+		sound.loadMusic(SoundFile.TITLE, "/resources/music/ST_Title_1.wav", RepeatType.REPEAT);
+		sound.loadMusic(SoundFile.SNEAK, "/resources/music/ST_Sneak.wav", RepeatType.REPEAT);
+		sound.loadMusic(SoundFile.GAMEOVER, "/resources/music/Game_Over.wav", RepeatType.NOREPEAT);
+		sound.loadMusic(SoundFile.BOSS, "/resources/music/ST_Boss_1.wav", RepeatType.REPEAT);
 	}
 	
 	private void loadEffects() {

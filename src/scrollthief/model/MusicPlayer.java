@@ -16,8 +16,10 @@ public class MusicPlayer {
 	private Clip clip;
 	private long delay;
 	private RepeatType repeatType;
+	private String fileName;
 	
 	public MusicPlayer(String file, RepeatType repeatType) {
+		fileName = file;
 		delay = 0;
 		this.repeatType = repeatType;
 		streamManager = new StreamSwitcher(file);
@@ -65,7 +67,7 @@ public class MusicPlayer {
 				try {
 					Thread.sleep(delay);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
+					say("Music thread interrupted!");
 					e.printStackTrace();
 				}
 				if (repeatType == RepeatType.NOREPEAT)
@@ -95,14 +97,18 @@ public class MusicPlayer {
 			clip.open(audioStream);
 			streamManager.loadNextStream();
 		} catch (UnsupportedAudioFileException e) {
-			// TODO Auto-generated catch block
+			say("\nUnsupported file! File: " + fileName);
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			say("\nIO error! File: " + fileName);
 			e.printStackTrace();
 		} catch (LineUnavailableException e) {
-			// TODO Auto-generated catch block
+			say("\nLine unavailable! File: " + fileName);
 			e.printStackTrace();
 		}
+	}
+	
+	private void say(String message){
+		System.out.println(message);
 	}
 }
