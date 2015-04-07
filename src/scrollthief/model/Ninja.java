@@ -137,7 +137,7 @@ public class Ninja extends Character {
 	}
 	
 	public void reset(){
-		hp= 3;
+		hp= 6;
 		setLoc(new Point3D(0, 0, -5));
 		setAngle(0);
 		motion= standing;
