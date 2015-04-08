@@ -21,18 +21,22 @@ public class Boss extends Character{
 	float pounceSpeed = 1.5f;
 	float jumpSpeed = 0.2f;
 	boolean readyForAttack;
+	int coolDown = 0;
 	int charge = 0; //for charging up the big attack
 	final int ATTACK_SIZE_SMALL = 1;
 	final int ATTACK_SIZE_BIG = 2;
 	final int ATTACK_FRENZY = 3;
 	int TICKS_BETWEEN_POUNCES = 1000;
-	int TICKS_BETWEEN_ATTACKS = 150;
+	int TICKS_BETWEEN_ATTACKS = 200;
+	int TICKS_FOR_COOLDOWN = 150;
 //	final int TICKS_FOR_CHARGE = 200;
-	final double HEALTH_RATIO_BEFORE_HEAT_SEEKING = .5;
-	final double HEALTH_RATIO_BEFORE_FRENZY = .4;
-	final int PROBABILITY_OF_BIG_ATTACK = 30; //out of 100
-	final int PROBABILITY_OF_SMALL_ATTACK = 60; //out of 100
-	final int PROBABILITY_OF_FRENZY_ATTACK = 30; //out of 100
+	final double HEALTH_RATIO_BEFORE_HEAT_SEEKING = 1.5; //get rid of the 1 for actual ratio
+	final double HEALTH_RATIO_BEFORE_FRENZY = 1.4;  //get rid of the 1 for actual ratio
+	final int PROBABILITY_OF_BIG_ATTACK = 30;
+	final int PROBABILITY_OF_SMALL_ATTACK = 60;
+	final int PROBABILITY_OF_FRENZY_ATTACK = 30;
+	final int PROBABILITY_OF_SMALL_VOLLEY_ATTACK = 30;
+	final int PROBABILITY_OF_LARGE_VOLLEY_ATTACK = 30;
 	final int TOTAL_ATTACK_PROBABILITY = PROBABILITY_OF_BIG_ATTACK + PROBABILITY_OF_SMALL_ATTACK + PROBABILITY_OF_FRENZY_ATTACK;
 	int fullHP = 100;
 
@@ -57,6 +61,10 @@ public class Boss extends Character{
 		
 		tickCount++;
 		
+		if(coolDown > 0) {
+			coolDown--;
+		}
+		
 		if(isPouncing) {
 			pounceController();
 		}
@@ -64,10 +72,11 @@ public class Boss extends Character{
 			startPounce();
 		}
 		else {
-			navigate();
 			move();
 			if(motion != windUp)
 				handleAttack();
+			if(coolDown <=0)
+				navigate();
 		}
 	}
 	
@@ -159,8 +168,7 @@ public class Boss extends Character{
 		
 		// find the smallest difference between the angles
 		double angDif = (angToPoint - bossAngle);
-		angDif = gameModel.floorMod((angDif + Math.PI),(2 * Math.PI)) - Math.PI; 
-		//say("Angle difference is: "+angDif);
+		angDif = gameModel.floorMod((angDif + Math.PI),(2 * Math.PI)) - Math.PI;
 		
 		// check if this angle difference is small enough that the point would be in boss's FOV
 		if (angDif > -fov && angDif < fov)
@@ -170,12 +178,6 @@ public class Boss extends Character{
 	}	
 	
 	private void handleAttack() {
-//		if(charge > 0) {
-//			charge--;
-//			if(charge <= 0)
-//				shoot(ATTACK_SIZE_BIG, false);
-//			return;
-//		}
 		if(tickCount % TICKS_BETWEEN_ATTACKS == 0)
 			readyForAttack = true;
 		if(!isFacingNinja() || !readyForAttack)
@@ -184,7 +186,6 @@ public class Boss extends Character{
 		int rand = getRand(TOTAL_ATTACK_PROBABILITY);
 		
 		if((rand -= PROBABILITY_OF_BIG_ATTACK) < 0) {
-//			charge = TICKS_FOR_CHARGE;
 			motion = windUp;
 		}
 		else if((rand -= PROBABILITY_OF_SMALL_ATTACK) < 0) {
@@ -193,6 +194,7 @@ public class Boss extends Character{
 		else if(hp / maxHp < HEALTH_RATIO_BEFORE_FRENZY && (rand -= PROBABILITY_OF_FRENZY_ATTACK) < 0) {
 			shoot(ATTACK_SIZE_BIG, true);
 		}
+		coolDown = TICKS_FOR_COOLDOWN;
 	}
 	
 	private void setNextPouncePoint() {
@@ -249,7 +251,7 @@ public class Boss extends Character{
 		double[] rot = model.getRot().clone();
 		rot[0]= -targetVector.y * scale;
 		Model projModel= new Model(obj, 11, bossHead, rot, sizeScale, 1);
-		boolean heatSeeking = hp / maxHp < HEALTH_RATIO_BEFORE_HEAT_SEEKING;
+		boolean heatSeeking = false;//(hp / maxHp < HEALTH_RATIO_BEFORE_HEAT_SEEKING) && attackSize == ATTACK_SIZE_SMALL;
 		gameModel.getProjectiles().add(new Projectile(gameModel, projModel, targetVector, attackSize, heatSeeking, bossHead, direction));
 		gameModel.getModels().add(projModel);
 	}
@@ -280,6 +282,11 @@ public class Boss extends Character{
 	}
 	
 	public void takeDamage(int damage) {
+		hp -= damage;
+		if(hp < 0) {
+			hp = 0;
+			return;
+		}
 		Data.say("hit boss for " + damage + " damage");
 		//increase boss difficulty after each hit
 		turnRate += damage / maxHp / 10;

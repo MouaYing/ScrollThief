@@ -279,7 +279,7 @@ public class Character {
 			boss.takeDamage(damage);
 		}
 		else if(this instanceof Ninja) {
-//			Data.say("You got hit! ");
+			Data.say("You got hit! " + damage);
 		}
 	}
 	

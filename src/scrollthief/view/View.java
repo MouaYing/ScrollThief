@@ -2,18 +2,24 @@ package scrollthief.view;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
+import javax.media.opengl.GLProfile;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
 
+import com.jogamp.opengl.util.awt.ImageUtil;
 import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.gl2.GLUT;
 import com.jogamp.opengl.util.texture.Texture;
+import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
 
 import scrollthief.model.Button;
 import scrollthief.model.GameState;
@@ -51,6 +57,7 @@ public class View extends GLCanvas implements GLEventListener{
 	boolean startDetectingObstacles;
 	float heightTop= 15;
 	float heightBottom= 1;
+	Texture scrollTexture;
 
 	public View(GameModel model){
 		say("Loading view...");
@@ -71,6 +78,7 @@ public class View extends GLCanvas implements GLEventListener{
 		tRend2= new TextRenderer(new Font("Helvetica", Font.BOLD, 60));
 		tRendLoadingBar= new TextRenderer(new Font("Helvetica", Font.PLAIN, 10));
 		tRendPause = new TextRenderer(new Font("Helvetica", Font.PLAIN, 15));
+		loadScrollTexture(gl);
 		
 		setupLighting(gl);
 		
@@ -257,10 +265,11 @@ public class View extends GLCanvas implements GLEventListener{
 	}
 	
 	private void drawPauseMenu(GL2 gl){
-
+		displaySplashImage(scrollTexture);
 		gl.glDisable(GL2.GL_TEXTURE_2D);
 
 		String text = "GAME PAUSED";
+		
 		drawButtonMenu(gl, gameModel.getPauseButtons(), text);
 
 	    gl.glFlush();
@@ -275,19 +284,7 @@ public class View extends GLCanvas implements GLEventListener{
 		double maxWidth = 300;
 		double leftX = (Data.windowX - maxWidth)/2;
 		double leftY = (Data.windowY - height)/2;
-		gl.glPushMatrix();
-		gl.glMatrixMode(GL2.GL_PROJECTION);
-		gl.glLoadIdentity();
-		gl.glOrtho(0, Data.windowX, 0, Data.windowY, -10, 10);
-		gl.glColor3f(1f, 1f, ((float)153/(float)255));
-		gl.glBegin(GL2.GL_QUADS);
-			gl.glVertex2d(leftX, leftY);
-			gl.glVertex2d(leftX, leftY+height);
-			gl.glVertex2d(leftX+maxWidth, leftY+height);
-			gl.glVertex2d(leftX+maxWidth, leftY);
-		gl.glEnd();
 		overlayText(text, (int)(leftX + 100), (int)(leftY + height - 20), Color.black, "pause");
-		//dialogRenderer.overlayText(text, (int)(leftX + 100), (int)(leftY + height - 20), Color.black, "pause");
 		for(Button b : buttons){
 			b.setOffset((int)leftX, (int)leftY);
 		}
@@ -315,7 +312,6 @@ public class View extends GLCanvas implements GLEventListener{
 			}
 			int y = (int)(b.getY() + b.getHeight()/3);
 			overlayText(b.getText(),x ,y , Color.black, "pause");
-			//dialogRenderer.overlayText(b.getText(), (int)(b.getX()+b.getWidth()/4), (int)(b.getY() + b.getHeight()/4), Color.black, "pause");
 		}
 	}
 	
@@ -325,6 +321,7 @@ public class View extends GLCanvas implements GLEventListener{
 		gl.glLoadIdentity();
 		gl.glOrtho(0, Data.windowX, Data.windowY, 0, -10, 10);
 		gl.glEnable( GL2.GL_TEXTURE_2D );
+		gl.glBlendFunc (GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
 		t.bind(gl);
 		gl.glLoadIdentity();
 		gl.glBegin( GL2.GL_QUADS );
@@ -584,6 +581,17 @@ public class View extends GLCanvas implements GLEventListener{
 	public DialogRenderer getDialogRenderer() {
 		return dialogRenderer;
 	}
+	
+	public void loadScrollTexture(GL2 gl) {
+		GLProfile profile= gl.getGLProfile();
+		try{
+			BufferedImage image = ImageIO.read(this.getClass().getResourceAsStream(Data.SCROLL_FILE));
+			ImageUtil.flipImageVertically(image);
+			scrollTexture = AWTTextureIO.newTexture(profile, image, false);
+		}catch(IOException e){
+			System.out.println("Error Loading scroll Image");
+		}
+ 	}
 	
 	private boolean cullObscured(Model model){
 		Point3D modelLoc= model.getLoc();
