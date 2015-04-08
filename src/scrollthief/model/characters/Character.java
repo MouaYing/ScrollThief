@@ -3,10 +3,13 @@ package scrollthief.model.characters;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
+import scrollthief.model.characters.Boss;
+import scrollthief.model.characters.Character;
 import scrollthief.model.Data;
 import scrollthief.model.GameModel;
 import scrollthief.model.GameState;
 import scrollthief.model.Model;
+import scrollthief.model.characters.Ninja;
 import scrollthief.model.OBJ;
 import scrollthief.model.Obstacle;
 import scrollthief.model.Point3D;
@@ -36,6 +39,7 @@ public class Character {
 	int animFrame= 0; // The frame of animation currently being displayed
 	OBJ[] motion= null; // The current animation loop
 	boolean alive = true;
+	int maxHp;
 	
 	private Point2D[] edgePrime;
 	String type;
@@ -225,10 +229,8 @@ public class Character {
 		hp -= damage;
 		this.model.setFlash(true);
 		if(this instanceof Boss) {
-			if(hp <= 0) {
-				Data.say("Boss killed!!!");
-				alive = false;
-			}
+			Character boss= gameModel.getBoss();
+			boss.takeDamage(damage);
 		}
 		else if(this instanceof Ninja) {
 //			Data.say("You got hit! ");

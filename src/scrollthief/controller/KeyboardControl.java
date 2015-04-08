@@ -83,7 +83,8 @@ public class KeyboardControl implements KeyListener {
 			case KeyEvent.VK_D:
 				gameModel.setDPressed(false);
 				break;
-			default:
+			case KeyEvent.VK_M: //to be removed, tt's for testing the boss
+				gameControl.superDuperSecretTeleportToBossHack();
 				break;
 		}
 	}

@@ -39,9 +39,9 @@ public class Ninja extends Character {
 		standing= new OBJ[] {defaultOBJ};
 		attackPowers = new float[] {0f, .3f, .4f, 1f};
 		running= gameModel.getResource().getNinjaRun();
-		attacking1 = running.clone(); //gameModel.getResource().getNinjaAttack1();
-		attacking2 = running.clone(); //gameModel.getResource().getNinjaAttack2();
-		attacking3 = running.clone(); //gameModel.getResource().getNinjaAttack3();
+		attacking1 = gameModel.getResource().getNinjaStrike1();
+		attacking2 = gameModel.getResource().getNinjaStrike2();
+		attacking3 = gameModel.getResource().getNinjaStrike3();
 		jumping= new OBJ[] {running[0]};
 		motion= standing;
 		hp = 6;																																																																											;
@@ -132,7 +132,7 @@ public class Ninja extends Character {
 			if (tick % (int)(2/speed) == 0) 
 				advanceFrame();
 		}
-		else if(attacking > -1) {
+		else if(tick % 2 == 0 && attacking > -1) {
 			advanceAttackFrame(this);
 		}
 		else{
@@ -150,14 +150,13 @@ public class Ninja extends Character {
 		//area of attacking collision area
 		double direction= getAngle() + Math.PI;
 		float scale= .125f;
-		double swordLength = 1.5;  //should be 1 or 2 probably, but it's longer for testing
+		double swordLength = 3; //1.5;  //should be 1 or 2 probably, but it's longer for testing
 		double deltaX= Math.sin(direction) * (scale * swordLength);
 		double deltaZ= -Math.cos(direction) * (scale * swordLength);
 		Point3D atkLoc= new Point3D(loc.x + deltaX, loc.y, loc.z + deltaZ);
 		
 		actualHitBox.createNewHitBox(getModel().getAngle(), atkLoc);
 		ArrayList<Edge> collidedEdges = characterCollisionCheck(atkLoc, boss);
-		
 		if(!collidedEdges.isEmpty()) {
 			if(attacking >= 0 && attacking < attackPowers.length) {
 				boss.takeDamage((int) (attackPowers[attacking] * maxAttackDamage));

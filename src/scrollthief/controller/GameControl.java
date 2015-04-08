@@ -143,11 +143,6 @@ public class GameControl {
 	}
 	
 	public void toggleDevMode(){
-		//for putting the ninja next to the boss for testing
-		scrollthief.model.characters.Character ninja= gameModel.getNinja();
-		
-		ninja.setLoc(new Point3D(10, 0, 70));  //for if you want quick teleport to boss
-		
 		if (controller.devmode)
 			controller.devmode= false;
 		else 
@@ -189,7 +184,6 @@ public class GameControl {
 	}
 	
 	public void pause(){
-		//System.out.println(gameModel == null);
 		
 //		if (gameModel.getState() == GameState.Spotted || gameModel.getState() == GameState.Killed && gameModel.getState() == GameState.Victory){ // game is over---reset
 //			controller.reset();
@@ -304,6 +298,12 @@ public class GameControl {
 				}
 			}
 		}
+	}
+	
+	public void superDuperSecretTeleportToBossHack() {
+		//for putting the ninja next to the boss for testing
+		scrollthief.model.characters.Character ninja= gameModel.getNinja();
+		ninja.setLoc(new Point3D(10, 0, 70));  //for if you want quick teleport to boss
 	}
 	
 	private void updateCamera(){

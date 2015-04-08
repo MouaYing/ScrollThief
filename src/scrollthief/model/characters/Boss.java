@@ -1,7 +1,9 @@
 package scrollthief.model.characters;
 
 import java.util.ArrayList;
+import java.util.Random;
 
+import scrollthief.model.Data;
 import scrollthief.model.GameModel;
 import scrollthief.model.Model;
 import scrollthief.model.OBJ;
@@ -10,35 +12,69 @@ import scrollthief.model.Projectile;
 
 public class Boss extends Character{
 	ArrayList<Character> projectiles= new ArrayList<Character>();
-	double sightRange= 17;
+	double sightRange= 30;
 	int tickCount= 0;
 	OBJ[] standing;
-	OBJ[] stomping;
+	OBJ[] pounce;
+	OBJ[] shooting;
+	OBJ[] windUp;
+	OBJ[] windDown;
 	boolean inBattle= false;
+	boolean isPouncing = false;
+	Random randomGenerator;
+	public Point3D lastPouncePoint;
+	float pounceSpeed = 1.5f;
+	float jumpSpeed = 0.2f;
+	boolean readyForAttack;
+	int charge = 0; //for charging up the big attack
+	final int ATTACK_SIZE_SMALL = 1;
+	final int ATTACK_SIZE_BIG = 2;
+	final int ATTACK_FRENZY = 3;
+	int TICKS_BETWEEN_POUNCES = 1000;
+	int TICKS_BETWEEN_ATTACKS = 150;
+//	final int TICKS_FOR_CHARGE = 200;
+	final double HEALTH_RATIO_BEFORE_HEAT_SEEKING = .5;
+	final double HEALTH_RATIO_BEFORE_FRENZY = .4;
+	final int PROBABILITY_OF_BIG_ATTACK = 30; //out of 100
+	final int PROBABILITY_OF_SMALL_ATTACK = 60; //out of 100
+	final int PROBABILITY_OF_FRENZY_ATTACK = 30; //out of 100
+	final int TOTAL_ATTACK_PROBABILITY = PROBABILITY_OF_BIG_ATTACK + PROBABILITY_OF_SMALL_ATTACK + PROBABILITY_OF_FRENZY_ATTACK;
 	int fullHP = 100;
 
 	public Boss(GameModel gameModel, Model model, double boxLength, double boxWidth) {
 		super(gameModel, model, boxLength, boxWidth, "Boss");
-		turnRate= .02;
-		setSpeed(.2);
+		turnRate= .05;
 		standing= new OBJ[] {model.getObj()};
-		stomping= gameModel.getResource().getBossStomp();
+		pounce = gameModel.getCurrentLevel().getBossPounce();
+		shooting = gameModel.getCurrentLevel().getBossShooting();
+		windUp = gameModel.getCurrentLevel().getBossWindUp();
+		windDown = gameModel.getCurrentLevel().getBossWindDown();
 		motion= standing;
+		randomGenerator = new Random();
 		hp=100;
 		fullHP = 100;
+		maxHp = 100;
 	}
 	
 	public void update(){
-		if (!isNear())
+		if (!isNear() || !alive)
 			return;
 		
 		tickCount++;
-		navigate();
-		move();
-		if (tickCount >= 30 && isFacingNinja()) // determine whether to shoot or not
-			shoot();
+		
+		if(isPouncing) {
+			pounceController();
+		}
+		else if(tickCount > TICKS_BETWEEN_POUNCES) {
+			startPounce();
+		}
+		else {
+			navigate();
+			move();
+			if(motion != windUp)
+				handleAttack();
+		}
 	}
-	
 	public double getDeltaX(double direction, double movement) {
 		Point3D bossDelta= calcDelta(0, 0);
 		return bossDelta.x;
@@ -50,12 +86,9 @@ public class Boss extends Character{
 	}
 	
 	public void animate(int tick){
-		if(!alive)
-			return;
-		
 		if (isNear() && !inBattle){
 			inBattle= true;
-			motion= stomping;
+			motion= standing;
 			animFrame= 0;
 		}
 		
@@ -65,6 +98,28 @@ public class Boss extends Character{
 		model.setOBJ(motion[animFrame]);
 	}
 	
+	@Override
+	public void advanceFrame(){
+		animFrame++;
+		if (animFrame >= motion.length) {
+			animFrame= 0;
+			if(motion == windUp) {
+				shoot(ATTACK_SIZE_BIG, false);
+				motion = shooting;
+				return;
+			}
+			if(motion == shooting) {
+				motion = windDown;
+				return;
+			}
+			if(motion == windDown) {
+				motion = standing;
+				return;
+			}
+			motion = standing;
+		}
+	}
+	
 	public void reset(){
 		setAngle(0);
 		setGoalAngle(0);
@@ -72,32 +127,144 @@ public class Boss extends Character{
 	}
 	
 	private void navigate(){
-		Point3D ninjaLoc= gameModel.getNinjaLoc();
-		faceToward(ninjaLoc);
+		Point3D target;
+		if(isPouncing) {
+			target = lastPouncePoint;
+		}
+		else {
+			target = gameModel.getNinjaLoc();
+		}
+		faceToward(target);
 	}
 	
-	private void shoot(){
-		tickCount= 0;
-		double scale= 3;
+	private void startPounce() {
+		setNextPouncePoint();
+		isPouncing = true;
+	}
+	
+	private void pounceController() {
+		if(getSpeed() > 0 && getLoc().y == 0) {  //end pounce, he is there!
+			tickCount = 0;
+			setSpeed(0);
+			setDeltaY(0);
+			isPouncing = false;
+			return;
+		}
+		else if(getSpeed() == 0 && isFacingPouncePoint(0.001f)) {
+			double dist = getLoc().minus(lastPouncePoint).length();
+			float nextPounceSpeed = (float)((1 + dist / 20) * pounceSpeed);
+			setSpeed(nextPounceSpeed);
+			float nextJumpSpeed = (float)(dist / 10 * jumpSpeed);
+			if(nextJumpSpeed > jumpSpeed)
+				nextJumpSpeed = jumpSpeed;
+			setDeltaY(nextJumpSpeed);
+		}
+		if(getSpeed() == 0 && isFacingPouncePoint(0.1f)) {
+			motion = pounce;
+		}
+		navigate();
+		move();
+	}
+	
+	private boolean isFacingPouncePoint(float fov){
+		Point3D loc= getLoc();
+		double bossAngle= -getAngle();
+		double angToPoint= Math.atan2(lastPouncePoint.x - loc.x, lastPouncePoint.z - loc.z);
+		
+		// find the smallest difference between the angles
+		double angDif = (angToPoint - bossAngle);
+		angDif = gameModel.floorMod((angDif + Math.PI),(2 * Math.PI)) - Math.PI; 
+		//say("Angle difference is: "+angDif);
+		
+		// check if this angle difference is small enough that the point would be in boss's FOV
+		if (angDif > -fov && angDif < fov)
+			return true;
+		
+		return false;
+	}	
+	
+	private void handleAttack() {
+//		if(charge > 0) {
+//			charge--;
+//			if(charge <= 0)
+//				shoot(ATTACK_SIZE_BIG, false);
+//			return;
+//		}
+		if(tickCount % TICKS_BETWEEN_ATTACKS == 0)
+			readyForAttack = true;
+		if(!isFacingNinja() || !readyForAttack)
+			return;
+		
+		int rand = getRand(TOTAL_ATTACK_PROBABILITY);
+		
+		if((rand -= PROBABILITY_OF_BIG_ATTACK) < 0) {
+//			charge = TICKS_FOR_CHARGE;
+			motion = windUp;
+		}
+		else if((rand -= PROBABILITY_OF_SMALL_ATTACK) < 0) {
+			shoot(ATTACK_SIZE_SMALL, false);
+		}
+		else if(hp / maxHp < HEALTH_RATIO_BEFORE_FRENZY && (rand -= PROBABILITY_OF_FRENZY_ATTACK) < 0) {
+			shoot(ATTACK_SIZE_BIG, true);
+		}
+	}
+	
+	private void setNextPouncePoint() {
+		int rand = getRand(gameModel.getCurrentLevel().getBossPouncePoints().size());
+		while(gameModel.getCurrentLevel().getBossPouncePoints().get(rand).x == lastPouncePoint.x &&
+				gameModel.getCurrentLevel().getBossPouncePoints().get(rand).y == lastPouncePoint.y)
+			rand = getRand(gameModel.getCurrentLevel().getBossPouncePoints().size());
+		lastPouncePoint = gameModel.getCurrentLevel().getBossPouncePoints().get(rand);
+	}
+	
+	private int getRand(int max) {
+		return randomGenerator.nextInt(max);
+	}
+	
+	//attackSize: 1 = small, 2 = large
+	private void shoot(int attackSize, boolean isFrenzy) {
+		readyForAttack = false;		
+		motion = shooting;
+		double directionScale = 4;
 		double direction= getAngle() - Math.PI;
+		double deltaX= Math.sin(direction) * directionScale;
+		double deltaZ= -Math.cos(direction) * directionScale;
 		OBJ[] objs= gameModel.getResource().getOBJs();
 		Point3D ninjaLoc= gameModel.getNinjaLoc();
 		// calculate target vector
-		Point3D bossHead= new Point3D(getLoc().x, getLoc().y + 3.2, getLoc().z);
+		Point3D bossHead= new Point3D(getLoc().x + deltaX, getLoc().y + 2.4, getLoc().z + deltaZ);
 		double dist= ninjaLoc.minus(bossHead).length();
 		
+		Point3D targetVector= calculateTargetVector(direction, dist);
+		createProjectile(attackSize, targetVector, objs[8], bossHead, direction);
+		
+		if(isFrenzy) { //if it's in a frenzy, then shoot left and right as well
+			direction= getAngle() - Math.PI + .2;
+			targetVector= calculateTargetVector(direction, dist);
+			createProjectile(attackSize, targetVector, objs[8], bossHead, direction);
+			direction= getAngle() - Math.PI - .2;
+			targetVector= calculateTargetVector(direction, dist);
+			createProjectile(attackSize, targetVector, objs[8], bossHead, direction);
+		}
+	}
+	
+	public Point3D calculateTargetVector(double direction, double dist) {
+		double scale= 1;
 		double targetX= Math.sin(direction);
 		double targetY= (-1/dist) * scale;
 		double targetZ= -Math.cos(direction);
 		
-		Point3D targetVector= new Point3D(targetX, targetY, targetZ);
-		
-		// create projectile
-		scale= 2;
+		return new Point3D(targetX, targetY, targetZ);
+	}
+	
+	public void createProjectile(int attackSize, Point3D targetVector, OBJ obj, Point3D bossHead, double direction) {
+		int scale= 4;
+		double sizeScale = .3 * attackSize;
 		double[] rot = model.getRot().clone();
-		rot[0]= -targetY * scale;
-		Model projModel= new Model(objs[8], 11, bossHead, rot, .4, 1);
-		gameModel.getProjectiles().add(new Projectile(gameModel, projModel, targetVector));
+		rot[0]= -targetVector.y * scale;
+		Model projModel= new Model(obj, 11, bossHead, rot, sizeScale, 1);
+		boolean heatSeeking = hp / maxHp < HEALTH_RATIO_BEFORE_HEAT_SEEKING;
+		gameModel.getProjectiles().add(new Projectile(gameModel, projModel, targetVector, attackSize, heatSeeking, bossHead, direction));
 		gameModel.getModels().add(projModel);
 	}
 
@@ -124,6 +291,18 @@ public class Boss extends Character{
 			return true;
 		
 		return false;
+	}
+	
+	public void takeDamage(int damage) {
+		Data.say("hit boss for " + damage + " damage");
+		//increase boss difficulty after each hit
+		turnRate += damage / maxHp / 10;
+		TICKS_BETWEEN_POUNCES -= damage / maxHp * 100;
+		TICKS_BETWEEN_ATTACKS -= damage / maxHp * 100 / 3;
+		if(hp <= 0) {
+			Data.say("Boss killed!!!");
+			alive = false;
+		}
 	}
 	
 	private boolean isFacingNinja(){

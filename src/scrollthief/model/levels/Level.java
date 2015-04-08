@@ -6,7 +6,9 @@ import java.util.List;
 import scrollthief.model.DialogHotspot;
 import scrollthief.model.LoadingBar;
 import scrollthief.model.Model;
+import scrollthief.model.OBJ;
 import scrollthief.model.Obstacle;
+import scrollthief.model.Point3D;
 import scrollthief.model.Projectile;
 import scrollthief.model.characters.Boss;
 import scrollthief.model.characters.Guard;
@@ -25,6 +27,11 @@ public interface Level {
 	public DialogHotspot getCurrentDialogHotspot();
 	public void setCurrentDialogHotspot(DialogHotspot curr);
 	public LoadingBar getLoadingBar();
+	public List<Point3D> getBossPouncePoints();
 	public void reset();
 	public void initialize();
+	public OBJ[] getBossPounce();
+	public OBJ[] getBossShooting();
+	public OBJ[] getBossWindUp();
+	public OBJ[] getBossWindDown();
 }
