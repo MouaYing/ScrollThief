@@ -115,4 +115,15 @@ public class HitBox {
 		}
 		return collidedEdges;
 	}
+	
+	@Override
+	public String toString() {
+		StringBuilder hitbox = new StringBuilder("HitBox:\n");
+		int count = 0;
+		for (Edge e : edges) {
+			hitbox.append("Line " + count++ + ": P1 (" + e.line.getX1() + "," + e.line.getY1() + ") , "
+					+ "P2 ("  + e.line.getX2() + "," + e.line.getY2() + ")\n");
+		}
+		return hitbox.toString();
+	}
 }

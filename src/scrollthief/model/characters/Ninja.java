@@ -61,7 +61,7 @@ public class Ninja extends Character {
 		return newY;
 	}
 	
-	public ArrayList<Edge> specificCharacterCollisionCheck(double deltax, double deltaZ, Point3D newLocation) {
+	public ArrayList<Edge> specificCharacterCollisionCheck(Point3D newLocation) {
 		ArrayList<Edge> collidedEdges = new ArrayList<Edge>();
 		inObstacleBox = null;
 		Character boss= gameModel.getBoss();

@@ -40,6 +40,7 @@ public class Boss extends Character{
 	final int PROBABILITY_OF_FRENZY_ATTACK = 30; //out of 100
 	final int TOTAL_ATTACK_PROBABILITY = PROBABILITY_OF_BIG_ATTACK + PROBABILITY_OF_SMALL_ATTACK + PROBABILITY_OF_FRENZY_ATTACK;
 	int fullHP = 100;
+	private float gravity = .01f;
 
 	public Boss(GameModel gameModel, Model model, double boxLength, double boxWidth) {
 		super(gameModel, model, boxLength, boxWidth, "Boss");
@@ -76,12 +77,16 @@ public class Boss extends Character{
 		}
 	}
 	public double getDeltaX(double direction, double movement) {
-		Point3D bossDelta= calcDelta(0, 0);
+		double deltaX= Math.sin(direction) * speed;
+		double deltaZ= -Math.cos(direction) * speed;
+		Point3D bossDelta= calcDelta(deltaX, deltaZ);
 		return bossDelta.x;
 	}
 	
 	public double getDeltaZ(double direction, double movement) {
-		Point3D bossDelta= calcDelta(0, 0);
+		double deltaX= Math.sin(direction) * speed;
+		double deltaZ= -Math.cos(direction) * speed;
+		Point3D bossDelta= calcDelta(deltaX, deltaZ);
 		return bossDelta.z;
 	}
 	
@@ -215,6 +220,16 @@ public class Boss extends Character{
 				gameModel.getCurrentLevel().getBossPouncePoints().get(rand).y == lastPouncePoint.y)
 			rand = getRand(gameModel.getCurrentLevel().getBossPouncePoints().size());
 		lastPouncePoint = gameModel.getCurrentLevel().getBossPouncePoints().get(rand);
+	}
+	
+	public double calcNewY(Point3D loc) {
+		setDeltaY((loc.y > 0 || getDeltaY() > 0) ? (getDeltaY() - gravity) : 0);
+		double newY= (loc.y + getDeltaY());
+		if (newY <= 0){ // on the ground
+			newY = 0;
+			isJumping= false;
+		}
+		return newY;
 	}
 	
 	private int getRand(int max) {

@@ -109,7 +109,7 @@ public class Character {
 	
 	//basic for boss and guards (obstacles are not included to trim computation time and because paths should be set not to
 	//collide with obstacles)
-	public ArrayList<Edge> specificCharacterCollisionCheck(double deltax, double deltaZ, Point3D newLocation) {
+	public ArrayList<Edge> specificCharacterCollisionCheck(Point3D newLocation) {
 		ArrayList<Edge> collidedEdges = new ArrayList<Edge>();
 		Character ninja = gameModel.getNinja();
 		collidedEdges.addAll(characterCollisionCheck(newLocation, ninja));
@@ -170,6 +170,7 @@ public class Character {
 	}
 	
 	public void move() {
+		//adjust angle only after no collisions from adjusting
 		adjustAngle();
 		double movement = getSpeed() * .125f;
 		double direction = getDirection();
@@ -179,7 +180,7 @@ public class Character {
 		double newY = calcNewY(currentLocation);
 		Point3D newLoc= new Point3D(currentLocation.x + deltaX, newY, currentLocation.z + deltaZ);
 		actualHitBox.createNewHitBox(getModel().getAngle(), newLoc);
-		ArrayList<Edge> collidedEdges = specificCharacterCollisionCheck(deltaX, deltaZ, newLoc);
+		ArrayList<Edge> collidedEdges = specificCharacterCollisionCheck(newLoc);
 		// no collisions
 		if(collidedEdges.isEmpty()) {
 			if (inObstacleBox != null){ // character is inside hitbox (on top of table)
@@ -217,8 +218,13 @@ public class Character {
 			setAngle(goalAngle);
 		}
 		else angleDelta= (angleDif > 0) ? turnRate : -turnRate;
-		
-		setAngle(getAngle() + angleDelta);
+
+		actualHitBox.createNewHitBox(getAngle() + angleDelta, getLoc());
+		ArrayList<Edge> collidedEdges = specificCharacterCollisionCheck(getLoc());
+		// revert angle movement
+		if(collidedEdges.isEmpty()) {
+			setAngle(getAngle() + angleDelta);
+		}
 	}
 	
 	public void faceToward(Point3D lookTarget){
