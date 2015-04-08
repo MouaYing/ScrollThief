@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import scrollthief.model.levels.LevelState;
+
 public class GameData implements Serializable  {
 	private List<GamePoint> locations;
 	private GameState state;

@@ -1,9 +1,17 @@
-package scrollthief.model;
+package scrollthief.model.levels;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import scrollthief.model.DialogHotspot;
+import scrollthief.model.GameModel;
+import scrollthief.model.LoadingBar;
+import scrollthief.model.Model;
+import scrollthief.model.Obstacle;
+import scrollthief.model.Point3D;
+import scrollthief.model.Projectile;
+import scrollthief.model.Resource;
 import scrollthief.model.characters.Boss;
 import scrollthief.model.characters.Guard;
 import scrollthief.model.characters.Ninja;
@@ -72,9 +80,12 @@ public class Level1 implements Level {
 // ---------------Obstacle models ----------------------------------------------------------------------
 		models.add( new Model(resource.getOBJs()[3], 9, new Point3D(0, 1.2, 83), new double[]{Math.PI/2,0,0}, .25, 1)); //scroll
 		addFoyer(models);
-		addEasyRoom1(models);
-		addEasyRoom2(models);
-		addEasyRoom3(models);
+		addNewEasyRoom1(models);
+		addNewEasyRoom2(models);
+		addNewEasyRoom3(models);
+		addNewEasyRoom4(models);
+		addNewEasyRoom5(models);
+		addNewEasyRoom6(models);
 		addBossRoom(models);
 		addMediumRoom1(models);
 		addHardRoom1(models);
@@ -132,26 +143,114 @@ public class Level1 implements Level {
 		models.add( new Model(resource.getOBJs()[7], 10, new Point3D(0, 0, 76), gameModel.zero(), .2, 1)); // Boss
 
 		
-		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(15, 0, 23), gameModel.zero(), .11, 1) ); // guard model 2
-		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(24, 0, 33), gameModel.zero(), .11, 1) ); // guard model 3
-		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(32, 0, 39), gameModel.zero(), .11, 1) ); // guard model 4
-		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(20, 0, 54), gameModel.zero(), .11, 1) ); // guard model 5
-		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(11, 0, 50), gameModel.zero(), .11, 1) ); // guard model 6
-		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(-1,0,25.2), gameModel.zero(), .11, 1) ); // guard model 7
-		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(-16.4,0,34.9), gameModel.zero(), .11, 1) ); // guard model 8
-		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(-10.7,0,43.9), gameModel.zero(), .11, 1) ); // guard model 9
-		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(56,0, 34.1), gameModel.zero(), .11, 1) ); // guard model 10
-		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(56,0, 49.5), gameModel.zero(), .11, 1) ); // guard model 11
-		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(56,0, 41.8), gameModel.zero(), .11, 1) ); // guard model 12
-		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(56,0, 57.2), gameModel.zero(), .11, 1) ); // guard model 13
+		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(15, 0, 23), gameModel.zero(), .11, 1) ); // guard model 0
+		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(24, 0, 33), gameModel.zero(), .11, 1) ); // guard model 1
+		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(32, 0, 39), gameModel.zero(), .11, 1) ); // guard model 2
+		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(20, 0, 54), gameModel.zero(), .11, 1) ); // guard model 3
+		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(11, 0, 50), gameModel.zero(), .11, 1) ); // guard model 4
+		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(-14.3,0,11), gameModel.zero(), .11, 1) ); // guard model 5
+		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(-20.3,0,23.4), gameModel.zero(), .11, 1) ); // guard model 6
+		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(-4.2,0,31.9), gameModel.zero(), .11, 1) ); // guard model 7
+		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(-20.2,0,33.9), gameModel.zero(), .11, 1) ); // guard model 8
+		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(56,0, 49.5), gameModel.zero(), .11, 1) ); // guard model 9
+		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(56,0, 41.8), gameModel.zero(), .11, 1) ); // guard model 10
+		models.add( new Model(resource.getOBJs()[2], 8, new Point3D(56,0, 57.2), gameModel.zero(), .11, 1) ); // guard model 11
 	}
 	
 	private void addFoyer(List<Model> models){
 		Room room = new Room(new Point3D(0,0,-3.5));
-		double[] north = {-1,1,-1};
+		double[] north = {-1,2};
 		double[] south = {1,2};
-		double[] east = {2};
+		double[] east = {1, -1};
 		double[] west = {2};
+		room.setWallLengths(WallLocation.North, north);
+		room.setWallLengths(WallLocation.South, south);
+		room.setWallLengths(WallLocation.East, east);
+		room.setWallLengths(WallLocation.West, west);
+		creator.createRoom(models, room);
+	}
+	
+	private void addNewEasyRoom1(List<Model> models) {
+		Room room = new Room(new Point3D(-20.3,0,4.5));
+		double[] north = {1,-1};
+		double[] south = {2};
+		double[] east = {2};
+		double[] west = {-1,1};
+		room.setWallLengths(WallLocation.North, north);
+		room.setWallLengths(WallLocation.South, south);
+		room.setWallLengths(WallLocation.East, east);
+		room.setWallLengths(WallLocation.West, west);
+		creator.createRoom(models, room);
+		creator.createPillar(models, new Point3D(-17.3,0,1));
+		creator.createPillar(models, new Point3D(-23.3,0,1));
+		creator.createPillar(models, new Point3D(-17.3,0,8.7));
+		creator.createPillar(models, new Point3D(-23.3,0,8.7));
+	}
+	
+	private void addNewEasyRoom2(List<Model> models) {
+		Room room = new Room(new Point3D(-20.3,0,20.4));
+		double[] north = {2};
+		double[] south = {-2};
+		double[] east = {2};
+		double[] west = {1, -1};
+		room.setWallLengths(WallLocation.North, north);
+		room.setWallLengths(WallLocation.South, south);
+		room.setWallLengths(WallLocation.East, east);
+		room.setWallLengths(WallLocation.West, west);
+		creator.createRoom(models, room);
+		creator.createPillar(models, new Point3D(-20.3,0,18.5));
+	}
+	
+	private void addNewEasyRoom3(List<Model> models) {
+		Room room = new Room(new Point3D(-4.5,0,16.5));
+		double[] north = {-1, 1};
+		double[] south = {-2};
+		double[] east = {-1,-2};
+		double[] west = {-1, -2};
+		room.setWallLengths(WallLocation.North, north);
+		room.setWallLengths(WallLocation.South, south);
+		room.setWallLengths(WallLocation.East, east);
+		room.setWallLengths(WallLocation.West, west);
+		creator.createRoom(models, room);
+		creator.createPillar(models, new Point3D(-4.1,0,18.6));
+		creator.createPillar(models, new Point3D(-2,0,29.6));
+	}
+	
+	private void addNewEasyRoom4(List<Model> models) {
+		Room room = new Room(new Point3D(-11.2,0,36.9));
+		double[] north = {2,1,-1};
+		double[] south = {-4};
+		double[] east = {2};
+		double[] west = {-2};
+		room.setWallLengths(WallLocation.North, north);
+		room.setWallLengths(WallLocation.South, south);
+		room.setWallLengths(WallLocation.East, east);
+		room.setWallLengths(WallLocation.West, west);
+		creator.createRoom(models, room);
+		creator.createPillar(models, new Point3D(-4.2,0,39.9));
+		creator.createTable(models, new Point3D(-9.2,0,41),false);
+		creator.createPillar(models, new Point3D(-14.2,0,39.9));
+	}
+	
+	private void addNewEasyRoom5(List<Model> models) {
+		Room room = new Room(new Point3D(-22.9,0,49));
+		double[] north = {-1};
+		double[] south = {-1};
+		double[] east = {1};
+		double[] west = {1};
+		room.setWallLengths(WallLocation.North, north);
+		room.setWallLengths(WallLocation.South, south);
+		room.setWallLengths(WallLocation.East, east);
+		room.setWallLengths(WallLocation.West, west);
+		creator.createRoom(models, room);
+	}
+	
+	private void addNewEasyRoom6(List<Model> models) {
+		Room room = new Room(new Point3D(-19.1,0,57.2));
+		double[] north = {-1, 1};
+		double[] south = {1, -1};
+		double[] east = {1};
+		double[] west = {1};
 		room.setWallLengths(WallLocation.North, north);
 		room.setWallLengths(WallLocation.South, south);
 		room.setWallLengths(WallLocation.East, east);
@@ -278,7 +377,7 @@ public class Level1 implements Level {
 	private void addBossRoom(List<Model> models){
 		Room room = new Room(new Point3D(-1.7,0,74));
 		double[] north = {2,.5,2};
-		double[] south = {-1,-.5,1,-1,1};
+		double[] south = {-1,-.5,1,1,-1};
 		double[] west = {-1,2};
 		double[] east = {2,1};
 		room.setWallLengths(WallLocation.North, north);
@@ -331,10 +430,10 @@ public class Level1 implements Level {
 /*guard 2*/	new Point3D[]{new Point3D(32,0,31),new Point3D(32,0,41)},
 /*guard 3*/	new Point3D[]{new Point3D(37,0,54),new Point3D(14,0,54)},
 /*guard 4*/	new Point3D[]{new Point3D(11,0,60),new Point3D(11,0,47)},
-/*guard 5*/	new Point3D[]{new Point3D(-1,0,26.2),new Point3D(-1,0,12.6)}, 
-/*guard 6*/	new Point3D[]{new Point3D(-16.4,0,38.9),new Point3D(-16.4,0,22.9)},
-/*guard 7*/	new Point3D[]{new Point3D(-9.7,0,43.9),new Point3D(-19.4,0,43.9)},
-/*guard 8*/	new Point3D[]{new Point3D(57,0, 34.1),new Point3D(49.5,0, 34.1)},
+/*guard 5*/	new Point3D[]{new Point3D(-14.7,0,11),new Point3D(-14.7,0,-2),new Point3D(-26.3,0,-2),new Point3D(-26.3,0,11)}, 
+/*guard 6*/	new Point3D[]{new Point3D(-20.3,0,23.4),new Point3D(-6.3,0,23.4)},
+/*guard 7*/	new Point3D[]{new Point3D(-2.2,0,31.9),new Point3D(-20.2,0,31.9)},
+/*guard 8*/	new Point3D[]{new Point3D(-20.2,0,33.9),new Point3D(-20.2,0,39.9)},
 /*guard 9*/	new Point3D[]{new Point3D(57,0, 49.5),new Point3D(49.5,0, 49.5)},
 /*guard 10*/new Point3D[]{new Point3D(55,0, 41.8),new Point3D(62.6,0, 41.8)}, 
 /*guard 11*/new Point3D[]{new Point3D(55,0, 57.2),new Point3D(62.6,0, 57.2)}

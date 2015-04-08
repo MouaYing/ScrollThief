@@ -1,4 +1,4 @@
-package scrollthief.model;
+package scrollthief.model.levels;
 
 public enum WallLocation {
 	NorthWest,

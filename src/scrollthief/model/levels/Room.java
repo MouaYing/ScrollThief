@@ -1,7 +1,9 @@
-package scrollthief.model;
+package scrollthief.model.levels;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import scrollthief.model.Point3D;
 
 public class Room {
 	private double widthWallNumber;

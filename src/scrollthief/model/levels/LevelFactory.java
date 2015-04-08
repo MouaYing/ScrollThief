@@ -1,7 +1,10 @@
-package scrollthief.model;
+package scrollthief.model.levels;
 
 import java.util.ArrayList;
 import java.util.Map;
+
+import scrollthief.model.GameModel;
+import scrollthief.model.Resource;
 
 public class LevelFactory {
 	private LevelState levelState;

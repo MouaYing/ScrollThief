@@ -1,7 +1,12 @@
-package scrollthief.model;
+package scrollthief.model.levels;
 
 import java.util.List;
 import java.util.Map;
+
+import scrollthief.model.GameModel;
+import scrollthief.model.Model;
+import scrollthief.model.Point3D;
+import scrollthief.model.Resource;
 
 public class RoomCreator {
 	
@@ -24,7 +29,7 @@ public class RoomCreator {
 	private void createRoom(List<Model> model, double widthWallNumber, double heightWallNumber, Map<WallLocation,double[]> wallLengths, Point3D center){
 		double width = widthWallNumber * wallLength;
 		double height = heightWallNumber * wallLength;
-		double offModifier = 1.5;
+		double offModifier = 1.4;
 		Point3D topLeftCorner = new Point3D(center.x + width/2,0,center.z + (height+wallDepth*offModifier)/2);
 		Point3D bottomLeftCorner = new Point3D(center.x + width/2,0,center.z - (height+wallDepth*offModifier)/2);
 		Point3D bottomLeftCorner2 = new Point3D(center.x + (width+wallDepth*offModifier)/2,0,center.z - height/2);

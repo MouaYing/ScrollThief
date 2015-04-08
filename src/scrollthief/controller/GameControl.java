@@ -6,6 +6,7 @@ import scrollthief.model.Button;
 //import scrollthief.model.Data;
 import scrollthief.model.GameModel;
 import scrollthief.model.GameState;
+import scrollthief.model.Point3D;
 //import scrollthief.model.Point3D;
 import scrollthief.model.SoundFile;
 import scrollthief.view.View;
@@ -143,9 +144,9 @@ public class GameControl {
 	
 	public void toggleDevMode(){
 		//for putting the ninja next to the boss for testing
-		//scrollthief.model.Character ninja= gameModel.getNinja();
+		scrollthief.model.characters.Character ninja= gameModel.getNinja();
 		
-//		ninja.setLoc(new Point3D(10, 0, 70));  //for if you want quick teleport to boss
+		ninja.setLoc(new Point3D(10, 0, 70));  //for if you want quick teleport to boss
 		
 		if (controller.devmode)
 			controller.devmode= false;

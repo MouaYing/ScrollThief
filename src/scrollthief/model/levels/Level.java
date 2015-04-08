@@ -1,8 +1,13 @@
-package scrollthief.model;
+package scrollthief.model.levels;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import scrollthief.model.DialogHotspot;
+import scrollthief.model.LoadingBar;
+import scrollthief.model.Model;
+import scrollthief.model.Obstacle;
+import scrollthief.model.Projectile;
 import scrollthief.model.characters.Boss;
 import scrollthief.model.characters.Guard;
 import scrollthief.model.characters.Ninja;

@@ -15,6 +15,8 @@ import javax.swing.event.EventListenerList;
 import scrollthief.model.characters.Boss;
 import scrollthief.model.characters.Guard;
 import scrollthief.model.characters.Ninja;
+import scrollthief.model.levels.Level;
+import scrollthief.model.levels.LevelFactory;
 
 import com.jogamp.opengl.util.texture.Texture;
 
