@@ -1,14 +1,14 @@
 package scrollthief.model;
 
-import javazoom.jl.decoder.JavaLayerException;
-import javazoom.jl.player.advanced.*;
+//import javazoom.jl.decoder.JavaLayerException;
+//import javazoom.jl.player.advanced.*;
 
-import java.io.*;
-import java.net.MalformedURLException;
+//import java.io.*;
+//import java.net.MalformedURLException;
 import java.util.HashMap;
 
 public class Sound {
-	AdvancedPlayer currentPlayer;
+	//AdvancedPlayer currentPlayer;
 	HashMap<SoundFile, MusicPlayer> players;
 	HashMap<SoundFile, EffectPlayer> effects;
 	SoundFile currentMusic;

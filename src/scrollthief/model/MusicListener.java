@@ -1,11 +1,11 @@
 package scrollthief.model;
-import java.io.IOException;
+//import java.io.IOException;
 
 import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineListener;
 
-import javazoom.jl.decoder.JavaLayerException;
-import javazoom.jl.player.advanced.*;
+//import javazoom.jl.decoder.JavaLayerException;
+//import javazoom.jl.player.advanced.*;
 
 public class MusicListener implements LineListener {
 	
