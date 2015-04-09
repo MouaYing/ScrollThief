@@ -193,6 +193,7 @@ public class GameModel {
 		else if(type.equals("level")){
 			say("Waiting to start");
 			changeState(GameState.Playing);
+			resource.getSound().playMusic(SoundFile.SNEAK);
 		}
 	}
 	
@@ -216,6 +217,7 @@ public class GameModel {
 	public void resetLevel() {
 		getNinja().reset();
 		getBoss().reset();
+		resource.getSound().playMusic(SoundFile.SNEAK);
 	}
 	
 	public void resetLevelLoading() {

@@ -49,7 +49,7 @@ public class Resource {
 	private final int GUARD_WALK_NUM = 30;
 	private final int TEXTURES_NUM = 12;
 	private final int IMAGES_NUM = 2;
-	private final int SOUNDS_NUM = 6;
+	private final int SOUNDS_NUM = 10;
 	
 	public Resource(GameModel gameModel, Map<String,ArrayList<String>> phrases) {
 		images = new Texture[IMAGES_NUM];
@@ -84,6 +84,14 @@ public class Resource {
 		sound.loadEffect(SoundFile.JUMP, "/resources/sounds/jump.wav");
 		loadingBar.increaseProgress(1);
 		sound.loadEffect(SoundFile.GUARD, "/resources/sounds/guardHey.wav");
+		loadingBar.increaseProgress(1);
+		sound.loadEffect(SoundFile.NINJA_ATTACK_1, "/resources/sounds/ninjaAttack1.wav");
+		loadingBar.increaseProgress(1);
+		sound.loadEffect(SoundFile.NINJA_ATTACK_2, "/resources/sounds/ninjaAttack2.wav");
+		loadingBar.increaseProgress(1);
+		sound.loadEffect(SoundFile.NINJA_ATTACK_3, "/resources/sounds/ninjaAttack3.wav");
+		loadingBar.increaseProgress(1);
+		sound.loadEffect(SoundFile.FIREBALL, "/resources/sounds/fireball.wav");
 		loadingBar.increaseProgress(1);
 	}
 	

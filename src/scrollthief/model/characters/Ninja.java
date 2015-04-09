@@ -9,6 +9,7 @@ import scrollthief.model.Model;
 import scrollthief.model.OBJ;
 import scrollthief.model.Obstacle;
 import scrollthief.model.Point3D;
+import scrollthief.model.SoundFile;
 
 /**
  * @author Jon "Neo" Pimentel
@@ -102,16 +103,19 @@ public class Ninja extends Character {
 		else if (attacking == 1 && prevAttack != 1) {
 			speed = 0;
 			motion= attacking1;
+			gameModel.getSound().playEffect(SoundFile.NINJA_ATTACK_1);
 			animFrame= 0;
 		}
 		else if (attacking == 2 && prevAttack != 2) {
 			speed = 0;
 			motion= attacking2;
+			gameModel.getSound().playEffect(SoundFile.NINJA_ATTACK_2);
 			animFrame= 0;
 		}
 		else if (attacking == 3 && prevAttack != 3) {
 			speed = 0;
 			motion= attacking3;
+			gameModel.getSound().playEffect(SoundFile.NINJA_ATTACK_3);
 			animFrame= 0;
 		}
 		else if (speed == 0 && (oldSpeed != 0 || wasJumping || attacking < 0) && !isJumping){ // Ninja is no longer moving

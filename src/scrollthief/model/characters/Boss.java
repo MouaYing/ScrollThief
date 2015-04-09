@@ -9,6 +9,7 @@ import scrollthief.model.Model;
 import scrollthief.model.OBJ;
 import scrollthief.model.Point3D;
 import scrollthief.model.Projectile;
+import scrollthief.model.SoundFile;
 
 public class Boss extends Character{
 	ArrayList<Character> projectiles= new ArrayList<Character>();
@@ -254,6 +255,7 @@ public class Boss extends Character{
 		
 		Point3D targetVector= calculateTargetVector(direction, dist);
 		createProjectile(attackSize, targetVector, objs[8], bossHead, direction);
+		gameModel.getResource().getSound().playEffect(SoundFile.FIREBALL);
 		
 		if(isFrenzy) { //if it's in a frenzy, then shoot left and right as well
 			direction= getAngle() - Math.PI + .2;
