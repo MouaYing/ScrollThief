@@ -12,10 +12,8 @@ import javax.swing.JFrame;
 
 import ch.aplu.xboxcontroller.XboxController;
 import scrollthief.ScrollThief;
-import scrollthief.model.Data;
 import scrollthief.model.GameModel;
 import scrollthief.model.GameState;
-import scrollthief.model.Point3D;
 import scrollthief.model.Projectile;
 import scrollthief.model.Sound;
 import scrollthief.model.SoundFile;
@@ -53,10 +51,10 @@ public class Controller extends TimerTask{
 			dllPath =(ScrollThief.is64bit() ? this.getClass().getResource("/resources/xboxcontroller64.dll").getFile() :
 				this.getClass().getResource("/resources/xboxcontroller.dll").getFile());
 			say("dllPath: " + dllPath);
-//			xbc= new XboxController(dllPath, 1, 50, 50);
-//	        xbc.setLeftThumbDeadZone(.2);
-//	        xbc.setRightThumbDeadZone(.2);
-//	        xbc.addXboxControllerListener(new XboxAdapter(this));
+			xbc= new XboxController(dllPath, 1, 50, 50);
+	        xbc.setLeftThumbDeadZone(.2);
+	        xbc.setRightThumbDeadZone(.2);
+	        xbc.addXboxControllerListener(new XboxAdapter(this));
 		}catch(Exception e){
 			System.out.println("Unable to load xbox controller dlls");
 		}
@@ -66,10 +64,10 @@ public class Controller extends TimerTask{
 						(ScrollThief.is64bit() ? "\\src\\resources\\xboxcontroller64.dll" : 
 							"\\src\\resources\\xboxcontroller.dll");
 				say("dllPath: " + dllPath);
-//				xbc= new XboxController(dllPath, 1, 50, 50);
-//		        xbc.setLeftThumbDeadZone(.2);
-//		        xbc.setRightThumbDeadZone(.2);
-//		        xbc.addXboxControllerListener(new XboxAdapter(this));
+				xbc= new XboxController(dllPath, 1, 50, 50);
+		        xbc.setLeftThumbDeadZone(.2);
+		        xbc.setRightThumbDeadZone(.2);
+		        xbc.addXboxControllerListener(new XboxAdapter(this));
 			}catch(Exception e){
 				System.out.println("Still unable to load xbox controller dlls");
 			}
