@@ -163,9 +163,9 @@ public class GameControl {
 	public void attack() {
 		scrollthief.model.characters.Character ninja= gameModel.getNinja();
 		if(canPlay()) {
-			if(ninja.attacking < 1)
+			if(ninja.attacking < 1) {
 				ninja.attacking = 1;
-			else {
+			} else {
 				ninja.nextAttack = ninja.attacking + 1; 
 				if(ninja.nextAttack > ninja.attackingStateMax) {
 					ninja.nextAttack = 1;
