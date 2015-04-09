@@ -461,7 +461,7 @@ public class Level1 implements Level {
 		say("Creating characters...");
 		ninja= new Ninja(gameModel, models.get(2), .35, .5);
 		loadingBar.increaseProgress(1);
-		boss= new Boss(gameModel, models.get(3), 3.5, 1);
+		boss= new Boss(gameModel, models.get(3), 1.2, 3.5);
 		boss.lastPouncePoint = bossPouncePoints.get(2);
 		loadingBar.increaseProgress(1);
 		
@@ -489,12 +489,12 @@ public class Level1 implements Level {
 			}
 			//tables
 			else if(type == 4){
-				obstacles[obsLoc++]= new Obstacle(models.get(i), true, 2.25, 3, .95); 
+				obstacles[obsLoc++]= new Obstacle(models.get(i), true, 3, 2.25, .95); 
 				loadingBar.increaseProgress(1);
 			}
 			//walls
 			else if(type >= 5 && type <=7){
-				obstacles[obsLoc++]= new Obstacle(models.get(i), false, .65, 4.15, 5); 
+				obstacles[obsLoc++]= new Obstacle(models.get(i), false, 4.15, .65, 5); 
 				loadingBar.increaseProgress(1);
 			}
 		}

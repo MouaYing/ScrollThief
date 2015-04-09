@@ -16,9 +16,9 @@ public class Edge {
 	}
 	
 	public void calculate_normal() {
-		double dx = line.getX2() - line.getX1();
-		double dy = line.getY2() - line.getY1();
-		normal = new Point3D(-dy, 0, dx);
+		double dx = line.getY2() - line.getY1();
+		double dy = line.getX2() - line.getX1();
+		normal = new Point3D(dy, 0, -dx);
 		normal.Normalize();
 	}
 

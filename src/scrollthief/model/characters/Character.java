@@ -44,6 +44,7 @@ public class Character {
 	private Point2D[] edgePrime;
 	String type;
 	double ninjaDirection;
+	boolean bossCollision;
 	
 	public HitBox actualHitBox;
 	protected Obstacle inObstacleBox;
@@ -57,6 +58,7 @@ public class Character {
 		actualHitBox = new HitBox(boxLength, boxWidth,getModel().getAngle(), getLoc());
 		this.type = type;
 		ninjaDirection = 0;
+		bossCollision = false;
 	}
 	
 	//function can be overridden to provide specific values - currently only ninja to override this
@@ -123,6 +125,7 @@ public class Character {
 		double originalX = deltaX;
 		double originalZ = deltaZ;
 		//say("One Collision Check Round ---------> Edges: " + collidedEdges.size());
+		//say("Original DeltaX: " + deltaX + ", DeltaZ: " + deltaZ);
 		for (Edge e : collidedEdges) {
 			double newLocationDistance = newLoc.distanceToLine(e.line.getP1(), e.line.getP2());
 			double oldLocationDistance = originalLoc.distanceToLine(e.line.getP1(), e.line.getP2());
@@ -133,22 +136,29 @@ public class Character {
 			Point3D normal = e.normal;
 			Point3D input= new Point3D(deltaX, 0, deltaZ);
 			Point3D projected = normal.mult(input.dot(normal));
-			Point3D corrected = input.minus(projected);
-			//say("DeltaX: " + deltaX + ", DeltaZ: " + deltaZ + ", Obstacle Normal: " + normal + ", CorrectedX: " + corrected.x + ", CorrectedZ: " + corrected.z);
+			//say("DeltaX: " + deltaX + ", DeltaZ: " + deltaZ + ", Obstacle Normal: " + normal + ", ProjectedX: " + projected.x + ", ProjectedZ: " + projected.z);
 			//check if moving in accordance to direction of normal (for the case of moving off the top of a table) normals are inverted because of 
 			//orientation of the walls. yes x is compared to normal z
-			if((deltaX >= 0 && normal.z <= 0)||(deltaX <= 0 && normal.z >= 0)){
-				deltaX -= corrected.x;
+			if((deltaX >= 0 && normal.x <= 0)||(deltaX <= 0 && normal.x >= 0)){
+				deltaX -= projected.x;
 			}
-			if((deltaZ >= 0 && normal.x <= 0)||(deltaZ <= 0 && normal.x >= 0)){
-				deltaZ -= corrected.z;
+			if((deltaZ >= 0 && normal.z <= 0)||(deltaZ <= 0 && normal.z >= 0)){
+				deltaZ -= projected.z;
 			}
 		}
+		//say("Final DeltaX: " + deltaX + ", DeltaZ: " + deltaZ);
 		//make sure I haven't forced the delta in the opposite direction, most I can do is stop progress, not revert it
 		if((deltaX <= 0 && originalX >= 0)||(deltaX >= 0 && originalX <= 0)) {
 			deltaX = 0;
 		}
 		if((deltaZ <= 0 && originalZ >= 0)||(deltaZ >= 0 && originalZ <= 0) ) {
+			deltaZ = 0;
+		}
+		//collisions with the boss are going to send him back
+		if(bossCollision) {
+			deltaX = 0;
+		}
+		if(bossCollision) {
 			deltaZ = 0;
 		}
 		return new Point3D(originalLoc.x + deltaX, originalLoc.y, originalLoc.z + deltaZ);

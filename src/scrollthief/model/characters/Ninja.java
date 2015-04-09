@@ -63,9 +63,13 @@ public class Ninja extends Character {
 	
 	public ArrayList<Edge> specificCharacterCollisionCheck(Point3D newLocation) {
 		ArrayList<Edge> collidedEdges = new ArrayList<Edge>();
+		bossCollision = false;
 		inObstacleBox = null;
 		Character boss= gameModel.getBoss();
 		collidedEdges.addAll(characterCollisionCheck(newLocation, boss));
+		if(!collidedEdges.isEmpty()) {
+			bossCollision = true;
+		}
 		
 		Character[] guards = gameModel.getGuards();
 		

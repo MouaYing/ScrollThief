@@ -5,6 +5,7 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
+import scrollthief.model.GameModel;
 import scrollthief.model.Model;
 import scrollthief.model.Point3D;
 
@@ -15,6 +16,10 @@ public class HitBox {
 		edges = new ArrayList<Edge>();
 		boxPoints= findPoints(boxLength, boxWidth);
 		createNewHitBox(angle, loc);
+	}
+	
+	public ArrayList<Edge> getEdges() {
+		return edges;
 	}
 	
 	public HitBox(Point2D[] boxPoints){
@@ -39,11 +44,11 @@ public class HitBox {
 		Point2D.Double newP2= new Point2D.Double();
 		Point2D.Double newP3= new Point2D.Double();
 		Point2D.Double newP4= new Point2D.Double();
-		
+		double correctAngle = GameModel.normalizeAngle(Math.toRadians(90) - angle);
 		// construct obj to world transformation matrix
 		AffineTransform objToWorld= 
-				new AffineTransform(Math.cos(angle), Math.sin(angle), 
-						-Math.sin(angle), Math.cos(angle), center.getX(), center.getY());
+				new AffineTransform(Math.cos(correctAngle), Math.sin(correctAngle), 
+						-Math.sin(correctAngle), Math.cos(correctAngle), center.getX(), center.getY());
 		
 		// transform each point
 		objToWorld.transform(boxPoints[0], newP1);

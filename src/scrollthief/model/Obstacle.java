@@ -15,7 +15,7 @@ public class Obstacle {
 	public Obstacle(Model model, boolean isLow, double boxLength, double boxWidth, double height){
 		this.model= model;
 		this.isLow= isLow;
-		boxWidth *= model.scaleX;
+		boxLength *= model.scaleX;
 		this.boxWidth= boxWidth;
 		this.boxLength= boxLength;
 		this.height= height;
