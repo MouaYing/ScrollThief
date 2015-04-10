@@ -88,8 +88,6 @@ public class Ninja extends Character {
 
 			if (obstacles[i].equals(gameModel.getScroll()) && preSize != collidedEdges.size()){
 				gameModel.getSound().setShouldPlayMusic(true);
-				gameModel.getBoss().alive = true;
-				gameModel.getBoss().hp = gameModel.getBoss().maxHp;
 				gameModel.changeState(GameState.Victory);
 				return collidedEdges;
 			}
