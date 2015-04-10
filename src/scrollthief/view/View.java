@@ -129,8 +129,10 @@ public class View extends GLCanvas implements GLEventListener{
 			Texture[] textures= gameModel.getResource().getTextures();
 			// draw each model with its texture
 			for (int i= 0; i < models.size(); i++){
-				gl.glPushMatrix();
 				Model model= models.get(i);
+				if (!model.shouldDraw())
+					continue;
+				gl.glPushMatrix();
 				
 				// don't draw guards if they are obscured
 				if (model.getTxtr() == 8 && cullObscured(model)) continue;

@@ -3,6 +3,7 @@ package scrollthief.model.characters;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
+import scrollthief.model.Data;
 import scrollthief.model.GameModel;
 import scrollthief.model.GameState;
 import scrollthief.model.Model;

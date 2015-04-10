@@ -46,6 +46,7 @@ public class Boss extends Character{
 	final int TOTAL_ATTACK_PROBABILITY = PROBABILITY_OF_BIG_ATTACK + PROBABILITY_OF_SMALL_ATTACK + PROBABILITY_OF_FRENZY_ATTACK;
 	int fullHP = 100;
 	private float gravity = .01f;
+	private int deathCounter = 0;
 
 	public Boss(GameModel gameModel, Model model, double boxLength, double boxWidth) {
 		super(gameModel, model, boxLength, boxWidth, "Boss");
@@ -101,6 +102,15 @@ public class Boss extends Character{
 	}
 	
 	public void animate(int tick){
+		if (!alive) {
+			if (deathCounter == 120)
+				model.setShouldDraw(false);
+			else {
+				deathCounter++;
+				model.setScale(model.getScale() * 0.98);
+			}
+		}
+		
 		if (isNear() && !inBattle){
 			inBattle= true;
 			motion= standing;
@@ -315,7 +325,9 @@ public class Boss extends Character{
 	public void takeDamage(int damage) {
 		hp -= damage;
 		if(hp < 0) {
+			alive = false;
 			hp = 0;
+			Data.say("Boss killed!!!");
 			return;
 		}
 		this.model.setFlash(true);
