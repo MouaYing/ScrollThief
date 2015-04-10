@@ -131,4 +131,8 @@ public class HitBox {
 		}
 		return hitbox.toString();
 	}
+	
+	public void nullify() {
+		createNewHitBox(new Point2D.Float(0, 0), new Point2D.Float(0, 0), new Point2D.Float(0, 0), new Point2D.Float(0, 0));
+	}
 }

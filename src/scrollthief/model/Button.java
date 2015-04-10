@@ -81,6 +81,7 @@ public class Button {
 		else if(type == ButtonType.RESTART){
 			game.resetLevel();
 			game.changeState(GameState.Playing);
+			game.getResource().getSound().setShouldPlayMusic(true);
 			game.getResource().getSound().playMusic(SoundFile.SNEAK);
 		}
 		else if(type == ButtonType.START){
@@ -96,6 +97,7 @@ public class Button {
 			game.resetLevel();
 			game.resetLevelLoading();
 			game.changeState(GameState.MainMenu);
+			game.getResource().getSound().setShouldPlayMusic(true);
 			game.getResource().getSound().playMusic(SoundFile.TITLE);
 		}
 	}

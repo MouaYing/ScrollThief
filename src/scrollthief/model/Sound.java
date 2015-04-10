@@ -14,6 +14,7 @@ public class Sound {
 	SoundFile currentMusic;
 	MusicPlayer currentMusicPlayer;
 	boolean shouldRepeat;
+	boolean playMusic;
 	
 	public boolean shouldRepeat() {
 		return shouldRepeat;
@@ -35,25 +36,41 @@ public class Sound {
 		players = new HashMap<SoundFile, MusicPlayer>();
 		effects = new HashMap<SoundFile, EffectPlayer>();
 		currentMusic = null;
+		playMusic = true;
 	}
 	
 	public void delayedPlayMusic(SoundFile soundFile, long delay) {
-		if (currentMusic != null && currentMusicPlayer != null)
-			currentMusicPlayer.stop();
-		currentMusic = soundFile;
-		MusicPlayer player = players.get(soundFile); 
-		player.setDelay(delay);
-		player.playFromBeginning();
-		currentMusicPlayer = player;
+		if (playMusic) {
+			if (currentMusic != null && currentMusicPlayer != null)
+				currentMusicPlayer.stop();
+			currentMusic = soundFile;
+			MusicPlayer player = players.get(soundFile); 
+			player.setDelay(delay);
+			player.playFromBeginning();
+			currentMusicPlayer = player;
+		}
 	}
 	
 	public void playMusic(SoundFile soundFile) {
-		if (currentMusic != null && currentMusicPlayer != null)
+		if (playMusic)	{
+			if (currentMusic != null && currentMusicPlayer != null)
+				currentMusicPlayer.stop();
+			currentMusic = soundFile;
+			MusicPlayer player = players.get(soundFile); 
+			player.playFromBeginning();
+			currentMusicPlayer = player;
+		}
+	}
+	
+	public void stopMusic() {
+		if (currentMusicPlayer != null) {
 			currentMusicPlayer.stop();
-		currentMusic = soundFile;
-		MusicPlayer player = players.get(soundFile); 
-		player.playFromBeginning();
-		currentMusicPlayer = player;
+		}
+		currentMusicPlayer = players.get(SoundFile.SNEAK);
+	}
+	
+	public void setShouldPlayMusic(boolean value) {
+		playMusic = value;
 	}
 	
 	public void pauseMusic() {
@@ -63,7 +80,7 @@ public class Sound {
 	}
 	
 	public void resumeMusic() {
-		if (currentMusicPlayer != null) {
+		if (playMusic && currentMusicPlayer != null) {
 			currentMusicPlayer.resumePlay();
 		}
 	}
