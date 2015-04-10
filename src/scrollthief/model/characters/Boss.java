@@ -3,6 +3,7 @@ package scrollthief.model.characters;
 import java.util.ArrayList;
 import java.util.Random;
 
+import javafx.geometry.Point2D;
 import scrollthief.model.Data;
 import scrollthief.model.GameModel;
 import scrollthief.model.Model;
@@ -64,8 +65,32 @@ public class Boss extends Character{
 	}
 	
 	public void update(){
-		if (!isNear() || !alive)
+		if (!isNear())
 			return;
+		
+		if (!alive) {
+			if (deathCounter < 120) {
+				deathCounter++;
+				model.setScale(model.getScale() * 0.98);
+			}
+			else if (deathCounter == 120) {
+				model.setShouldDraw(false);
+				getHitBox().nullify();
+				Point3D loc = getModel().getLoc();
+				Model scrollModel = gameModel.getScroll().getModel();
+				scrollModel.setLoc(new Point3D(loc.x, loc.y + 1, loc.z));
+				scrollModel.setShouldDraw(true);
+				gameModel.getSound().stopMusic();
+				gameModel.getSound().setShouldPlayMusic(false);
+				deathCounter++;
+		    } else {
+		    	Model scrollModel = gameModel.getScroll().getModel();
+		    	double[] rotation = scrollModel.getRot();
+				scrollModel.setAngle(rotation[1] + 0.03);
+				gameModel.getScroll().getHitBox().calculateNewHitBox(gameModel.getScroll().getModel());
+			}
+			return;
+		}
 		
 		tickCount++;
 		
@@ -102,15 +127,6 @@ public class Boss extends Character{
 	}
 	
 	public void animate(int tick){
-		if (!alive) {
-			if (deathCounter == 120)
-				model.setShouldDraw(false);
-			else {
-				deathCounter++;
-				model.setScale(model.getScale() * 0.98);
-			}
-		}
-		
 		if (isNear() && !inBattle){
 			inBattle= true;
 			motion= standing;
@@ -149,6 +165,17 @@ public class Boss extends Character{
 		setAngle(0);
 		setGoalAngle(0);
 		setLoc(new Point3D(0,0,76));
+		hp = maxHp;
+		getModel().setShouldDraw(true);
+		if (!alive) {
+			getModel().setScale(0.2);
+			getHitBox().calculateNewHitBox(getModel());
+			alive = true;
+			deathCounter = 0;
+		}
+		gameModel.getScroll().getModel().setShouldDraw(false);
+		gameModel.getScroll().getModel().setLoc(new Point3D(10000, 10000, 10000));
+		gameModel.getScroll().getHitBox().calculateNewHitBox(gameModel.getScroll().getModel());
 	}
 	
 	private void navigate(){

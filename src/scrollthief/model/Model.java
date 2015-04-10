@@ -46,6 +46,12 @@ public class Model {
 		return flashRed;
 	}
 	
+	public void setAngle(double newAngle){
+		double[] newRot= getRot();
+		newRot[1]= newAngle;
+		setRot(newRot);
+	}
+	
 	// getters
 	public OBJ getObj(){
 		return obj;

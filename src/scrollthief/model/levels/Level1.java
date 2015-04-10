@@ -478,6 +478,9 @@ public class Level1 implements Level {
 		int start = 4 + numGuards;
 		obstacles[0]= new Obstacle(models.get(start++), true, .2, .2, 1.3); 
 		scroll= obstacles[0];
+		scroll.getModel().setShouldDraw(false);
+		// put the scroll far, far away...
+		scroll.getModel().setLoc(new Point3D(10000, 10000, 10000));
 		loadingBar.increaseProgress(1);
 		int obsLoc = 1;
 		for(int i = start; i < models.size();i++){
