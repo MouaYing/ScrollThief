@@ -185,6 +185,7 @@ public class Boss extends Character{
 			setDeltaY(nextJumpSpeed);
 		}
 		if(getSpeed() == 0 && isFacingPouncePoint(0.1f)) {
+			animFrame= 0;
 			motion = pounce;
 		}
 		navigate();
@@ -216,6 +217,7 @@ public class Boss extends Character{
 		int rand = getRand(TOTAL_ATTACK_PROBABILITY);
 		
 		if((rand -= PROBABILITY_OF_BIG_ATTACK) < 0) {
+			animFrame= 0;
 			motion = windUp;
 		}
 		else if((rand -= PROBABILITY_OF_SMALL_ATTACK) < 0) {
@@ -251,7 +253,8 @@ public class Boss extends Character{
 	
 	//attackSize: 1 = small, 2 = large
 	private void shoot(int attackSize, boolean isFrenzy) {
-		readyForAttack = false;		
+		readyForAttack = false;	
+		animFrame= 0;
 		motion = shooting;
 		double directionScale = 4;
 		double direction= getAngle() - Math.PI;
