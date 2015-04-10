@@ -333,7 +333,6 @@ public class Controller extends TimerTask{
 		view.resetting = true;
 		gameModel.changeState(GameState.Paused);
 		
-		gameModel.reloadMusic();
 		gameModel.getSound().playMusic(SoundFile.SNEAK);
 	}
 	

@@ -96,6 +96,7 @@ public class Button {
 			game.resetLevel();
 			game.resetLevelLoading();
 			game.changeState(GameState.MainMenu);
+			game.getResource().getSound().playMusic(SoundFile.TITLE);
 		}
 	}
 
