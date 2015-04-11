@@ -319,7 +319,7 @@ public class Boss extends Character{
 	}
 	
 	public void createProjectile(int attackSize, Point3D targetVector, OBJ obj, Point3D bossHead, double direction) {
-		int scale= 4;
+		double scale= 2;
 		double sizeScale = .4 * attackSize;
 		double[] rot = model.getRot().clone();
 		rot[0]= -targetVector.y * scale;
