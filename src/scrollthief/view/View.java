@@ -392,6 +392,9 @@ public class View extends GLCanvas implements GLEventListener{
 	}
 	
 	private void drawBossHealth(GL2 gl) {
+		String text = "BOSS";
+		dialogRenderer.overlayText(text, Data.windowX - 300, Data.windowY - 44, Color.red, "reg");
+		
 		// Logic for drawing the boss health
 		double leftX = Data.windowX - 230;
 		double leftY = Data.windowY - 685;
