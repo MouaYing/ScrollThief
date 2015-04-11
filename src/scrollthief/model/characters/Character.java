@@ -152,12 +152,13 @@ public class Character {
 			deltaZ = 0;
 		}
 		//collisions with the boss are going to send him back
-		if(bossCollision) {
-			deltaX = 0;
-		}
-		if(bossCollision) {
-			deltaZ = 0;
-		}
+//		if(bossCollision) {
+//			deltaX = 0;
+//			deltaZ = 0;
+////			deltaX = -deltaX;
+////			deltaZ = -deltaZ;
+//		}
+		
 		return new Point3D(originalLoc.x + deltaX, originalLoc.y, originalLoc.z + deltaZ);
 	}
 	
