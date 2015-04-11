@@ -331,7 +331,8 @@ public class Controller extends TimerTask{
 //		view.setCamHeight(4);
 //		view.setCamDistance(6);
 		view.resetting = true;
-		gameModel.changeState(GameState.Paused);
+		//gameModel.changeState(GameState.Paused);
+		gameModel.changeState(GameState.Playing);
 		
 		gameModel.getSound().playMusic(SoundFile.SNEAK);
 	}
