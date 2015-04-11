@@ -178,8 +178,8 @@ public class Boss extends Character{
 		getModel().setShouldDraw(true);
 		if (!alive) {
 			gameModel.getSphere().setShouldDraw(false);
-			gameModel.getSphere().setScale(.5);
-			getModel().setScale(0.3);
+			gameModel.getSphere().setScale(.3);
+			getModel().setScale(0.2);
 			getHitBox().calculateNewHitBox(getModel());
 			alive = true;
 			deathCounter = 0;
