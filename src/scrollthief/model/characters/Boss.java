@@ -36,8 +36,8 @@ public class Boss extends Character{
 	int TICKS_BETWEEN_ATTACKS = 200;
 	int TICKS_FOR_COOLDOWN = 150;
 //	final int TICKS_FOR_CHARGE = 200;
-	final double HEALTH_RATIO_BEFORE_HEAT_SEEKING = 1.5; //get rid of the 1 for actual ratio
-	final double HEALTH_RATIO_BEFORE_FRENZY = 1.4;  //get rid of the 1 for actual ratio
+	final double HEALTH_RATIO_BEFORE_HEAT_SEEKING = .5; 
+	final double HEALTH_RATIO_BEFORE_FRENZY = .4;  
 	final int PROBABILITY_OF_BIG_ATTACK = 30;
 	final int PROBABILITY_OF_SMALL_ATTACK = 60;
 	final int PROBABILITY_OF_FRENZY_ATTACK = 30;
@@ -252,7 +252,7 @@ public class Boss extends Character{
 		else if((rand -= PROBABILITY_OF_SMALL_ATTACK) < 0) {
 			shoot(ATTACK_SIZE_SMALL, false);
 		}
-		else if(hp / maxHp < HEALTH_RATIO_BEFORE_FRENZY && (rand -= PROBABILITY_OF_FRENZY_ATTACK) < 0) {
+		else if((double)hp / (double)maxHp < HEALTH_RATIO_BEFORE_FRENZY && (rand -= PROBABILITY_OF_FRENZY_ATTACK) < 0) {
 			shoot(ATTACK_SIZE_BIG, true);
 		}
 		coolDown = TICKS_FOR_COOLDOWN;
