@@ -24,7 +24,7 @@ public class Boss extends Character{
 	boolean isPouncing = false;
 	Random randomGenerator;
 	public Point3D lastPouncePoint;
-	float pounceSpeed = .5f;
+	float pounceSpeed = .3f;
 	float jumpSpeed = 0.2f;
 	boolean readyForAttack;
 	int coolDown = 0;
@@ -101,7 +101,7 @@ public class Boss extends Character{
 			pounceController();
 		}
 		else if(tickCount > TICKS_BETWEEN_POUNCES) {
-			say("starting pounce");
+			//say("starting pounce");
 			startPounce();
 		}
 		else {

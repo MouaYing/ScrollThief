@@ -160,7 +160,7 @@ public class Controller extends TimerTask{
 			guard.animate(tick);
 			
 			// check to see if the guard can see the ninja
-			if (guard.isNear()){ // first check if he is even in range
+			if (guard.isNear() && !boss.isNear()){ // first check if he is even in range (and not fighting the boss)
 				if (guard.isFacingNinja()){ // next check if the ninja is within guard's field of view
 					if (guard.canSeeNinja()){ // now check for line of sight
 						say("You have been spotted! Game Over!");
