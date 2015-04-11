@@ -60,7 +60,7 @@ public class DialogRenderer {
 		int y = (int) (Data.windowY * 0.185);
 		
 		for(int i = 0; i < lines.size(); i++) {
-		    overlayText(lines.get(i), x, y, Color.red, "small");
+		    overlayText(lines.get(i), x, y, Color.black, "small");
 		    y -= pixelsPerLine; //lower the next lines on the scroll
 		}
 	}
