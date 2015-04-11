@@ -16,6 +16,7 @@ public class Model {
 	private int flashCount = 0;
 	private boolean isTransparent;
 	private boolean draw;
+	private boolean texture;
 	
 	public Model(OBJ obj, int textureIndex, Point3D location, double[] rotation, double scale, double scaleX){
 		this.obj= obj;
@@ -108,5 +109,9 @@ public class Model {
 	
 	public boolean shouldDraw() {
 		return draw;
+	}
+	
+	public boolean hasTexture() {
+		return textureIndex >= 0;
 	}
 }

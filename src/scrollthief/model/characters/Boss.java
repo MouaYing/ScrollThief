@@ -48,6 +48,7 @@ public class Boss extends Character{
 	int fullHP = 100;
 	private float gravity = .01f;
 	private int deathCounter = 0;
+	private boolean shrinking;
 
 	public Boss(GameModel gameModel, Model model, double boxLength, double boxWidth) {
 		super(gameModel, model, boxLength, boxWidth, "Boss");
@@ -62,6 +63,7 @@ public class Boss extends Character{
 		hp=100;
 		fullHP = 100;
 		maxHp = 100;
+		shrinking = false; 
 	}
 	
 	public void update(){
@@ -70,10 +72,16 @@ public class Boss extends Character{
 		
 		if (!alive) {
 			if (deathCounter < 120) {
+				Point3D loc = getModel().getLoc();
+				gameModel.getSphere().setLoc(new Point3D(loc.x, loc.y + 1, loc.z));
+				gameModel.getSphere().setShouldDraw(true);
+				gameModel.getSphere().setScale(gameModel.getSphere().getScale() * 1.03);
+				shrinking = true;
 				deathCounter++;
 				model.setScale(model.getScale() * 0.98);
 			}
 			else if (deathCounter == 120) {
+				gameModel.getSphere().setShouldDraw(false);
 				model.setShouldDraw(false);
 				getHitBox().nullify();
 				Point3D loc = getModel().getLoc();
@@ -84,6 +92,7 @@ public class Boss extends Character{
 				gameModel.getSound().setShouldPlayMusic(false);
 				deathCounter++;
 		    } else {
+		    	shrinking = false;
 		    	Model scrollModel = gameModel.getScroll().getModel();
 		    	double[] rotation = scrollModel.getRot();
 				scrollModel.setAngle(rotation[1] + 0.03);
@@ -168,7 +177,9 @@ public class Boss extends Character{
 		hp = maxHp;
 		getModel().setShouldDraw(true);
 		if (!alive) {
-			getModel().setScale(0.2);
+			gameModel.getSphere().setShouldDraw(false);
+			gameModel.getSphere().setScale(.5);
+			getModel().setScale(0.3);
 			getHitBox().calculateNewHitBox(getModel());
 			alive = true;
 			deathCounter = 0;
@@ -176,6 +187,7 @@ public class Boss extends Character{
 		gameModel.getScroll().getModel().setShouldDraw(false);
 		gameModel.getScroll().getModel().setLoc(new Point3D(10000, 10000, 10000));
 		gameModel.getScroll().getHitBox().calculateNewHitBox(gameModel.getScroll().getModel());
+		shrinking = false;
 	}
 	
 	private void navigate(){
@@ -350,6 +362,10 @@ public class Boss extends Character{
 			return true;
 		
 		return false;
+	}
+	
+	public boolean isShrinking() {
+		return shrinking;
 	}
 	
 	public void takeDamage(int damage) {

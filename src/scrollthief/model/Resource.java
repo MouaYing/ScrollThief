@@ -41,7 +41,7 @@ public class Resource {
 	private int mainSplashIndex;
 	private int levelSplashIndex;
 	// private final int total = 5;
-	private final int OBJS_NUM = 9;
+	private final int OBJS_NUM = 10;
 	private final int NINJA_RUN_NUM = 21;
 	private final int NINJA_STRIKE1_NUM = 12;
 	private final int NINJA_STRIKE2_NUM = 8;
@@ -128,6 +128,8 @@ public class Resource {
 		objs[7]= new OBJ("/resources/obj/boss_stand.obj");
 		loadingBar.increaseProgress(1);
 		objs[8]= new OBJ("/resources/obj/AcidBlob.obj");
+		loadingBar.increaseProgress(1);
+		objs[9] = new OBJ("/resources/obj/sphere.obj");
 		loadingBar.increaseProgress(1);
 	}
 	

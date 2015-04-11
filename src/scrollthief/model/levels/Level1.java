@@ -41,6 +41,7 @@ public class Level1 implements Level {
 	Ninja ninja;
 	Boss boss;
 	Obstacle scroll;
+	Model sphere;
 	GameModel gameModel;
 	Map<String,ArrayList<String>> phrases;
 	List<DialogHotspot> dialogHotspots;
@@ -139,6 +140,9 @@ public class Level1 implements Level {
 		addCharacterModels();
 // ---------------Obstacle models ----------------------------------------------------------------------
 		models.add( new Model(resource.getOBJs()[3], 9, new Point3D(0, 1.2, 83), new double[]{Math.PI/2,0,0}, .25, 1)); //scroll
+		models.add( new Model(resource.getOBJs()[9], -1, new Point3D(0, 1.2, 83), new double[]{Math.PI/2,0,0}, .3, 1)); //sphere
+		sphere = models.get(models.size() - 1);
+		sphere.setShouldDraw(false);
 		addFoyer(models);
 		addNewEasyRoom1(models);
 		addNewEasyRoom2(models);
@@ -598,4 +602,7 @@ public class Level1 implements Level {
 		System.out.println(message);
 	}
 	
+	public Model getSphere() {
+		return sphere;
+	}
 }

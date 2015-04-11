@@ -280,6 +280,10 @@ public class GameModel {
 		return currentLevel.getScroll();
 	}
 	
+	public Model getSphere() {
+		return currentLevel.getSphere();
+	}
+	
 	public ArrayList<Model> getModels(){
 		return currentLevel.getModels();
 	}

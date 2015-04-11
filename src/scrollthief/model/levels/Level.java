@@ -21,6 +21,7 @@ public interface Level {
 	public Boss getBoss();
 	public ArrayList<Projectile> getProjectiles();
 	public Obstacle getScroll();
+	public Model getSphere();
 	public ArrayList<Model> getModels();
 	public void setDialogHotspots();
 	public List<DialogHotspot> getDialogHotspots();
