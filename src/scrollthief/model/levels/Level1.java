@@ -232,10 +232,10 @@ public class Level1 implements Level {
 	
 	private void addNewEasyRoom1(List<Model> models) {
 		Room room = new Room(new Point3D(-20.3,0,4.5));
-		double[] north = {1,-1};
+		double[] north = {1,.5,-.5};
 		double[] south = {2};
 		double[] east = {2};
-		double[] west = {-1,1};
+		double[] west = {-.5,.5,1};
 		room.setWallLengths(WallLocation.North, north);
 		room.setWallLengths(WallLocation.South, south);
 		room.setWallLengths(WallLocation.East, east);
