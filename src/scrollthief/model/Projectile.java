@@ -1,6 +1,5 @@
 package scrollthief.model;
 
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 import scrollthief.model.characters.Character;
@@ -14,9 +13,11 @@ public class Projectile {
 	HitBox actualHitBox;
 	Point3D origLoc;
 	double origAngle;
-	double turnRate= .3;
+	double turnRate= .03;
 	int attackSize;
 	boolean heatSeeking;
+	double goalAngle, angleDelta = 0;
+	
 	
 	public Projectile(GameModel gameModel, Model model, Point3D targetVector, int attackSize, boolean heatSeeking, Point3D origLoc, double origAngle) {
 		this.gameModel= gameModel;
@@ -44,13 +45,17 @@ public class Projectile {
 	//for making the projectile ninja seeking
 	private void setTargetVector() {
 		Character ninja = gameModel.getNinja();
-		double dist= ninja.getLoc().minus(origLoc).length();
-		double goalAngle= -Math.atan2(model.getLoc().x - ninja.getLoc().x, model.getLoc().z - ninja.getLoc().z);
+		//double dist= ninja.getLoc().minus(origLoc).length();
+		double dist= ninja.getLoc().distanceToPoint(origLoc.to2D());
+		faceToward(ninja.getLoc());
+		adjustAngle();
 		
-		double targetX= Math.sin(goalAngle);
-		double targetY= -1/dist;
-		double targetZ= -Math.cos(goalAngle);
+		double targetX= Math.sin(getAngle() - Math.PI);
+		//double targetY= -1/dist;
+		double targetY= 0;
+		double targetZ= -Math.cos(getAngle() - Math.PI);
 		targetVector= new Point3D(targetX, targetY, targetZ);
+		targetVector.Normalize();
 	}
 	
 	public boolean ninjaCollision(){
@@ -102,6 +107,35 @@ public class Projectile {
 	
 	public int getAttackDamage() {
 		return attackSize;
+	}
+	
+	private void adjustAngle(){
+		double angleDif= GameModel.normalizeAngle(goalAngle - getAngle());
+		if (angleDif > -turnRate && angleDif < turnRate){
+			angleDelta= 0;
+			setAngle(goalAngle);
+		}
+		else angleDelta= (angleDif > 0) ? turnRate : -turnRate;
+
+		actualHitBox.createNewHitBox(getAngle() + angleDelta, getLoc());
+		
+		setAngle(getAngle() + angleDelta);
+	}
+	
+	public void faceToward(Point3D lookTarget){
+		goalAngle= -Math.atan2(lookTarget.x - getLoc().x, lookTarget.z - getLoc().z);
+	}
+	
+	public Point3D getLoc(){
+		return model.getLoc();
+	}
+	
+	public double getAngle(){
+		return model.getAngle();
+	}
+	
+	public void setAngle(double newAngle){
+		model.setAngle(newAngle);
 	}
 
 }

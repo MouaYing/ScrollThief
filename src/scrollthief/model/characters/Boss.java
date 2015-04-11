@@ -3,7 +3,6 @@ package scrollthief.model.characters;
 import java.util.ArrayList;
 import java.util.Random;
 
-import javafx.geometry.Point2D;
 import scrollthief.model.Data;
 import scrollthief.model.GameModel;
 import scrollthief.model.Model;
@@ -25,7 +24,7 @@ public class Boss extends Character{
 	boolean isPouncing = false;
 	Random randomGenerator;
 	public Point3D lastPouncePoint;
-	float pounceSpeed = 1.5f;
+	float pounceSpeed = .5f;
 	float jumpSpeed = 0.2f;
 	boolean readyForAttack;
 	int coolDown = 0;
@@ -102,6 +101,7 @@ public class Boss extends Character{
 			pounceController();
 		}
 		else if(tickCount > TICKS_BETWEEN_POUNCES) {
+			say("starting pounce");
 			startPounce();
 		}
 		else {
@@ -202,16 +202,18 @@ public class Boss extends Character{
 			isPouncing = false;
 			return;
 		}
-		else if(getSpeed() == 0 && isFacingPouncePoint(0.001f)) {
+		else if(getSpeed() == 0 && isFacingPouncePoint(0.001f) && animFrame == 16) {
 			double dist = getLoc().minus(lastPouncePoint).length();
+			//say("distance to boss's target: " + dist);
 			float nextPounceSpeed = (float)((1 + dist / 20) * pounceSpeed);
 			setSpeed(nextPounceSpeed);
+			//say("Boss's Speed: " + speed);
 			float nextJumpSpeed = (float)(dist / 10 * jumpSpeed);
 			if(nextJumpSpeed > jumpSpeed)
 				nextJumpSpeed = jumpSpeed;
 			setDeltaY(nextJumpSpeed);
 		}
-		if(getSpeed() == 0 && isFacingPouncePoint(0.1f)) {
+		if(getSpeed() == 0 && isFacingPouncePoint(0.1f) && motion != pounce) {
 			animFrame= 0;
 			motion = pounce;
 		}
@@ -318,11 +320,11 @@ public class Boss extends Character{
 	
 	public void createProjectile(int attackSize, Point3D targetVector, OBJ obj, Point3D bossHead, double direction) {
 		int scale= 4;
-		double sizeScale = .3 * attackSize;
+		double sizeScale = .4 * attackSize;
 		double[] rot = model.getRot().clone();
 		rot[0]= -targetVector.y * scale;
 		Model projModel= new Model(obj, 11, bossHead, rot, sizeScale, 1);
-		boolean heatSeeking = false;//(hp / maxHp < HEALTH_RATIO_BEFORE_HEAT_SEEKING) && attackSize == ATTACK_SIZE_SMALL;
+		boolean heatSeeking = (hp / maxHp < HEALTH_RATIO_BEFORE_HEAT_SEEKING) && attackSize == ATTACK_SIZE_SMALL;
 		gameModel.getProjectiles().add(new Projectile(gameModel, projModel, targetVector, attackSize, heatSeeking, bossHead, direction));
 		gameModel.getModels().add(projModel);
 	}

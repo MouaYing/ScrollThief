@@ -329,6 +329,7 @@ public class View extends GLCanvas implements GLEventListener{
 		gl.glBlendFunc (GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
 		t.bind(gl);
 		gl.glLoadIdentity();
+		gl.glColor3f(1, 1, 1);
 		gl.glBegin( GL2.GL_QUADS );
 			double originX = -1.0;//-(windowX/2);
 			double originY = -1.0;//-(windowY/2);
@@ -565,7 +566,7 @@ public class View extends GLCanvas implements GLEventListener{
 			startDetectingObstacles = true;
 		}
 	
-		// TODO: detect when an obstacle is between the viewer and the ninja and give it opacity
+		// detect when an obstacle is between the viewer and the ninja and give it transparency
 		if(ninjaLoc != null && startDetectingObstacles) {
 			Line2D cameraToNinja = new Line2D.Double(cameraLoc.to2D(), ninjaLoc.to2D());
 			for(Obstacle obstacle : gameModel.getObstacles()) {
