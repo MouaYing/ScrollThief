@@ -79,7 +79,7 @@ public class View extends GLCanvas implements GLEventListener{
 		tRend= new TextRenderer(new Font("Helvetica", Font.BOLD, 30));
 		tRend2= new TextRenderer(new Font("Helvetica", Font.BOLD, 60));
 		tRendLoadingBar= new TextRenderer(new Font("Helvetica", Font.PLAIN, 10));
-		tRendPause = new TextRenderer(new Font("Helvetica", Font.PLAIN, 15));
+		tRendPause = new TextRenderer(new Font("Helvetica", Font.BOLD, 15));
 		loadScrollTexture(gl);
 		
 		setupLighting(gl);
