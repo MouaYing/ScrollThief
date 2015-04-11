@@ -3,7 +3,6 @@ package scrollthief.model.characters;
 import java.util.ArrayList;
 import java.util.Random;
 
-import javafx.geometry.Point2D;
 import scrollthief.model.Data;
 import scrollthief.model.GameModel;
 import scrollthief.model.Model;
@@ -25,7 +24,7 @@ public class Boss extends Character{
 	boolean isPouncing = false;
 	Random randomGenerator;
 	public Point3D lastPouncePoint;
-	float pounceSpeed = 1.5f;
+	float pounceSpeed = .3f;
 	float jumpSpeed = 0.2f;
 	boolean readyForAttack;
 	int coolDown = 0;
@@ -37,8 +36,8 @@ public class Boss extends Character{
 	int TICKS_BETWEEN_ATTACKS = 200;
 	int TICKS_FOR_COOLDOWN = 150;
 //	final int TICKS_FOR_CHARGE = 200;
-	final double HEALTH_RATIO_BEFORE_HEAT_SEEKING = 1.5; //get rid of the 1 for actual ratio
-	final double HEALTH_RATIO_BEFORE_FRENZY = 1.4;  //get rid of the 1 for actual ratio
+	final double HEALTH_RATIO_BEFORE_HEAT_SEEKING = .5; 
+	final double HEALTH_RATIO_BEFORE_FRENZY = .4;  
 	final int PROBABILITY_OF_BIG_ATTACK = 30;
 	final int PROBABILITY_OF_SMALL_ATTACK = 60;
 	final int PROBABILITY_OF_FRENZY_ATTACK = 30;
@@ -111,6 +110,7 @@ public class Boss extends Character{
 			pounceController();
 		}
 		else if(tickCount > TICKS_BETWEEN_POUNCES) {
+			//say("starting pounce");
 			startPounce();
 		}
 		else {
@@ -214,16 +214,18 @@ public class Boss extends Character{
 			isPouncing = false;
 			return;
 		}
-		else if(getSpeed() == 0 && isFacingPouncePoint(0.001f)) {
+		else if(getSpeed() == 0 && isFacingPouncePoint(0.001f) && animFrame == 16) {
 			double dist = getLoc().minus(lastPouncePoint).length();
+			//say("distance to boss's target: " + dist);
 			float nextPounceSpeed = (float)((1 + dist / 20) * pounceSpeed);
 			setSpeed(nextPounceSpeed);
+			//say("Boss's Speed: " + speed);
 			float nextJumpSpeed = (float)(dist / 10 * jumpSpeed);
 			if(nextJumpSpeed > jumpSpeed)
 				nextJumpSpeed = jumpSpeed;
 			setDeltaY(nextJumpSpeed);
 		}
-		if(getSpeed() == 0 && isFacingPouncePoint(0.1f)) {
+		if(getSpeed() == 0 && isFacingPouncePoint(0.1f) && motion != pounce) {
 			animFrame= 0;
 			motion = pounce;
 		}
@@ -262,7 +264,7 @@ public class Boss extends Character{
 		else if((rand -= PROBABILITY_OF_SMALL_ATTACK) < 0) {
 			shoot(ATTACK_SIZE_SMALL, false);
 		}
-		else if(hp / maxHp < HEALTH_RATIO_BEFORE_FRENZY && (rand -= PROBABILITY_OF_FRENZY_ATTACK) < 0) {
+		else if((double)hp / (double)maxHp < HEALTH_RATIO_BEFORE_FRENZY && (rand -= PROBABILITY_OF_FRENZY_ATTACK) < 0) {
 			shoot(ATTACK_SIZE_BIG, true);
 		}
 		coolDown = TICKS_FOR_COOLDOWN;
@@ -329,12 +331,13 @@ public class Boss extends Character{
 	}
 	
 	public void createProjectile(int attackSize, Point3D targetVector, OBJ obj, Point3D bossHead, double direction) {
-		int scale= 4;
-		double sizeScale = .3 * attackSize;
+		double scale= 2;
+		double sizeScale = .4 * attackSize;
 		double[] rot = model.getRot().clone();
 		rot[0]= -targetVector.y * scale;
 		Model projModel= new Model(obj, 11, bossHead, rot, sizeScale, 1);
-		boolean heatSeeking = false;//(hp / maxHp < HEALTH_RATIO_BEFORE_HEAT_SEEKING) && attackSize == ATTACK_SIZE_SMALL;
+		boolean heatSeeking = ((double)hp / (double)maxHp < HEALTH_RATIO_BEFORE_HEAT_SEEKING) 
+				&& attackSize == ATTACK_SIZE_SMALL;
 		gameModel.getProjectiles().add(new Projectile(gameModel, projModel, targetVector, attackSize, heatSeeking, bossHead, direction));
 		gameModel.getModels().add(projModel);
 	}

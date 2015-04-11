@@ -79,7 +79,7 @@ public class View extends GLCanvas implements GLEventListener{
 		tRend= new TextRenderer(new Font("Helvetica", Font.BOLD, 30));
 		tRend2= new TextRenderer(new Font("Helvetica", Font.BOLD, 60));
 		tRendLoadingBar= new TextRenderer(new Font("Helvetica", Font.PLAIN, 10));
-		tRendPause = new TextRenderer(new Font("Helvetica", Font.PLAIN, 15));
+		tRendPause = new TextRenderer(new Font("Helvetica", Font.BOLD, 15));
 		loadScrollTexture(gl);
 		
 		setupLighting(gl);
@@ -333,6 +333,7 @@ public class View extends GLCanvas implements GLEventListener{
 		gl.glBlendFunc (GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
 		t.bind(gl);
 		gl.glLoadIdentity();
+		gl.glColor3f(1, 1, 1);
 		gl.glBegin( GL2.GL_QUADS );
 			double originX = -1.0;//-(windowX/2);
 			double originY = -1.0;//-(windowY/2);
@@ -395,6 +396,9 @@ public class View extends GLCanvas implements GLEventListener{
 	}
 	
 	private void drawBossHealth(GL2 gl) {
+		String text = "BOSS";
+		dialogRenderer.overlayText(text, Data.windowX - 300, Data.windowY - 44, Color.red, "reg");
+		
 		// Logic for drawing the boss health
 		double leftX = Data.windowX - 230;
 		double leftY = Data.windowY - 685;
@@ -569,7 +573,7 @@ public class View extends GLCanvas implements GLEventListener{
 			startDetectingObstacles = true;
 		}
 	
-		// TODO: detect when an obstacle is between the viewer and the ninja and give it opacity
+		// detect when an obstacle is between the viewer and the ninja and give it transparency
 		if(ninjaLoc != null && startDetectingObstacles) {
 			Line2D cameraToNinja = new Line2D.Double(cameraLoc.to2D(), ninjaLoc.to2D());
 			for(Obstacle obstacle : gameModel.getObstacles()) {

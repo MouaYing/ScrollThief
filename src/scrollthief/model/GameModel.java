@@ -1,15 +1,9 @@
 package scrollthief.model;
 
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Line2D;
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.EventListener;
-import java.util.EventObject;
 import java.util.HashMap;
 
 import javax.media.opengl.GL2;
-import javax.media.opengl.GLProfile;
 import javax.swing.event.EventListenerList;
 
 import scrollthief.model.characters.Boss;

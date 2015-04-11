@@ -16,7 +16,7 @@ import scrollthief.model.Obstacle;
 import scrollthief.model.Point3D;
 
 public class Guard extends Character{
-	double sightRange= 10; // needs tuning
+	double sightRange= 12; // needs tuning
 	int goalIndex;
 	Point3D goal= null;
 	Point3D[] waypoints;
@@ -53,7 +53,7 @@ public class Guard extends Character{
 	}
 	
 	public boolean isFacingNinja(){
-		float fov= 1.3f; // (radians) needs tuning
+		float fov= 1.1f; // (radians) needs tuning
 		Point3D loc= getLoc();
 		Point3D ninjaLoc= gameModel.getNinjaLoc();
 		double guardAngle= -getAngle();

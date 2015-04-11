@@ -1,13 +1,10 @@
 package scrollthief.model.characters;
 
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 import scrollthief.model.characters.Boss;
 import scrollthief.model.characters.Character;
-import scrollthief.model.Data;
 import scrollthief.model.GameModel;
-import scrollthief.model.GameState;
 import scrollthief.model.Model;
 import scrollthief.model.characters.Ninja;
 import scrollthief.model.OBJ;
@@ -41,7 +38,7 @@ public class Character {
 	boolean alive = true;
 	int maxHp;
 	
-	private Point2D[] edgePrime;
+	//private Point2D[] edgePrime;
 	String type;
 	double ninjaDirection;
 	boolean bossCollision;
@@ -155,12 +152,13 @@ public class Character {
 			deltaZ = 0;
 		}
 		//collisions with the boss are going to send him back
-		if(bossCollision) {
-			deltaX = 0;
-		}
-		if(bossCollision) {
-			deltaZ = 0;
-		}
+//		if(bossCollision) {
+//			deltaX = 0;
+//			deltaZ = 0;
+////			deltaX = -deltaX;
+////			deltaZ = -deltaZ;
+//		}
+		
 		return new Point3D(originalLoc.x + deltaX, originalLoc.y, originalLoc.z + deltaZ);
 	}
 	
@@ -192,7 +190,7 @@ public class Character {
 		actualHitBox.createNewHitBox(getModel().getAngle(), newLoc);
 		ArrayList<Edge> collidedEdges = specificCharacterCollisionCheck(newLoc);
 		// no collisions
-		if(collidedEdges.isEmpty()) {
+		//if(collidedEdges.isEmpty()) {
 			if (inObstacleBox != null){ // character is inside hitbox (on top of table)
 				double obsHeight= inObstacleBox.getHeight();
 
@@ -202,11 +200,11 @@ public class Character {
 					isJumping= false;
 				}
 			}
-		}
-		else {
+		//}
+		//else {
 			newLoc = adjustMovementForCollisions(currentLocation, newLoc, collidedEdges);
 			newLoc = adjustYValue(newLoc);
-		}
+		//}
 		setLoc(newLoc); // actually move the character
 	}
 
