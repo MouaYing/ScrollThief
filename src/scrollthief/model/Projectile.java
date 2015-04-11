@@ -16,7 +16,7 @@ public class Projectile {
 	double turnRate= .03;
 	int attackSize;
 	boolean heatSeeking;
-	double goalAngle, angleDelta = 0;
+	double goalAngle, goalPitch, angleDelta = 0;
 	
 	
 	public Projectile(GameModel gameModel, Model model, Point3D targetVector, int attackSize, boolean heatSeeking, Point3D origLoc, double origAngle) {
@@ -51,8 +51,8 @@ public class Projectile {
 		adjustAngle();
 		
 		double targetX= Math.sin(getAngle() - Math.PI);
-		//double targetY= -1/dist;
-		double targetY= 0;
+		double targetY= (getLoc().y > 1.6) ? -.125 : 0;
+		//double targetY= 0;
 		double targetZ= -Math.cos(getAngle() - Math.PI);
 		targetVector= new Point3D(targetX, targetY, targetZ);
 		targetVector.Normalize();
@@ -120,10 +120,16 @@ public class Projectile {
 		actualHitBox.createNewHitBox(getAngle() + angleDelta, getLoc());
 		
 		setAngle(getAngle() + angleDelta);
+
+		double[] newRot= model.getRot().clone();
+		newRot[0]= goalPitch;
+		model.setRot(newRot);
 	}
 	
 	public void faceToward(Point3D lookTarget){
+		double dist= getLoc().distanceToPoint(lookTarget.to2D());
 		goalAngle= -Math.atan2(lookTarget.x - getLoc().x, lookTarget.z - getLoc().z);
+		goalPitch= (1/dist)*.5;
 	}
 	
 	public Point3D getLoc(){
