@@ -324,7 +324,8 @@ public class Boss extends Character{
 		double[] rot = model.getRot().clone();
 		rot[0]= -targetVector.y * scale;
 		Model projModel= new Model(obj, 11, bossHead, rot, sizeScale, 1);
-		boolean heatSeeking = (hp / maxHp < HEALTH_RATIO_BEFORE_HEAT_SEEKING) && attackSize == ATTACK_SIZE_SMALL;
+		boolean heatSeeking = ((double)hp / (double)maxHp < HEALTH_RATIO_BEFORE_HEAT_SEEKING) 
+				&& attackSize == ATTACK_SIZE_SMALL;
 		gameModel.getProjectiles().add(new Projectile(gameModel, projModel, targetVector, attackSize, heatSeeking, bossHead, direction));
 		gameModel.getModels().add(projModel);
 	}
