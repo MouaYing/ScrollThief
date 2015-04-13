@@ -138,10 +138,14 @@ public class View extends GLCanvas implements GLEventListener{
 				if (model.getTxtr() == 8 && cullObscured(model)) continue;
 				
 				// assign texture
-				if (model.hasTexture())
+				if (model.hasTexture()){
+					gl.glEnable(GL2.GL_TEXTURE_2D);
 					textures[model.getTxtr()].bind(gl);
-				else
+				}
+				else{
 					gl.glColor3f(1,1,1);
+					gl.glDisable(GL2.GL_TEXTURE_2D);
+				}
 					
 				if(model.isHurt()){
 					gl.glColor3f(1,0,0);
