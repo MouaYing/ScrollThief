@@ -1,6 +1,8 @@
 ScrollThief
 ===========
 by Jon Pimentel, Taft Sandbakken, TJ Besendorfer, Ryan Palmer, Kevin Hinton and Melissa Smith, Copyright 2014-2015
+
+You can see gameplay footage [here](https://youtu.be/RmgsUSxPCCs).
     
     To get this to run in Eclipse (Try using Libra version, just to be safe):
     
